@@ -4,8 +4,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class SpriteEntity {
-    private Sprite sprite;
+    private final Sprite sprite;
 
+    protected Sprite getSprite() {
+        return sprite;
+    }
 
     public SpriteEntity(Sprite sprite) {
         this.sprite = sprite;

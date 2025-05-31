@@ -2,6 +2,7 @@ package com.banew.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.banew.Main;
 
 /** Launches the desktop (LWJGL3) application. */
@@ -12,7 +13,15 @@ public class Lwjgl3Launcher {
     }
 
     private static Lwjgl3Application createApplication() {
+        processTexturePacker();
         return new Lwjgl3Application(new Main(), getDefaultConfiguration());
+    }
+
+    private static void processTexturePacker() {
+        TexturePacker.Settings settings = new TexturePacker.Settings();
+        settings.maxWidth = 2048;
+        settings.maxHeight = 1024;
+        TexturePacker.process(settings, "assets/textures", "assets/textures-generated", "game");
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {

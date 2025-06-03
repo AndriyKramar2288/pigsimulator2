@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.banew.entities.AnimatedEntity;
+import com.banew.entities.MainHeroEntity;
 import com.banew.entities.MovingEntity;
 import com.banew.entities.SpriteEntity;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
@@ -50,6 +51,27 @@ public class EntityFactory {
         Sprite sprite = generateBasicSprite(textureAtlas.findRegion(texturePacks.get(0).waitingTexture()), x, y);
 
         return new MovingEntity(
+            sprite,
+            texturePacks.stream()
+                .map(MovingEntityTexturesPerDirectionPack::waitingTexture)
+                .map(t -> (TextureRegion) textureAtlas.findRegion(t))
+                .toList(),
+            texturePacks.stream()
+                .map(range -> new Animation<TextureRegion>(
+                    0.25f,
+                    initWaitingAnimations(range.animation()).toArray(new TextureRegion[0])
+                ))
+                .toList()
+        );
+    }
+
+    public MainHeroEntity createMainHeroEntity(
+        Float x, Float y,
+        List<MovingEntityTexturesPerDirectionPack> texturePacks
+    ) {
+        Sprite sprite = generateBasicSprite(textureAtlas.findRegion(texturePacks.get(0).waitingTexture()), x, y);
+
+        return new MainHeroEntity(
             sprite,
             texturePacks.stream()
                 .map(MovingEntityTexturesPerDirectionPack::waitingTexture)

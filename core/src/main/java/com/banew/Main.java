@@ -52,7 +52,7 @@ public class Main implements ApplicationListener {
     @Override
     public void render() {
         // Draw your application here.
-        ScreenUtils.clear(Color.MAGENTA);
+        ScreenUtils.clear(Color.BLACK);
         viewport.apply();
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
         spriteBatch.begin();

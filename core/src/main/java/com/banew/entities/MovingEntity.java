@@ -10,10 +10,10 @@ import java.util.List;
 
 public class MovingEntity extends SpriteEntity {
 
-    private float timer = 0f;
+    protected float timer = 0f;
 
     private List<TextureRegion> waitingRegions;
-    private List<Animation<TextureRegion>> animationList;
+    protected List<Animation<TextureRegion>> animationList;
 
     public MovingEntity(
         Sprite sprite,

@@ -3,6 +3,7 @@ package com.banew.containers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.banew.entities.MainHeroEntity;
 import com.banew.entities.MovingEntity;
 import com.banew.entities.SpriteEntity;
 import com.banew.factories.EntityFactory;
@@ -16,7 +17,7 @@ import java.util.Set;
 
 public class EntityContainer {
     private final Set<SpriteEntity> allEntities;
-    //private MainHeroEntity mainHeroEntity;
+    private MainHeroEntity mainHeroEntity;
     private final EntityFactory entityFactory;
     private final SpriteBatch spriteBatch;
     private MovingEntity moving_pig;
@@ -27,7 +28,7 @@ public class EntityContainer {
 
         allEntities = new HashSet<>();
 
-        //initMainHero();
+        initMainHero();
         initOtherEntities();
     }
 
@@ -76,11 +77,30 @@ public class EntityContainer {
         allEntities.add(moving_pig);
     }
 
-//    private void initMainHero() {
-//        TexturesRange range = new TexturesRange(0, 6, "hryak1/tile");
-//        mainHeroEntity = entityFactory.createMainHeroEntity(range);
-//        allEntities.add(mainHeroEntity);
-//    }
+    private void initMainHero() {
+        mainHeroEntity = entityFactory.createMainHeroEntity(
+            0f, -0f,
+            List.of(
+                new MovingEntityTexturesPerDirectionPack(
+                    "hryak2/pig002",
+                    new TexturesRange(1, 3, "hryak2/pig")
+                ),
+                new MovingEntityTexturesPerDirectionPack(
+                    "hryak2/pig011",
+                    new TexturesRange(10, 12, "hryak2/pig")
+                ),
+                new MovingEntityTexturesPerDirectionPack(
+                    "hryak2/pig008",
+                    new TexturesRange(7, 9, "hryak2/pig")
+                ),
+                new MovingEntityTexturesPerDirectionPack(
+                    "hryak2/pig005",
+                    new TexturesRange(4, 5, "hryak2/pig")
+                )
+            )
+        );
+        allEntities.add(mainHeroEntity);
+    }
 
     public void renderEntites() {
         movingRender();
@@ -90,9 +110,7 @@ public class EntityContainer {
 
     private void moveAllExceptMain(float x, float y) {
         allEntities.forEach(e -> {
-            //if (e != mainHeroEntity) {
-                e.replace(x, y);
-            //}
+            e.replace(x, y);
         });
     }
 

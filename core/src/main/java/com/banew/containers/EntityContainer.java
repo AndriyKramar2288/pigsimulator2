@@ -3,11 +3,14 @@ package com.banew.containers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.banew.entities.MovingEntity;
 import com.banew.entities.SpriteEntity;
 import com.banew.factories.EntityFactory;
+import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
 import com.banew.other.records.TexturesRange;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,6 +19,7 @@ public class EntityContainer {
     //private MainHeroEntity mainHeroEntity;
     private final EntityFactory entityFactory;
     private final SpriteBatch spriteBatch;
+    private MovingEntity moving_pig;
 
     public EntityContainer(EntityFactory entityFactory, SpriteBatch spriteBatch) {
         this.entityFactory = entityFactory;
@@ -30,11 +34,11 @@ public class EntityContainer {
     private void initOtherEntities() {
         allEntities.add(entityFactory.createSimpleSprite(
             "hryak1/tile005",
-            4L, 1L
+            4f, 1f
         ));
 
         allEntities.add(entityFactory.createAnimatedEntity(
-            -4L, 1L,
+            -4f, 1f,
             "hryak1/tile000",
                 .5f,
             new TexturesRange(
@@ -46,6 +50,30 @@ public class EntityContainer {
                 "hryak1/tile"
             )
         ));
+
+
+        moving_pig = entityFactory.createMovingEntity(
+            0f, -5f,
+            List.of(
+                new MovingEntityTexturesPerDirectionPack(
+                    "hryak2/pig002",
+                    new TexturesRange(1, 3, "hryak2/pig")
+                ),
+                new MovingEntityTexturesPerDirectionPack(
+                    "hryak2/pig011",
+                    new TexturesRange(10, 12, "hryak2/pig")
+                ),
+                new MovingEntityTexturesPerDirectionPack(
+                    "hryak2/pig008",
+                    new TexturesRange(7, 9, "hryak2/pig")
+                ),
+                new MovingEntityTexturesPerDirectionPack(
+                    "hryak2/pig005",
+                    new TexturesRange(4, 5, "hryak2/pig")
+                )
+            )
+        );
+        allEntities.add(moving_pig);
     }
 
 //    private void initMainHero() {
@@ -57,12 +85,13 @@ public class EntityContainer {
     public void renderEntites() {
         movingRender();
         drawVisibleEntities();
+        moving_pig.move(0, .005f);
     }
 
     private void moveAllExceptMain(float x, float y) {
         allEntities.forEach(e -> {
             //if (e != mainHeroEntity) {
-                e.move(x, y);
+                e.replace(x, y);
             //}
         });
     }

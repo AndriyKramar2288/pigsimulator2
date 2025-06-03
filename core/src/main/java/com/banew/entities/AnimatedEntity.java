@@ -36,7 +36,7 @@ public class AnimatedEntity extends SpriteEntity {
         this.waitingAnimations = regionsList.stream()
             .map(regions -> {
                 Animation<TextureRegion> anim = new Animation<>(
-                    1f / regions.size(), // Проста рівна швидкість для кожного кадра
+                    .25f, // Проста рівна швидкість для кожного кадра
                     regions.toArray(new TextureRegion[0])
                 );
                 anim.setPlayMode(Animation.PlayMode.NORMAL);
@@ -45,7 +45,8 @@ public class AnimatedEntity extends SpriteEntity {
             .toList();
     }
 
-    private void update(float delta) {
+    @Override
+    public void update(float delta) {
         timer += delta;
 
         if (!isAnimating && timer >= delayBetween) {

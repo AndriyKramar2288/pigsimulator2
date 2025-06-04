@@ -2,6 +2,7 @@ package com.banew.entities;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 public class SpriteEntity {
     private Sprite sprite;
@@ -24,6 +25,21 @@ public class SpriteEntity {
 
     public void update(float delta) {
 
+    }
+
+    public float getX() {
+        return sprite.getX();
+    }
+
+    public float getY() {
+        return sprite.getY();
+    }
+
+    public Vector2 getCenterCoordinates() {
+        return new Vector2(
+            sprite.getX() + (sprite.getWidth() / 2),
+            sprite.getY() + (sprite.getHeight() / 2)
+        );
     }
 
     public void draw(SpriteBatch spriteBatch) {

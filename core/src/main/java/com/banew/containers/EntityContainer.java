@@ -2,7 +2,10 @@ package com.banew.containers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.banew.entities.MainHeroEntity;
 import com.banew.entities.MovingEntity;
 import com.banew.entities.SpriteEntity;
@@ -20,12 +23,15 @@ public class EntityContainer {
     private MainHeroEntity mainHeroEntity;
     private final EntityFactory entityFactory;
     private final SpriteBatch spriteBatch;
+    private final OrthographicCamera camera;
     private MovingEntity moving_pig;
 
-    public EntityContainer(EntityFactory entityFactory, SpriteBatch spriteBatch) {
+    private boolean isMoving = false;
+
+    public EntityContainer(EntityFactory entityFactory, SpriteBatch spriteBatch, Camera camera) {
         this.entityFactory = entityFactory;
         this.spriteBatch = spriteBatch;
-
+        this.camera = (OrthographicCamera) camera;
         allEntities = new HashSet<>();
 
         initMainHero();
@@ -103,18 +109,17 @@ public class EntityContainer {
     }
 
     public void renderEntites() {
+        isMoving = false;
         movingRender();
         drawVisibleEntities();
         moving_pig.move(0, .005f);
     }
 
     private void moveAllExceptMain(float x, float y) {
-        allEntities.forEach(e -> {
-            e.replace(x, y);
-        });
+        mainHeroEntity.move(-x, -y);
     }
 
-    private final float speed = 2f;
+    private final float speed = 3f;
     private float computeStep() {
         return speed * Gdx.graphics.getDeltaTime();
     }
@@ -130,8 +135,21 @@ public class EntityContainer {
         keysMovementAction.forEach((key, value) -> {
             if (Gdx.input.isKeyPressed(key)) {
                 value.run();
+                isMoving = true;
             }
         });
+
+        camera.position.lerp(new Vector3(mainHeroEntity.getCenterCoordinates(), 0f), .075f);
+        camera.zoom = isMoving ? smoothZoom(1.05f) : smoothZoom(1f);
+        camera.update();
+    }
+
+    private float smoothZoom(float targetZoom) {
+        // Швидкість наближення (чим менше, тим плавніше)
+        float zoomSpeed = 3f; // одиниці за секунду
+
+        // Поточний зум → поступово тягнемо до цілі
+        return camera.zoom + (targetZoom - camera.zoom) * zoomSpeed * Gdx.graphics.getDeltaTime();
     }
 
     private void drawVisibleEntities() {

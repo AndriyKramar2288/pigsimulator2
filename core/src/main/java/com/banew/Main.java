@@ -6,7 +6,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.banew.containers.EntityContainer;
 import com.banew.factories.EntityFactory;
 
@@ -16,23 +16,25 @@ public class Main implements ApplicationListener {
     private final String ATLAS_SRC = "textures-generated/game.atlas";
 
     SpriteBatch spriteBatch;
-    FitViewport viewport;
+    FillViewport viewport;
 
     private EntityFactory entityFactory;
     private EntityContainer entityContainer;
     private Music background_music;
 
+    private float timerSS = 0f;
+
     @Override
     public void create() {
         spriteBatch = new SpriteBatch();
-        viewport = new FitViewport(8, 5);
+        viewport = new FillViewport(8, 5);
         // Prepare your application here.
         background_music = Gdx.audio.newMusic(Gdx.files.internal(BACKGROUND_MUSIC_SRC));
 
 
 
         entityFactory = new EntityFactory(ATLAS_SRC);
-        entityContainer = new EntityContainer(entityFactory, spriteBatch);
+        entityContainer = new EntityContainer(entityFactory, spriteBatch, viewport.getCamera());
 
 
         background_music.setLooping(true);

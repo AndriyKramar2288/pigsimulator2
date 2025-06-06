@@ -44,6 +44,14 @@ public class EntityContainer {
             4f, 1f
         ));
 
+        allEntities.add(entityFactory.createSimpleSprite(
+            "Characters/Free Cow Sprites",
+            3, 2,
+            2, 2,
+            -3f,
+            -1f
+        ));
+
         allEntities.add(entityFactory.createAnimatedEntity(
             -4f, 1f,
             "hryak1/tile000",
@@ -101,7 +109,7 @@ public class EntityContainer {
                 ),
                 new MovingEntityTexturesPerDirectionPack(
                     "hryak2/pig005",
-                    new TexturesRange(4, 5, "hryak2/pig")
+                    new TexturesRange(4, 6, "hryak2/pig")
                 )
             )
         );

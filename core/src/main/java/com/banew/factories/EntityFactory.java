@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.banew.entities.AnimatedEntity;
 import com.banew.entities.MainHeroEntity;
 import com.banew.entities.MovingEntity;
@@ -12,19 +13,28 @@ import com.banew.entities.SpriteEntity;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
 import com.banew.other.records.TexturesRange;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class EntityFactory {
     private final TextureAtlas textureAtlas;
+    private final Map<String, TextureRegion[][]> cashedRegions;
 
     public EntityFactory(String atlas_path) {
         textureAtlas = new TextureAtlas(Gdx.files.internal(atlas_path));
+        cashedRegions = new HashMap<>();
     }
 
     public SpriteEntity createSimpleSprite(String region, Float x, Float y) {
         Sprite sprite = generateBasicSprite(textureAtlas.createSprite(region), x, y);
+        return new SpriteEntity(sprite);
+    }
+
+    public SpriteEntity createSimpleSprite(String textureRegion, int sizeX, int sizeY, int cordX, int cordY, Float x, Float y) {
+        Sprite sprite = generateBasicSprite(resolveSubTexture(
+            textureRegion,
+            sizeX, sizeY,
+            cordX, cordY
+        ), x, y);
         return new SpriteEntity(sprite);
     }
 
@@ -93,19 +103,6 @@ public class EntityFactory {
         return sprite;
     }
 
-//    public MainHeroEntity createMainHeroEntity(TexturesRange range) {
-//        List<TextureRegion> regions = initWaitingAnimations(range);
-//        Sprite sprite = new Sprite(textureAtlas.createSprite("hryak1/tile000"));
-//        sprite.setSize(1L, 1L);
-//        sprite.setPosition(
-//            0 - sprite.getWidth() / 2f,
-//            0 - sprite.getHeight() / 2f
-//        );
-//        return new MainHeroEntity(sprite, regions);
-//    }
-
-
-
     private List<TextureRegion> initWaitingAnimations(TexturesRange range) {
         List<TextureRegion> waitingAnimations = new ArrayList<>();
 
@@ -116,4 +113,23 @@ public class EntityFactory {
 
         return waitingAnimations;
     }
+
+    private List<TextureRegion> initWaitingAnimations(String region, int sizeX, int sizeY, Vector2 ... cords) {
+        return Arrays.stream(cords).map(cord -> {
+            return resolveSubTexture(region, sizeX, sizeY, (int) cord.x, (int) cord.y);
+        }).toList();
+    } // TODO: to delete
+
+    private TextureRegion resolveSubTexture(String region, int sizeX, int sizeY, int cordX, int cordY) {
+        String key = region + "|" + sizeX + "|" + sizeY;
+        TextureRegion[][] grid = cashedRegions.computeIfAbsent(key, s -> {
+
+            TextureRegion fullRegion = textureAtlas.findRegion(region);
+            int tileWidth = fullRegion.getRegionWidth() / sizeX;
+            int tileHeight = fullRegion.getRegionHeight() / sizeY;
+            return fullRegion.split(tileWidth, tileHeight);
+        });
+
+        return grid[cordY - 1][cordX - 1];
+    } // TODO: delete this method
 }

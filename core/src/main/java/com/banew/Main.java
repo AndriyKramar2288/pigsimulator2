@@ -22,12 +22,10 @@ public class Main implements ApplicationListener {
     private EntityContainer entityContainer;
     private Music background_music;
 
-    private float timerSS = 0f;
-
     @Override
     public void create() {
         spriteBatch = new SpriteBatch();
-        viewport = new FillViewport(8, 5);
+        viewport = new FillViewport(16, 9);
         // Prepare your application here.
         background_music = Gdx.audio.newMusic(Gdx.files.internal(BACKGROUND_MUSIC_SRC));
 

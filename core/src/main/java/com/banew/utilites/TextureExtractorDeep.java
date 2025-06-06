@@ -2,10 +2,27 @@ package com.banew.utilites;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.banew.other.records.MatrixVector;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class TextureExtractorDeep implements TextureExtractor {
+    private final String region;
+    private final int sizeX;
+    private final int sizeY;
+    private final int cordX;
+    private final int cordY;
+    private static final Map<String, TextureRegion[][]> cashedRegions = new HashMap<>();
+
+    public TextureExtractorDeep(String region, MatrixVector size, MatrixVector cords) {
+        this.region = region;
+        this.sizeX = size.x();
+        this.sizeY = size.y();
+        this.cordX = cords.x();
+        this.cordY = cords.y();
+    }
+
     @Override
     public TextureRegion extractRegions(TextureAtlas atlas) {
         String key = region + "|" + sizeX + "|" + sizeY;
@@ -18,21 +35,5 @@ public class TextureExtractorDeep implements TextureExtractor {
         });
 
         return grid[cordY - 1][cordX - 1];
-    }
-
-    private final String region;
-    private final int sizeX;
-    private final int sizeY;
-    private final int cordX;
-    private final int cordY;
-    private final Map<String, TextureRegion[][]> cashedRegions;
-
-    public TextureExtractorDeep(String region, int sizeX, int sizeY, int cordX, int cordY, Map<String, TextureRegion[][]> cashedRegions) {
-        this.region = region;
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
-        this.cordX = cordX;
-        this.cordY = cordY;
-        this.cashedRegions = cashedRegions;
     }
 }

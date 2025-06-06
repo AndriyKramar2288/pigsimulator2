@@ -10,8 +10,11 @@ import com.banew.entities.MainHeroEntity;
 import com.banew.entities.MovingEntity;
 import com.banew.entities.SpriteEntity;
 import com.banew.factories.EntityFactory;
+import com.banew.other.records.MatrixVector;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
 import com.banew.other.records.TexturesRange;
+import com.banew.utilites.TextureExtractorClassic;
+import com.banew.utilites.TextureExtractorDeep;
 
 import java.util.HashSet;
 import java.util.List;
@@ -40,29 +43,33 @@ public class EntityContainer {
 
     private void initOtherEntities() {
         allEntities.add(entityFactory.createSimpleSprite(
-            "hryak1/tile005",
+            new TextureExtractorClassic("hryak1/tile005"),
             4f, 1f
         ));
 
         allEntities.add(entityFactory.createSimpleSprite(
-            "Characters/Free Cow Sprites",
-            3, 2,
-            2, 2,
+            new TextureExtractorDeep(
+                "Characters/Free Cow Sprites",
+                new MatrixVector(3, 2),
+                new MatrixVector(1, 1)
+            ),
             -3f,
             -1f
         ));
 
         allEntities.add(entityFactory.createAnimatedEntity(
             -4f, 1f,
-            "hryak1/tile000",
-                .5f,
-            new TexturesRange(
-                0, 2,
-                "hryak1/tile"
+            new TextureExtractorClassic("hryak1/tile000"),
+            .5f,
+            List.of(
+                new TextureExtractorClassic("hryak1/tile000"),
+                new TextureExtractorClassic("hryak1/tile001"),
+                new TextureExtractorClassic("hryak1/tile002")
             ),
-            new TexturesRange(
-                3, 6,
-                "hryak1/tile"
+            List.of(
+                new TextureExtractorClassic("hryak1/tile004"),
+                new TextureExtractorClassic("hryak1/tile005"),
+                new TextureExtractorClassic("hryak1/tile006")
             )
         ));
 

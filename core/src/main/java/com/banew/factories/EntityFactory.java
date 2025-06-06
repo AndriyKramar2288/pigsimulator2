@@ -12,6 +12,7 @@ import com.banew.entities.MovingEntity;
 import com.banew.entities.SpriteEntity;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
 import com.banew.other.records.TexturesRange;
+import com.banew.utilites.TextureExtractor;
 
 import java.util.*;
 
@@ -24,31 +25,24 @@ public class EntityFactory {
         cashedRegions = new HashMap<>();
     }
 
-    public SpriteEntity createSimpleSprite(String region, Float x, Float y) {
-        Sprite sprite = generateBasicSprite(textureAtlas.createSprite(region), x, y);
-        return new SpriteEntity(sprite);
-    }
-
-    public SpriteEntity createSimpleSprite(String textureRegion, int sizeX, int sizeY, int cordX, int cordY, Float x, Float y) {
-        Sprite sprite = generateBasicSprite(resolveSubTexture(
-            textureRegion,
-            sizeX, sizeY,
-            cordX, cordY
-        ), x, y);
+    public SpriteEntity createSimpleSprite(TextureExtractor textureSource, Float x, Float y) {
+        Sprite sprite = generateBasicSprite(textureSource.extractRegions(textureAtlas), x, y);
         return new SpriteEntity(sprite);
     }
 
     public AnimatedEntity createAnimatedEntity(
         Float x, Float y,
-        String waitingRegionPath,
+        TextureExtractor waitingTextureSource,
         Float delayBetween,
-        TexturesRange ... range
+        List<TextureExtractor> ... rangeSources
     ) {
-        List<List<TextureRegion>> regionsList = Arrays.stream(range)
-            .map(this::initWaitingAnimations)
-            .toList();
+        List<List<TextureRegion>> regionsList = Arrays.stream(rangeSources)
+            .map(l -> l.stream()
+                .map(src -> src.extractRegions(textureAtlas))
+                .toList()
+            ).toList();
 
-        TextureRegion waitingRegion = textureAtlas.createSprite(waitingRegionPath);
+        TextureRegion waitingRegion = waitingTextureSource.extractRegions(textureAtlas);
         Sprite sprite = generateBasicSprite(waitingRegion, x, y);
 
         return new AnimatedEntity(sprite, waitingRegion, delayBetween, regionsList);
@@ -113,23 +107,4 @@ public class EntityFactory {
 
         return waitingAnimations;
     }
-
-    private List<TextureRegion> initWaitingAnimations(String region, int sizeX, int sizeY, Vector2 ... cords) {
-        return Arrays.stream(cords).map(cord -> {
-            return resolveSubTexture(region, sizeX, sizeY, (int) cord.x, (int) cord.y);
-        }).toList();
-    } // TODO: to delete
-
-    private TextureRegion resolveSubTexture(String region, int sizeX, int sizeY, int cordX, int cordY) {
-        String key = region + "|" + sizeX + "|" + sizeY;
-        TextureRegion[][] grid = cashedRegions.computeIfAbsent(key, s -> {
-
-            TextureRegion fullRegion = textureAtlas.findRegion(region);
-            int tileWidth = fullRegion.getRegionWidth() / sizeX;
-            int tileHeight = fullRegion.getRegionHeight() / sizeY;
-            return fullRegion.split(tileWidth, tileHeight);
-        });
-
-        return grid[cordY - 1][cordX - 1];
-    } // TODO: delete this method
 }

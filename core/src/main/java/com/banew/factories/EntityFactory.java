@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.banew.entities.AnimatedEntity;
 import com.banew.entities.MainHeroEntity;
 import com.banew.entities.MovingEntity;
@@ -52,18 +51,20 @@ public class EntityFactory {
         Float x, Float y,
         List<MovingEntityTexturesPerDirectionPack> texturePacks
     ) {
-        Sprite sprite = generateBasicSprite(textureAtlas.findRegion(texturePacks.get(0).waitingTexture()), x, y);
+        Sprite sprite = generateBasicSprite(texturePacks.get(0).waitingTexture().extractRegions(textureAtlas), x, y);
 
         return new MovingEntity(
             sprite,
             texturePacks.stream()
                 .map(MovingEntityTexturesPerDirectionPack::waitingTexture)
-                .map(t -> (TextureRegion) textureAtlas.findRegion(t))
+                .map(t -> t.extractRegions(textureAtlas))
                 .toList(),
             texturePacks.stream()
                 .map(range -> new Animation<TextureRegion>(
                     0.25f,
-                    initWaitingAnimations(range.animation()).toArray(new TextureRegion[0])
+                    range.animation().stream()
+                        .map(a -> a.extractRegions(textureAtlas))
+                        .toList().toArray(new TextureRegion[0])
                 ))
                 .toList()
         );
@@ -73,18 +74,20 @@ public class EntityFactory {
         Float x, Float y,
         List<MovingEntityTexturesPerDirectionPack> texturePacks
     ) {
-        Sprite sprite = generateBasicSprite(textureAtlas.findRegion(texturePacks.get(0).waitingTexture()), x, y);
+        Sprite sprite = generateBasicSprite(texturePacks.get(0).waitingTexture().extractRegions(textureAtlas), x, y);
 
         return new MainHeroEntity(
             sprite,
             texturePacks.stream()
                 .map(MovingEntityTexturesPerDirectionPack::waitingTexture)
-                .map(t -> (TextureRegion) textureAtlas.findRegion(t))
+                .map(t -> t.extractRegions(textureAtlas))
                 .toList(),
             texturePacks.stream()
                 .map(range -> new Animation<TextureRegion>(
                     0.25f,
-                    initWaitingAnimations(range.animation()).toArray(new TextureRegion[0])
+                    range.animation().stream()
+                        .map(a -> a.extractRegions(textureAtlas))
+                        .toList().toArray(new TextureRegion[0])
                 ))
                 .toList()
         );

@@ -12,7 +12,6 @@ import com.banew.entities.SpriteEntity;
 import com.banew.factories.EntityFactory;
 import com.banew.other.records.MatrixVector;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
-import com.banew.other.records.TexturesRange;
 import com.banew.utilites.TextureExtractorClassic;
 import com.banew.utilites.TextureExtractorDeep;
 
@@ -78,20 +77,36 @@ public class EntityContainer {
             0f, -5f,
             List.of(
                 new MovingEntityTexturesPerDirectionPack(
-                    "hryak2/pig002",
-                    new TexturesRange(1, 3, "hryak2/pig")
+                    new TextureExtractorClassic("hryak2/pig002"),
+                    Set.of(
+                        new TextureExtractorClassic("hryak2/pig001"),
+                        new TextureExtractorClassic("hryak2/pig001"),
+                        new TextureExtractorClassic("hryak2/pig003")
+                    )
                 ),
                 new MovingEntityTexturesPerDirectionPack(
-                    "hryak2/pig011",
-                    new TexturesRange(10, 12, "hryak2/pig")
+                    new TextureExtractorClassic("hryak2/pig011"),
+                    Set.of(
+                        new TextureExtractorClassic("hryak2/pig010"),
+                        new TextureExtractorClassic("hryak2/pig011"),
+                        new TextureExtractorClassic("hryak2/pig012")
+                    )
                 ),
                 new MovingEntityTexturesPerDirectionPack(
-                    "hryak2/pig008",
-                    new TexturesRange(7, 9, "hryak2/pig")
+                    new TextureExtractorClassic("hryak2/pig008"),
+                    Set.of(
+                        new TextureExtractorClassic("hryak2/pig007"),
+                        new TextureExtractorClassic("hryak2/pig008"),
+                        new TextureExtractorClassic("hryak2/pig009")
+                    )
                 ),
                 new MovingEntityTexturesPerDirectionPack(
-                    "hryak2/pig005",
-                    new TexturesRange(4, 5, "hryak2/pig")
+                    new TextureExtractorClassic("hryak2/pig005"),
+                    Set.of(
+                        new TextureExtractorClassic("hryak2/pig004"),
+                        new TextureExtractorClassic("hryak2/pig005"),
+                        new TextureExtractorClassic("hryak2/pig006")
+                    )
                 )
             )
         );
@@ -103,20 +118,60 @@ public class EntityContainer {
             0f, -0f,
             List.of(
                 new MovingEntityTexturesPerDirectionPack(
-                    "hryak2/pig002",
-                    new TexturesRange(1, 3, "hryak2/pig")
+                    new TextureExtractorDeep(
+                        "Characters/Basic Charakter Spritesheet",
+                        new MatrixVector(4, 4),
+                        new MatrixVector(1, 2)
+                    ),
+                    TextureExtractorDeep.fromOneSubtexture(
+                        "Characters/Basic Charakter Spritesheet",
+                        new MatrixVector(4, 4),
+                        new MatrixVector(1, 2),
+                        new MatrixVector(3, 2),
+                        new MatrixVector(4, 2)
+                    )
                 ),
                 new MovingEntityTexturesPerDirectionPack(
-                    "hryak2/pig011",
-                    new TexturesRange(10, 12, "hryak2/pig")
+                    new TextureExtractorDeep(
+                        "Characters/Basic Charakter Spritesheet",
+                        new MatrixVector(4, 4),
+                        new MatrixVector(2, 3)
+                    ),
+                    TextureExtractorDeep.fromOneSubtexture(
+                        "Characters/Basic Charakter Spritesheet",
+                        new MatrixVector(4, 4),
+                        new MatrixVector(1, 3),
+                        new MatrixVector(3, 3),
+                        new MatrixVector(4, 3)
+                    )
                 ),
                 new MovingEntityTexturesPerDirectionPack(
-                    "hryak2/pig008",
-                    new TexturesRange(7, 9, "hryak2/pig")
+                    new TextureExtractorDeep(
+                        "Characters/Basic Charakter Spritesheet",
+                        new MatrixVector(4, 4),
+                        new MatrixVector(1, 1)
+                    ),
+                    TextureExtractorDeep.fromOneSubtexture(
+                        "Characters/Basic Charakter Spritesheet",
+                        new MatrixVector(4, 4),
+                        new MatrixVector(1, 1),
+                        new MatrixVector(3, 1),
+                        new MatrixVector(4, 1)
+                    )
                 ),
                 new MovingEntityTexturesPerDirectionPack(
-                    "hryak2/pig005",
-                    new TexturesRange(4, 6, "hryak2/pig")
+                    new TextureExtractorDeep(
+                        "Characters/Basic Charakter Spritesheet",
+                        new MatrixVector(4, 4),
+                        new MatrixVector(1, 4)
+                    ),
+                    TextureExtractorDeep.fromOneSubtexture(
+                        "Characters/Basic Charakter Spritesheet",
+                        new MatrixVector(4, 4),
+                        new MatrixVector(1, 4),
+                        new MatrixVector(3, 4),
+                        new MatrixVector(4, 4)
+                    )
                 )
             )
         );

@@ -8,7 +8,9 @@ public class TextureExtractorClassic implements TextureExtractor {
 
     @Override
     public TextureRegion extractRegions(TextureAtlas atlas) {
-        return atlas.findRegion(region);
+        TextureRegion texture = atlas.findRegion(region);
+        if (texture == null) throw new RuntimeException("Texture \"" + region + "\" was not found!");
+        return texture;
     }
 
     public TextureExtractorClassic(String region) {

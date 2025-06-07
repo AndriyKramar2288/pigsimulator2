@@ -1,6 +1,10 @@
 package com.banew.other.records;
 
+import com.banew.utilites.TextureExtractor;
+
+import java.util.Set;
+
 public record MovingEntityTexturesPerDirectionPack(
-    String waitingTexture,
-    TexturesRange animation
+    TextureExtractor waitingTexture,
+    Set<TextureExtractor> animation
 ) { }

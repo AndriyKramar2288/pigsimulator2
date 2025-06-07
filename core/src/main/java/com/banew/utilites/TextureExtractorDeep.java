@@ -4,8 +4,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.banew.other.records.MatrixVector;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TextureExtractorDeep implements TextureExtractor {
     private final String region;
@@ -21,6 +24,12 @@ public class TextureExtractorDeep implements TextureExtractor {
         this.sizeY = size.y();
         this.cordX = cords.x();
         this.cordY = cords.y();
+    }
+
+    public static Set<TextureExtractor> fromOneSubtexture(String region, MatrixVector size, MatrixVector ... cords) {
+        return Arrays.stream(cords)
+            .map(cord -> new TextureExtractorDeep(region, size, cord))
+            .collect(Collectors.toSet());
     }
 
     @Override

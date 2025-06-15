@@ -3,9 +3,14 @@ package com.banew.entities;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import lombok.Getter;
+import lombok.Setter;
 
 public class SpriteEntity {
     private Sprite sprite;
+    @Setter
+    @Getter
+    private int priority = 0;
 
     protected Sprite getSprite() {
         return sprite;
@@ -40,6 +45,17 @@ public class SpriteEntity {
             sprite.getX() + (sprite.getWidth() / 2),
             sprite.getY() + (sprite.getHeight() / 2)
         );
+    }
+
+    public void setTextureScale(float scale) {
+        sprite.setOriginCenter();
+        getSprite().setScale(scale);
+    }
+
+    public void setSize(float width, float height) {
+        getSprite().setSize(width, height);
+        sprite.setOriginCenter(); // уявний центр для scale і обертання (тупоголовий, після зміни розміру оновлюєм)
+        sprite.setPosition(sprite.getX() - sprite.getWidth() / 2f, sprite.getY() - sprite.getHeight() / 2f);
     }
 
     public void draw(SpriteBatch spriteBatch) {

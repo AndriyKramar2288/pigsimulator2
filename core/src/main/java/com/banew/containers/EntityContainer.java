@@ -5,14 +5,14 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.banew.entities.MainHeroEntity;
-import com.banew.entities.MovingEntity;
 import com.banew.entities.SpriteEntity;
+import com.banew.external.GeneralSettings;
 import com.banew.factories.EntityFactory;
 import com.banew.other.records.MatrixVector;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
-import com.banew.utilites.TextureExtractorClassic;
 import com.banew.utilites.TextureExtractorDeep;
 
 import java.util.HashSet;
@@ -21,101 +21,34 @@ import java.util.Map;
 import java.util.Set;
 
 public class EntityContainer {
-    private final Set<SpriteEntity> allEntities;
+    private Set<SpriteEntity> allEntities;
     private MainHeroEntity mainHeroEntity;
     private final EntityFactory entityFactory;
     private final SpriteBatch spriteBatch;
     private final OrthographicCamera camera;
-    private MovingEntity moving_pig;
-
+    private GameLevel currentLevel;
     private boolean isMoving = false;
+    private final String COLLISION_LAYER_NAME;
 
-    public EntityContainer(EntityFactory entityFactory, SpriteBatch spriteBatch, Camera camera) {
+    public EntityContainer(EntityFactory entityFactory, SpriteBatch spriteBatch, Camera camera, GeneralSettings generalSettings) {
         this.entityFactory = entityFactory;
         this.spriteBatch = spriteBatch;
         this.camera = (OrthographicCamera) camera;
-        allEntities = new HashSet<>();
+        this.allEntities = new HashSet<>();
+        this.COLLISION_LAYER_NAME = generalSettings.getCollision_level_name();
 
+        updateLevel(generalSettings.getLevels(entityFactory).stream().toList().get(0));
         initMainHero();
-        initOtherEntities();
     }
 
-    private void initOtherEntities() {
-        allEntities.add(entityFactory.createSimpleSprite(
-            new TextureExtractorClassic("hryak1/tile005"),
-            4f, 1f
-        ));
-
-        allEntities.add(entityFactory.createSimpleSprite(
-            new TextureExtractorDeep(
-                "Characters/Free Cow Sprites",
-                new MatrixVector(3, 2),
-                new MatrixVector(1, 1)
-            ),
-            -3f,
-            -1f
-        ));
-
-        allEntities.add(entityFactory.createAnimatedEntity(
-            -4f, 1f,
-            new TextureExtractorClassic("hryak1/tile000"),
-            .5f,
-            List.of(
-                new TextureExtractorClassic("hryak1/tile000"),
-                new TextureExtractorClassic("hryak1/tile001"),
-                new TextureExtractorClassic("hryak1/tile002")
-            ),
-            List.of(
-                new TextureExtractorClassic("hryak1/tile004"),
-                new TextureExtractorClassic("hryak1/tile005"),
-                new TextureExtractorClassic("hryak1/tile006")
-            )
-        ));
-
-
-        moving_pig = entityFactory.createMovingEntity(
-            0f, -5f,
-            List.of(
-                new MovingEntityTexturesPerDirectionPack(
-                    new TextureExtractorClassic("hryak2/pig002"),
-                    Set.of(
-                        new TextureExtractorClassic("hryak2/pig001"),
-                        new TextureExtractorClassic("hryak2/pig001"),
-                        new TextureExtractorClassic("hryak2/pig003")
-                    )
-                ),
-                new MovingEntityTexturesPerDirectionPack(
-                    new TextureExtractorClassic("hryak2/pig011"),
-                    Set.of(
-                        new TextureExtractorClassic("hryak2/pig010"),
-                        new TextureExtractorClassic("hryak2/pig011"),
-                        new TextureExtractorClassic("hryak2/pig012")
-                    )
-                ),
-                new MovingEntityTexturesPerDirectionPack(
-                    new TextureExtractorClassic("hryak2/pig008"),
-                    Set.of(
-                        new TextureExtractorClassic("hryak2/pig007"),
-                        new TextureExtractorClassic("hryak2/pig008"),
-                        new TextureExtractorClassic("hryak2/pig009")
-                    )
-                ),
-                new MovingEntityTexturesPerDirectionPack(
-                    new TextureExtractorClassic("hryak2/pig005"),
-                    Set.of(
-                        new TextureExtractorClassic("hryak2/pig004"),
-                        new TextureExtractorClassic("hryak2/pig005"),
-                        new TextureExtractorClassic("hryak2/pig006")
-                    )
-                )
-            )
-        );
-        allEntities.add(moving_pig);
+    private void updateLevel(GameLevel currentLevel) {
+        this.currentLevel = currentLevel;
+        allEntities = currentLevel.getEntitySet();
     }
 
     private void initMainHero() {
         mainHeroEntity = entityFactory.createMainHeroEntity(
-            0f, -0f,
+            5f, 5f,
             List.of(
                 new MovingEntityTexturesPerDirectionPack(
                     new TextureExtractorDeep(
@@ -175,18 +108,53 @@ public class EntityContainer {
                 )
             )
         );
+        mainHeroEntity.setSize(.4f, .4f);
+        mainHeroEntity.setTextureScale(3.0f);
+
         allEntities.add(mainHeroEntity);
     }
 
-    public void renderEntites() {
+    public void render() {
         isMoving = false;
+
         movingRender();
+        drawScene();
         drawVisibleEntities();
-        moving_pig.move(0, .005f);
+    }
+
+    private void drawScene() {
+        if (currentLevel != null) {
+            currentLevel.getRenderer().setView((OrthographicCamera) camera);
+            currentLevel.getRenderer().render();
+        }
+    }
+
+    private Set<Rectangle> getCollisionObjects() {
+        //MapLayer mapCollisions = currentLevel.getRenderer().getMap().getLayers().get(COLLISION_LAYER_NAME);
+        Set<Rectangle> result = new HashSet<>();
+
+//        if (mapCollisions != null) {
+//            mapCollisions.getObjects().forEach(obj -> {
+//                final float PPU = GameLevel.unitScaleMap;
+//                Rectangle rectCollisionPixels = ((RectangleMapObject) obj).getRectangle();
+//
+//                // Нормалізуємо
+//                Rectangle rectCollision = new Rectangle(
+//                    rectCollisionPixels.x / PPU,
+//                    rectCollisionPixels.y / PPU,
+//                    rectCollisionPixels.width / PPU,
+//                    rectCollisionPixels.height / PPU
+//                );
+//
+//                result.add(rectCollision);
+//            });
+//        }
+
+        return result;
     }
 
     private void moveAllExceptMain(float x, float y) {
-        mainHeroEntity.move(-x, -y);
+        mainHeroEntity.move(-x, -y, getCollisionObjects());
     }
 
     private final float speed = 3f;
@@ -211,19 +179,25 @@ public class EntityContainer {
 
         camera.position.lerp(new Vector3(mainHeroEntity.getCenterCoordinates(), 0f), .075f);
         camera.zoom = isMoving ? smoothZoom(1.05f) : smoothZoom(1f);
+        //camera.position.set(new Vector3(mainHeroEntity.getCenterCoordinates(), 0f));
+
+        // КРИТИЧНО: Округлення позиції камери для уникнення артефактів
+//        camera.position.x = Math.round(camera.position.x * GameLevel.unitScaleMap) / GameLevel.unitScaleMap;
+//        camera.position.y = Math.round(camera.position.y * GameLevel.unitScaleMap) / GameLevel.unitScaleMap;
+
         camera.update();
     }
 
     private float smoothZoom(float targetZoom) {
         // Швидкість наближення (чим менше, тим плавніше)
-        float zoomSpeed = 3f; // одиниці за секунду
+        float zoomSpeed = 1.5f; // одиниці за секунду
 
         // Поточний зум → поступово тягнемо до цілі
-        return camera.zoom + (targetZoom - camera.zoom) * zoomSpeed * Gdx.graphics.getDeltaTime();
+        float new_zoom = camera.zoom + (targetZoom - camera.zoom) * zoomSpeed * Gdx.graphics.getDeltaTime();
+        return new_zoom;
     }
 
     private void drawVisibleEntities() {
         allEntities.forEach(e -> e.draw(spriteBatch));
     }
-
 }

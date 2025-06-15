@@ -5,8 +5,13 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.math.Rectangle;
+import com.banew.containers.GameLevel;
 
 import java.util.List;
+import java.util.Set;
 
 public class MovingEntity extends SpriteEntity {
 
@@ -15,7 +20,7 @@ public class MovingEntity extends SpriteEntity {
     private List<TextureRegion> waitingRegions;
     protected List<Animation<TextureRegion>> animationList;
 
-    private int moovingSide = 0;
+    private int movingSide = 0;
     private boolean isMoving = false;
 
     public MovingEntity(
@@ -37,22 +42,35 @@ public class MovingEntity extends SpriteEntity {
     public void draw(SpriteBatch spriteBatch) {
         update(Gdx.graphics.getDeltaTime());
         if (!isMoving) {
-            getSprite().setRegion(waitingRegions.get(moovingSide));
+            getSprite().setRegion(waitingRegions.get(movingSide));
         }
         getSprite().draw(spriteBatch);
         isMoving = false;
     }
 
-    public void move(float stepX, float stepY) {
+    public void move(float stepX, float stepY, Set<Rectangle> collisionObjects) {
+        for (Rectangle rectCollision : collisionObjects) {
+            Rectangle rect = new Rectangle(
+                getSprite().getX() + stepX,
+                getSprite().getY() + stepY,
+                getSprite().getWidth(),
+                getSprite().getHeight()
+            );
+
+            if (rect.overlaps(rectCollision)) {
+                return;
+            }
+        }
+
         replace(stepX, stepY);
 
         isMoving = true;
-        moovingSide = computeMoovingSide(moovingSide, stepX, stepY);
+        movingSide = computeMovingSide(movingSide, stepX, stepY);
 
-        getSprite().setRegion(animationList.get(moovingSide).getKeyFrame(timer, true));
+        getSprite().setRegion(animationList.get(movingSide).getKeyFrame(timer, true));
     }
 
-    private int computeMoovingSide(int moovingSide, float stepX, float stepY) {
+    private int computeMovingSide(int movingSide, float stepX, float stepY) {
         if (stepX > 0) {
             return 3;
         } else if (stepX < 0) {

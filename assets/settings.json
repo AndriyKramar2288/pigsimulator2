@@ -1,0 +1,51 @@
+{
+  "background_music": "sounds/Coolio - Gansta's Paradise.mp3",
+  "collision_level_name": "Колізіонєри",
+  "gameLevels": [
+    {
+      "levelName": "main",
+      "mapName": "maps/test.tmx",
+      "initialEntities": [
+        {
+          "type": "animated",
+          "animationDelay": 0.4,
+          "texture": {
+            "type": "classic",
+            "region": "hryak2/pig001"
+          },
+          "animations": [
+            [
+              {
+                "type": "classic",
+                "region": "hryak2/pig001"
+              },
+              {
+                "type": "classic",
+                "region": "hryak2/pig002"
+              },
+              {
+                "type": "classic",
+                "region": "hryak2/pig003"
+              }
+            ]
+          ],
+          "size_x": 1,
+          "size_y": 1,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "type": "static",
+          "texture": {
+            "type": "classic",
+            "region": "hryak1/tile001"
+          },
+          "size_x": 2,
+          "size_y": 2,
+          "x": 3,
+          "y": 3
+        }
+      ]
+    }
+  ]
+}

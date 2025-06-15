@@ -8,11 +8,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.banew.containers.EntityContainer;
+import com.banew.external.GeneralSettings;
 import com.banew.factories.EntityFactory;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main implements ApplicationListener {
-    private final String BACKGROUND_MUSIC_SRC = "sounds/Coolio - Gansta's Paradise.mp3";
+    private String BACKGROUND_MUSIC_SRC = "sounds/Coolio - Gansta's Paradise.mp3";
     private final String ATLAS_SRC = "textures-generated/game.atlas";
 
     SpriteBatch spriteBatch;
@@ -21,18 +22,22 @@ public class Main implements ApplicationListener {
     private EntityFactory entityFactory;
     private EntityContainer entityContainer;
     private Music background_music;
+    private GeneralSettings generalSettings;
+
 
     @Override
     public void create() {
+        generalSettings = GeneralSettings.importSettings();
+        //BACKGROUND_MUSIC_SRC = generalSettings.getBackground_music();
+
         spriteBatch = new SpriteBatch();
+
         viewport = new FillViewport(16, 9);
         // Prepare your application here.
         background_music = Gdx.audio.newMusic(Gdx.files.internal(BACKGROUND_MUSIC_SRC));
 
-
-
-        entityFactory = new EntityFactory(ATLAS_SRC);
-        entityContainer = new EntityContainer(entityFactory, spriteBatch, viewport.getCamera());
+        entityFactory = new EntityFactory(ATLAS_SRC, generalSettings);
+        entityContainer = new EntityContainer(entityFactory, spriteBatch, viewport.getCamera(), generalSettings);
 
 
         background_music.setLooping(true);
@@ -54,9 +59,10 @@ public class Main implements ApplicationListener {
         // Draw your application here.
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
+
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
         spriteBatch.begin();
-        entityContainer.renderEntites();
+        entityContainer.render();
         spriteBatch.end();
     }
 
@@ -73,5 +79,6 @@ public class Main implements ApplicationListener {
     @Override
     public void dispose() {
         // Destroy application's resources here.
+        spriteBatch.dispose();
     }
 }

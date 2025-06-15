@@ -9,17 +9,20 @@ import com.banew.entities.AnimatedEntity;
 import com.banew.entities.MainHeroEntity;
 import com.banew.entities.MovingEntity;
 import com.banew.entities.SpriteEntity;
+import com.banew.external.GeneralSettings;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
-import com.banew.other.records.TexturesRange;
 import com.banew.utilites.TextureExtractor;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class EntityFactory {
     private final TextureAtlas textureAtlas;
     private final Map<String, TextureRegion[][]> cashedRegions;
 
-    public EntityFactory(String atlas_path) {
+    public EntityFactory(String atlas_path, GeneralSettings generalSettings) {
         textureAtlas = new TextureAtlas(Gdx.files.internal(atlas_path));
         cashedRegions = new HashMap<>();
     }
@@ -33,9 +36,9 @@ public class EntityFactory {
         Float x, Float y,
         TextureExtractor waitingTextureSource,
         Float delayBetween,
-        List<TextureExtractor> ... rangeSources
+        List<List<TextureExtractor>> rangeSources
     ) {
-        List<List<TextureRegion>> regionsList = Arrays.stream(rangeSources)
+        List<List<TextureRegion>> regionsList = rangeSources.stream()
             .map(l -> l.stream()
                 .map(src -> src.extractRegions(textureAtlas))
                 .toList()
@@ -96,18 +99,7 @@ public class EntityFactory {
     private Sprite generateBasicSprite(TextureRegion region, Float x, Float y) {
         Sprite sprite = new Sprite(region);
         sprite.setPosition(x, y);
-        sprite.setSize(1L, 1L);
+        sprite.setSize(1f, 1f);
         return sprite;
-    }
-
-    private List<TextureRegion> initWaitingAnimations(TexturesRange range) {
-        List<TextureRegion> waitingAnimations = new ArrayList<>();
-
-        for (int i = range.start(); i <= range.end(); i++) {
-            String name = range.prefix() + String.format("%03d", i);
-            waitingAnimations.add(textureAtlas.findRegion(name));
-        }
-
-        return waitingAnimations;
     }
 }

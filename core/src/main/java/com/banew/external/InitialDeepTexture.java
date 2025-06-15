@@ -4,7 +4,9 @@ import com.banew.other.records.MatrixVector;
 import com.banew.utilites.TextureExtractor;
 import com.banew.utilites.TextureExtractorDeep;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class InitialDeepTexture extends AbstractInitialTexture {
     private String region;

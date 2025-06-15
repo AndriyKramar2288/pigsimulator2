@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Data
 public class GeneralSettings {
-    private String background_music;
+    //private String background_music;
     private String collision_level_name;
     private List<InitialGameLevel> gameLevels = new ArrayList<>();
 

@@ -5,10 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
-import com.banew.containers.GameLevel;
 
 import java.util.List;
 import java.util.Set;
@@ -17,7 +14,7 @@ public class MovingEntity extends SpriteEntity {
 
     protected float timer = 0f;
 
-    private List<TextureRegion> waitingRegions;
+    private final List<TextureRegion> waitingRegions;
     protected List<Animation<TextureRegion>> animationList;
 
     private int movingSide = 0;

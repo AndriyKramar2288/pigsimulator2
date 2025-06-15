@@ -31,12 +31,12 @@ public class Main implements ApplicationListener {
 
         spriteBatch = new SpriteBatch();
 
-        viewport = new FillViewport(16, 9);
+        viewport = new FillViewport(8, 5);
         // Prepare your application here.
         background_music = Gdx.audio.newMusic(Gdx.files.internal(BACKGROUND_MUSIC_SRC));
 
         entityFactory = new EntityFactory(ATLAS_SRC, generalSettings);
-        entityContainer = new EntityContainer(entityFactory, spriteBatch, viewport.getCamera(), generalSettings);
+        entityContainer = new EntityContainer(entityFactory, viewport.getCamera(), generalSettings);
 
 
         background_music.setLooping(true);
@@ -61,7 +61,7 @@ public class Main implements ApplicationListener {
 
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
         spriteBatch.begin();
-        entityContainer.render();
+        entityContainer.render(spriteBatch);
         spriteBatch.end();
     }
 

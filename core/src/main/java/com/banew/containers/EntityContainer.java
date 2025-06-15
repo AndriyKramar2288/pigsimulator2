@@ -27,15 +27,13 @@ public class EntityContainer implements Disposable {
     private Set<SpriteEntity> allEntities;
     private MainHeroEntity mainHeroEntity;
     private final EntityFactory entityFactory;
-    private final SpriteBatch spriteBatch;
     private final OrthographicCamera camera;
     private GameLevel currentLevel;
     private boolean isMoving = false;
     private final String COLLISION_LAYER_NAME;
 
-    public EntityContainer(EntityFactory entityFactory, SpriteBatch spriteBatch, Camera camera, GeneralSettings generalSettings) {
+    public EntityContainer(EntityFactory entityFactory, Camera camera, GeneralSettings generalSettings) {
         this.entityFactory = entityFactory;
-        this.spriteBatch = spriteBatch;
         this.camera = (OrthographicCamera) camera;
         this.allEntities = new HashSet<>();
         this.COLLISION_LAYER_NAME = generalSettings.getCollision_level_name();
@@ -117,23 +115,22 @@ public class EntityContainer implements Disposable {
         allEntities.add(mainHeroEntity);
     }
 
-    public void render() {
+    public void render(SpriteBatch spriteBatch) {
         isMoving = false;
 
         movingRender();
         drawScene();
-        drawVisibleEntities();
+        drawVisibleEntities(spriteBatch);
     }
 
     private void drawScene() {
         if (currentLevel != null) {
-            currentLevel.getRenderer().setView((OrthographicCamera) camera);
-            currentLevel.getRenderer().render();
+            currentLevel.renderMap(camera);
         }
     }
 
     private Set<Rectangle> getCollisionObjects() {
-        MapLayer mapCollisions = currentLevel.getRenderer().getMap().getLayers().get(COLLISION_LAYER_NAME);
+        MapLayer mapCollisions = currentLevel.getMap().getLayers().get(COLLISION_LAYER_NAME);
         Set<Rectangle> result = new HashSet<>();
 
         if (mapCollisions != null) {
@@ -160,8 +157,8 @@ public class EntityContainer implements Disposable {
         mainHeroEntity.move(-x, -y, getCollisionObjects());
     }
 
-    private final float speed = 3f;
     private float computeStep() {
+        float speed = 3f;
         return speed * Gdx.graphics.getDeltaTime();
     }
 
@@ -180,7 +177,7 @@ public class EntityContainer implements Disposable {
             }
         });
 
-        camera.position.lerp(new Vector3(mainHeroEntity.getCenterCoordinates(), 0f), .075f);
+        camera.position.lerp(new Vector3(mainHeroEntity.getCenterCoordinates(), 0f), .125f);
         camera.zoom = isMoving ? smoothZoom(1.05f) : smoothZoom(1f);
 
         camera.update();
@@ -188,20 +185,18 @@ public class EntityContainer implements Disposable {
 
     private float smoothZoom(float targetZoom) {
         // Швидкість наближення (чим менше, тим плавніше)
-        float zoomSpeed = 1.5f; // одиниці за секунду
+        float zoomSpeed = 4.5f; // одиниці за секунду
 
         // Поточний зум → поступово тягнемо до цілі
-        float new_zoom = camera.zoom + (targetZoom - camera.zoom) * zoomSpeed * Gdx.graphics.getDeltaTime();
-        return new_zoom;
+        return camera.zoom + (targetZoom - camera.zoom) * zoomSpeed * Gdx.graphics.getDeltaTime();
     }
 
-    private void drawVisibleEntities() {
+    private void drawVisibleEntities(SpriteBatch spriteBatch) {
         allEntities.forEach(e -> e.draw(spriteBatch));
     }
 
     @Override
     public void dispose() {
-        currentLevel.getRenderer().dispose();
-        spriteBatch.dispose();
+        currentLevel.dispose();
     }
 }

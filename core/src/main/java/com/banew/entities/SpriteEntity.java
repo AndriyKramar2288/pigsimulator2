@@ -7,17 +7,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class SpriteEntity {
-    private Sprite sprite;
+    private final Sprite sprite;
     @Setter
     @Getter
     private int priority = 0;
 
     protected Sprite getSprite() {
         return sprite;
-    }
-
-    protected void setSprite(Sprite sprite) {
-        this.sprite = sprite;
     }
 
     public SpriteEntity(Sprite sprite) {

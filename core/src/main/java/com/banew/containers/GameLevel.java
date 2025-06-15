@@ -1,10 +1,8 @@
 package com.banew.containers;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.*;
-import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.banew.entities.SpriteEntity;
 import com.banew.external.InitialGameLevel;
@@ -19,7 +17,7 @@ public class GameLevel {
     @Getter
     private final Set<SpriteEntity> entitySet;
     @Getter
-    private final TiledMapRenderer renderer;
+    private final OrthogonalTiledMapRenderer renderer;
 
     public static final float unitScaleMap = 32f;
 
@@ -34,23 +32,7 @@ public class GameLevel {
         params.generateMipMaps = false;
 
         TiledMap map = new TmxMapLoader().load(initLevel.getMapName(), params);
-        optimizeMapTextures(map);
         renderer = new OrthogonalTiledMapRenderer(map, 1f / unitScaleMap);
         //renderer = new OrthoCachedTiledMapRenderer(map, 1f / unitScaleMap, 5000);
-    }
-
-    private void optimizeMapTextures(TiledMap map) {
-        // Проходимо по всіх tileset'ах та встановлюємо правильну фільтрацію
-        for (TiledMapTileSet tileset : map.getTileSets()) {
-            for (TiledMapTile tile : tileset) {
-                TextureRegion region = tile.getTextureRegion();
-                if (region != null && region.getTexture() != null) {
-                    Texture texture = region.getTexture();
-                    texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-                    // Вимкнути wrap для уникнення артефактів на краях
-                    texture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
-                }
-            }
-        }
     }
 }

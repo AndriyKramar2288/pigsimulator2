@@ -5,8 +5,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Disposable;
 import com.banew.entities.MainHeroEntity;
 import com.banew.entities.SpriteEntity;
 import com.banew.external.GeneralSettings;
@@ -20,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class EntityContainer {
+public class EntityContainer implements Disposable {
     private Set<SpriteEntity> allEntities;
     private MainHeroEntity mainHeroEntity;
     private final EntityFactory entityFactory;
@@ -130,25 +133,25 @@ public class EntityContainer {
     }
 
     private Set<Rectangle> getCollisionObjects() {
-        //MapLayer mapCollisions = currentLevel.getRenderer().getMap().getLayers().get(COLLISION_LAYER_NAME);
+        MapLayer mapCollisions = currentLevel.getRenderer().getMap().getLayers().get(COLLISION_LAYER_NAME);
         Set<Rectangle> result = new HashSet<>();
 
-//        if (mapCollisions != null) {
-//            mapCollisions.getObjects().forEach(obj -> {
-//                final float PPU = GameLevel.unitScaleMap;
-//                Rectangle rectCollisionPixels = ((RectangleMapObject) obj).getRectangle();
-//
-//                // Нормалізуємо
-//                Rectangle rectCollision = new Rectangle(
-//                    rectCollisionPixels.x / PPU,
-//                    rectCollisionPixels.y / PPU,
-//                    rectCollisionPixels.width / PPU,
-//                    rectCollisionPixels.height / PPU
-//                );
-//
-//                result.add(rectCollision);
-//            });
-//        }
+        if (mapCollisions != null) {
+            mapCollisions.getObjects().forEach(obj -> {
+                final float PPU = GameLevel.unitScaleMap;
+                Rectangle rectCollisionPixels = ((RectangleMapObject) obj).getRectangle();
+
+                // Нормалізуємо
+                Rectangle rectCollision = new Rectangle(
+                    rectCollisionPixels.x / PPU,
+                    rectCollisionPixels.y / PPU,
+                    rectCollisionPixels.width / PPU,
+                    rectCollisionPixels.height / PPU
+                );
+
+                result.add(rectCollision);
+            });
+        }
 
         return result;
     }
@@ -179,11 +182,6 @@ public class EntityContainer {
 
         camera.position.lerp(new Vector3(mainHeroEntity.getCenterCoordinates(), 0f), .075f);
         camera.zoom = isMoving ? smoothZoom(1.05f) : smoothZoom(1f);
-        //camera.position.set(new Vector3(mainHeroEntity.getCenterCoordinates(), 0f));
-
-        // КРИТИЧНО: Округлення позиції камери для уникнення артефактів
-//        camera.position.x = Math.round(camera.position.x * GameLevel.unitScaleMap) / GameLevel.unitScaleMap;
-//        camera.position.y = Math.round(camera.position.y * GameLevel.unitScaleMap) / GameLevel.unitScaleMap;
 
         camera.update();
     }
@@ -199,5 +197,11 @@ public class EntityContainer {
 
     private void drawVisibleEntities() {
         allEntities.forEach(e -> e.draw(spriteBatch));
+    }
+
+    @Override
+    public void dispose() {
+        currentLevel.getRenderer().dispose();
+        spriteBatch.dispose();
     }
 }

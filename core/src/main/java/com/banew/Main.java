@@ -24,7 +24,6 @@ public class Main implements ApplicationListener {
     private Music background_music;
     private GeneralSettings generalSettings;
 
-
     @Override
     public void create() {
         generalSettings = GeneralSettings.importSettings();
@@ -78,7 +77,6 @@ public class Main implements ApplicationListener {
 
     @Override
     public void dispose() {
-        // Destroy application's resources here.
-        spriteBatch.dispose();
+        entityContainer.dispose();
     }
 }

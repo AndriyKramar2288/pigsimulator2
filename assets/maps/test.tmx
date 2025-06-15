@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="80" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="7">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="80" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="8">
  <tileset firstgid="1" name="Hills" tilewidth="16" tileheight="16" tilecount="77" columns="11">
   <image source="../Sprout Lands - Sprites - Basic pack/Tilesets/Hills.png" trans="ff00ff" width="176" height="112"/>
  </tileset>
@@ -114,9 +114,10 @@
  </layer>
  <objectgroup id="3" name="Колізіонєри">
   <object id="1" type="colision" x="199.497" y="20.4578" width="1.00584" height="7.08436"/>
-  <object id="2" x="203" y="112" width="74" height="16"/>
+  <object id="2" x="203" y="112" width="74" height="5"/>
   <object id="3" x="203" y="176" width="74" height="16"/>
-  <object id="4" x="272" y="128" width="5" height="48"/>
+  <object id="4" x="272" y="116.999" width="5" height="59.0005"/>
   <object id="6" x="203" y="144" width="5" height="32"/>
+  <object id="7" x="203" y="117.002" width="5" height="11"/>
  </objectgroup>
 </map>

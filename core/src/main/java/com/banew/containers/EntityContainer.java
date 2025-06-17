@@ -8,23 +8,20 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
 import com.banew.entities.MainHeroEntity;
-import com.banew.entities.SpriteEntity;
 import com.banew.external.GeneralSettings;
 import com.banew.factories.EntityFactory;
-import com.banew.other.records.MatrixVector;
-import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
-import com.banew.utilites.TextureExtractorDeep;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class EntityContainer implements Disposable {
-    private Set<SpriteEntity> allEntities;
+    private final World world;
     private MainHeroEntity mainHeroEntity;
     private final EntityFactory entityFactory;
     private final OrthographicCamera camera;
@@ -32,91 +29,29 @@ public class EntityContainer implements Disposable {
     private boolean isMoving = false;
     private final String COLLISION_LAYER_NAME;
 
-    public EntityContainer(EntityFactory entityFactory, Camera camera, GeneralSettings generalSettings) {
-        this.entityFactory = entityFactory;
+    public EntityContainer(Camera camera, GeneralSettings generalSettings) {
+
         this.camera = (OrthographicCamera) camera;
-        this.allEntities = new HashSet<>();
         this.COLLISION_LAYER_NAME = generalSettings.getCollision_level_name();
 
-        updateLevel(generalSettings.getLevels(entityFactory).stream().toList().get(0));
-        initMainHero();
-    }
-
-    private void updateLevel(GameLevel currentLevel) {
-        this.currentLevel = currentLevel;
-        allEntities = currentLevel.getEntitySet();
-    }
-
-    private void initMainHero() {
-        mainHeroEntity = entityFactory.createMainHeroEntity(
-            5f, 5f,
-            List.of(
-                new MovingEntityTexturesPerDirectionPack(
-                    new TextureExtractorDeep(
-                        "Characters/Basic Charakter Spritesheet",
-                        new MatrixVector(4, 4),
-                        new MatrixVector(1, 2)
-                    ),
-                    TextureExtractorDeep.fromOneSubtexture(
-                        "Characters/Basic Charakter Spritesheet",
-                        new MatrixVector(4, 4),
-                        new MatrixVector(1, 2),
-                        new MatrixVector(3, 2),
-                        new MatrixVector(4, 2)
-                    )
-                ),
-                new MovingEntityTexturesPerDirectionPack(
-                    new TextureExtractorDeep(
-                        "Characters/Basic Charakter Spritesheet",
-                        new MatrixVector(4, 4),
-                        new MatrixVector(2, 3)
-                    ),
-                    TextureExtractorDeep.fromOneSubtexture(
-                        "Characters/Basic Charakter Spritesheet",
-                        new MatrixVector(4, 4),
-                        new MatrixVector(1, 3),
-                        new MatrixVector(3, 3),
-                        new MatrixVector(4, 3)
-                    )
-                ),
-                new MovingEntityTexturesPerDirectionPack(
-                    new TextureExtractorDeep(
-                        "Characters/Basic Charakter Spritesheet",
-                        new MatrixVector(4, 4),
-                        new MatrixVector(1, 1)
-                    ),
-                    TextureExtractorDeep.fromOneSubtexture(
-                        "Characters/Basic Charakter Spritesheet",
-                        new MatrixVector(4, 4),
-                        new MatrixVector(1, 1),
-                        new MatrixVector(3, 1),
-                        new MatrixVector(4, 1)
-                    )
-                ),
-                new MovingEntityTexturesPerDirectionPack(
-                    new TextureExtractorDeep(
-                        "Characters/Basic Charakter Spritesheet",
-                        new MatrixVector(4, 4),
-                        new MatrixVector(1, 4)
-                    ),
-                    TextureExtractorDeep.fromOneSubtexture(
-                        "Characters/Basic Charakter Spritesheet",
-                        new MatrixVector(4, 4),
-                        new MatrixVector(1, 4),
-                        new MatrixVector(3, 4),
-                        new MatrixVector(4, 4)
-                    )
-                )
-            )
+        world = new World(
+            new Vector2(0, 0),
+            false
         );
-        mainHeroEntity.setSize(.4f, .4f);
-        mainHeroEntity.setTextureScale(3.0f);
+        this.entityFactory = new EntityFactory(generalSettings, world);
 
-        allEntities.add(mainHeroEntity);
+        this.currentLevel = generalSettings.getLevels(entityFactory).stream().toList().get(0);
+        //initMainHero();
+
+        mainHeroEntity = (MainHeroEntity) generalSettings.getMainHero().extractEntity(this.entityFactory);
+        currentLevel.getEntitySet().add(mainHeroEntity);
+        currentLevel.loadCollisions(world, COLLISION_LAYER_NAME);
     }
 
     public void render(SpriteBatch spriteBatch) {
         isMoving = false;
+
+        world.step(Gdx.graphics.getDeltaTime(), 1, 1);
 
         movingRender();
         drawScene();
@@ -154,11 +89,11 @@ public class EntityContainer implements Disposable {
     }
 
     private void moveAllExceptMain(float x, float y) {
-        mainHeroEntity.move(-x, -y, getCollisionObjects());
+        mainHeroEntity.move(-x, -y);
     }
 
     private float computeStep() {
-        float speed = 3f;
+        float speed = .3f;
         return speed * Gdx.graphics.getDeltaTime();
     }
 
@@ -170,6 +105,8 @@ public class EntityContainer implements Disposable {
     );
 
     private void movingRender() {
+        mainHeroEntity.donotMove();
+
         keysMovementAction.forEach((key, value) -> {
             if (Gdx.input.isKeyPressed(key)) {
                 value.run();
@@ -192,7 +129,7 @@ public class EntityContainer implements Disposable {
     }
 
     private void drawVisibleEntities(SpriteBatch spriteBatch) {
-        allEntities.forEach(e -> e.draw(spriteBatch));
+        currentLevel.getEntitySet().forEach(e -> e.draw(spriteBatch));
     }
 
     @Override

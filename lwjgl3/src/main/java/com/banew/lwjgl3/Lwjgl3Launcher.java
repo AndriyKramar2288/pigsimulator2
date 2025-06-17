@@ -21,7 +21,7 @@ public class Lwjgl3Launcher {
         TexturePacker.Settings settings = new TexturePacker.Settings();
         settings.maxWidth = 2048;
         settings.maxHeight = 1024;
-        TexturePacker.process(settings, "assets/textures", "assets/textures-generated", "game");
+        TexturePacker.process(settings, "textures", "textures-generated", "game");
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {

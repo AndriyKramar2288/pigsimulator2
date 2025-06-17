@@ -1,4 +1,4 @@
-package com.banew.external;
+package com.banew.external.textures;
 
 import com.banew.other.records.MatrixVector;
 import com.banew.utilites.TextureExtractor;
@@ -20,7 +20,9 @@ public class InitialDeepTexture extends AbstractInitialTexture {
         return new TextureExtractorDeep(
             region,
             new MatrixVector(sizeX, sizeY),
-            new MatrixVector(cordX, cordY)
+            new MatrixVector(cordX, cordY),
+            getWidthScale(),
+            getHeightScale()
         );
     }
 }

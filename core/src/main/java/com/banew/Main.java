@@ -1,10 +1,11 @@
 package com.banew;
 
+import box2dLight.RayHandler;
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.banew.containers.EntityContainer;
@@ -13,43 +14,27 @@ import com.banew.factories.EntityFactory;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main implements ApplicationListener {
-    private String BACKGROUND_MUSIC_SRC = "sounds/Coolio - Gansta's Paradise.mp3";
-    private final String ATLAS_SRC = "textures-generated/game.atlas";
-
     SpriteBatch spriteBatch;
     FillViewport viewport;
 
-    private EntityFactory entityFactory;
     private EntityContainer entityContainer;
-    private Music background_music;
     private GeneralSettings generalSettings;
 
     @Override
     public void create() {
         generalSettings = GeneralSettings.importSettings();
-        //BACKGROUND_MUSIC_SRC = generalSettings.getBackground_music();
 
         spriteBatch = new SpriteBatch();
-
         viewport = new FillViewport(8, 5);
-        // Prepare your application here.
-        background_music = Gdx.audio.newMusic(Gdx.files.internal(BACKGROUND_MUSIC_SRC));
 
-        entityFactory = new EntityFactory(ATLAS_SRC, generalSettings);
-        entityContainer = new EntityContainer(entityFactory, viewport.getCamera(), generalSettings);
+        entityContainer = new EntityContainer(viewport.getCamera(), generalSettings);
 
 
-        background_music.setLooping(true);
-        background_music.setVolume(0.1f);
-        //background_music.play();
     }
 
     @Override
     public void resize(int width, int height) {
-        // If the window is minimized on a desktop (LWJGL3) platform, width and height are 0, which causes problems.
-        // In that case, we don't resize anything, and wait for the window to be a normal size before updating.
         if(width <= 0 || height <= 0) return;
-        // Resize your application here. The parameters represent the new window size.
         viewport.update(width, height, false);
     }
 

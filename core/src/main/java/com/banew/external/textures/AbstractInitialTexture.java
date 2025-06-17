@@ -1,4 +1,4 @@
-package com.banew.external;
+package com.banew.external.textures;
 
 import com.banew.utilites.TextureExtractor;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -13,4 +13,6 @@ import lombok.Data;
 @Data
 public abstract class AbstractInitialTexture {
     public abstract TextureExtractor extractTextureExtractor();
+    private float widthScale = 1;
+    private float heightScale = 1;
 }

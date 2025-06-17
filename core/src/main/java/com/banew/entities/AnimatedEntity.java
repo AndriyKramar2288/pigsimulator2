@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.physics.box2d.Body;
 
 import java.util.List;
 import java.util.Random;
@@ -18,17 +19,17 @@ public class AnimatedEntity extends SpriteEntity {
 
     private Animation<TextureRegion> currentAnimation = null;
     private boolean isAnimating = false;
-
     private final Random random = new Random();
 
 
     public AnimatedEntity(
         Sprite sprite,
+        Body body,
         TextureRegion waitingRegion,
         Float delayBetween,
         List<List<TextureRegion>> regionsList
     ) {
-        super(sprite);
+        super(sprite, body);
 
         this.delayBetween = delayBetween;
         this.waitingRegion = waitingRegion;
@@ -72,6 +73,6 @@ public class AnimatedEntity extends SpriteEntity {
     @Override
     public void draw(SpriteBatch spriteBatch) {
         update(Gdx.graphics.getDeltaTime());
-        getSprite().draw(spriteBatch);
+        super.draw(spriteBatch);
     }
 }

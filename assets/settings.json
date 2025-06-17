@@ -1,16 +1,129 @@
 {
   "collision_level_name": "Колізіонєри",
+  "mainHero": {
+    "type": "main_hero",
+    "size_x": 1,
+    "size_y": 1,
+    "x": 4,
+    "y": 4,
+    "animations": {
+      "up": {
+        "waitingTexture": {
+          "type": "classic",
+          "region": "hryak2/pig002",
+          "widthScale": 0.15,
+          "heightScale": 0.8
+        },
+        "animation": [
+          {
+            "type": "classic",
+            "region": "hryak2/pig001"
+          },
+          {
+            "type": "classic",
+            "region": "hryak2/pig002"
+          },
+          {
+            "type": "classic",
+            "region": "hryak2/pig003"
+          }
+        ]
+      },
+      "right": {
+        "waitingTexture": {
+          "type": "classic",
+          "region": "hryak2/pig005",
+          "widthScale": 0.8,
+          "heightScale": 0.4
+        },
+        "animation": [
+          {
+            "type": "classic",
+            "region": "hryak2/pig004"
+          },
+          {
+            "type": "classic",
+            "region": "hryak2/pig005"
+          },
+          {
+            "type": "classic",
+            "region": "hryak2/pig006"
+          }
+        ]
+      },
+      "down": {
+        "waitingTexture": {
+          "type": "classic",
+          "region": "hryak2/pig008",
+          "widthScale": 0.15,
+          "heightScale": 0.8
+        },
+        "animation": [
+          {
+            "type": "classic",
+            "region": "hryak2/pig007"
+          },
+          {
+            "type": "classic",
+            "region": "hryak2/pig008"
+          },
+          {
+            "type": "classic",
+            "region": "hryak2/pig009"
+          }
+        ]
+      },
+      "left": {
+        "waitingTexture": {
+          "type": "classic",
+          "region": "hryak2/pig011",
+          "widthScale": 0.8,
+          "heightScale": 0.4
+        },
+        "animation": [
+          {
+            "type": "classic",
+            "region": "hryak2/pig010"
+          },
+          {
+            "type": "classic",
+            "region": "hryak2/pig011"
+          },
+          {
+            "type": "classic",
+            "region": "hryak2/pig012"
+          }
+        ]
+      }
+    }
+  },
   "gameLevels": [
     {
       "levelName": "main",
       "mapName": "maps/test.tmx",
       "initialEntities": [
         {
+          "type": "static",
+          "texture": {
+            "type": "deep",
+            "region": "Objects/Basic_Plants",
+            "sizeX": 6,
+            "sizeY": 2,
+            "cordX": 1,
+            "cordY": 1
+          },
+          "size_x": 1,
+          "size_y": 1,
+          "x": 3,
+          "y": 10
+        },
+        {
           "type": "animated",
           "animationDelay": 0.4,
           "texture": {
             "type": "classic",
-            "region": "hryak2/pig001"
+            "region": "hryak2/pig001",
+            "widthScale": 0.45
           },
           "animations": [
             [
@@ -32,17 +145,6 @@
           "size_y": 1,
           "x": 3,
           "y": 2
-        },
-        {
-          "type": "static",
-          "texture": {
-            "type": "classic",
-            "region": "hryak1/tile001"
-          },
-          "size_x": 2,
-          "size_y": 2,
-          "x": 3,
-          "y": 3
         }
       ]
     }

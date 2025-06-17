@@ -3,11 +3,14 @@ package com.banew.entities;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import lombok.Getter;
 import lombok.Setter;
 
 public class SpriteEntity {
     private final Sprite sprite;
+    @Getter
+    private final Body body;
     @Setter
     @Getter
     private int priority = 0;
@@ -16,8 +19,9 @@ public class SpriteEntity {
         return sprite;
     }
 
-    public SpriteEntity(Sprite sprite) {
+    public SpriteEntity(Sprite sprite, Body body) {
         this.sprite = sprite;
+        this.body = body;
     }
 
     public void replace(float stepX, float stepY) {
@@ -55,6 +59,10 @@ public class SpriteEntity {
     }
 
     public void draw(SpriteBatch spriteBatch) {
+        sprite.setPosition(
+            body.getPosition().x - sprite.getWidth() / 2f,
+            body.getPosition().y - sprite.getHeight() / 2f
+        );
         sprite.draw(spriteBatch);
     }
 }

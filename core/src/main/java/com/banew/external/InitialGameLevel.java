@@ -1,6 +1,7 @@
 package com.banew.external;
 
 import com.banew.entities.SpriteEntity;
+import com.banew.external.entities.AbstractInitialEntity;
 import com.banew.factories.EntityFactory;
 import lombok.Data;
 

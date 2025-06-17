@@ -1,4 +1,4 @@
-package com.banew.external;
+package com.banew.external.textures;
 
 import com.banew.utilites.TextureExtractor;
 import com.banew.utilites.TextureExtractorClassic;
@@ -12,6 +12,6 @@ public class InitialClassicTexture extends AbstractInitialTexture {
 
     @Override
     public TextureExtractor extractTextureExtractor() {
-        return new TextureExtractorClassic(region);
+        return new TextureExtractorClassic(region, getWidthScale(), getHeightScale());
     }
 }

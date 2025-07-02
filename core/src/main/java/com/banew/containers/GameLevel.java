@@ -20,6 +20,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * Інкапсулює усі дані про ігровий рівень, ще вже створено
+ * @author Banew_
+ * */
 public class GameLevel implements Disposable {
     @Getter
     private final Set<SpriteEntity> entitySet;
@@ -28,7 +32,6 @@ public class GameLevel implements Disposable {
     private final OrthoCachedTiledMapRenderer renderer;
 
     public static final float unitScaleMap = 32f;
-
 
     public void renderMap(OrthographicCamera camera) {
         renderer.setView(camera);

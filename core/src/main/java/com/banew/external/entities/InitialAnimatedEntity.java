@@ -17,16 +17,7 @@ public class InitialAnimatedEntity extends AbstractInitialEntity {
 
     @Override
     public SpriteEntity extractEntity(EntityFactory factory) {
-        AnimatedEntity animatedEntity = factory.createAnimatedEntity(
-            getX(), getY(),
-            getSize_x(), getSize_y(),
-            getTexture().extractTextureExtractor(),
-            animationDelay,
-            animations.stream()
-                .map(animation -> animation.stream()
-                    .map(AbstractInitialTexture::extractTextureExtractor).toList()
-                ).toList()
-        );
+        AnimatedEntity animatedEntity = factory.createAnimatedEntity(this);
         animatedEntity.setSize(getSize_x(), getSize_y());
         return animatedEntity;
     }

@@ -1,23 +1,22 @@
 package com.banew;
 
-import box2dLight.RayHandler;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.banew.containers.EntityContainer;
+import com.banew.containers.GameContainer;
+import com.banew.containers.GuiContainer;
 import com.banew.external.GeneralSettings;
-import com.banew.factories.EntityFactory;
+import com.banew.other.dto.PlayerInfo;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main implements ApplicationListener {
     SpriteBatch spriteBatch;
     FillViewport viewport;
 
-    private EntityContainer entityContainer;
+    private GameContainer gameContainer;
+    private GuiContainer guiContainer;
     private GeneralSettings generalSettings;
 
     @Override
@@ -27,8 +26,9 @@ public class Main implements ApplicationListener {
         spriteBatch = new SpriteBatch();
         viewport = new FillViewport(8, 5);
 
-        entityContainer = new EntityContainer(viewport.getCamera(), generalSettings);
-
+        PlayerInfo playerInfo = new PlayerInfo();
+        gameContainer = new GameContainer(viewport.getCamera(), generalSettings, playerInfo);
+        guiContainer = new GuiContainer(playerInfo);
 
     }
 
@@ -36,6 +36,7 @@ public class Main implements ApplicationListener {
     public void resize(int width, int height) {
         if(width <= 0 || height <= 0) return;
         viewport.update(width, height, false);
+        guiContainer.resize(width, height);
     }
 
     @Override
@@ -44,10 +45,13 @@ public class Main implements ApplicationListener {
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
 
+        gameContainer.renderScene();
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
         spriteBatch.begin();
-        entityContainer.render(spriteBatch);
+        gameContainer.renderSprites(spriteBatch);
         spriteBatch.end();
+        gameContainer.renderLight();
+        guiContainer.render(gameContainer);
     }
 
     @Override
@@ -62,6 +66,6 @@ public class Main implements ApplicationListener {
 
     @Override
     public void dispose() {
-        entityContainer.dispose();
+        gameContainer.dispose();
     }
 }

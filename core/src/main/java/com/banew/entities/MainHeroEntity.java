@@ -1,20 +1,19 @@
 package com.banew.entities;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.banew.other.records.InitialMovingEntityTexturesPerDirectionPack;
 
-import java.util.List;
+import java.util.Map;
 
 public class MainHeroEntity extends MovingEntity {
     public MainHeroEntity(
         Sprite sprite,
-        Body body, List<TextureRegion> waitingRegions,
-        List<Animation<TextureRegion>> animationList,
-        List<Vector2> animationsScales
+        Body body,
+        Map<String, InitialMovingEntityTexturesPerDirectionPack> animations,
+        TextureAtlas textureAtlas
     ) {
-        super(sprite, body, waitingRegions, animationList, animationsScales);
+        super(sprite, body, animations, textureAtlas);
     }
 }

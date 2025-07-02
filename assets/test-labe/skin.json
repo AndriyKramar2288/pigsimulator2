@@ -1,0 +1,22 @@
+{
+com.badlogic.gdx.graphics.Color: {
+	RGBA_235_235_235_255: {
+		r: 0.92156863
+		g: 0.92156863
+		b: 0.92156863
+		a: 1
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+	default: {
+		font: abobus
+		fontColor: RGBA_235_235_235_255
+		background: SpriteSheet-0
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
+	default: {
+		label: default
+	}
+}
+}

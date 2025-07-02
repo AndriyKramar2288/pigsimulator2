@@ -7,10 +7,6 @@ public class InitialSpriteEntity extends AbstractInitialEntity {
     private String region;
     @Override
     public SpriteEntity extractEntity(EntityFactory factory) {
-        return factory.createSimpleSprite(
-            getTexture().extractTextureExtractor(),
-            getX(), getY(),
-            getSize_x(), getSize_y()
-        );
+        return factory.createSimpleSprite(this);
     }
 }

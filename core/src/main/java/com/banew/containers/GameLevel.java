@@ -8,9 +8,12 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Disposable;
+import com.banew.entities.MainHeroEntity;
 import com.banew.entities.SpriteEntity;
+import com.banew.external.GeneralSettings;
 import com.banew.external.InitialGameLevel;
 import com.banew.factories.EntityFactory;
 import lombok.Getter;
@@ -28,17 +31,79 @@ public class GameLevel implements Disposable {
     @Getter
     private final Set<SpriteEntity> entitySet;
     @Getter
+    private final MainHeroEntity mainHeroEntity;
+    @Getter
     private final TiledMap map;
     private final OrthoCachedTiledMapRenderer renderer;
-
+    @Getter
+    private Set<Rectangle> collisions;
     public static final float unitScaleMap = 32f;
+    @Getter
+    private final World world;
 
     public void renderMap(OrthographicCamera camera) {
         renderer.setView(camera);
         renderer.render();
     }
 
-    public void loadCollisions(World world, String collisionLayerName) {
+    public GameLevel(InitialGameLevel initLevel, EntityFactory factory, GeneralSettings generalSettings) {
+        factory.setCurrentGameLevel(this);
+
+        world = new World(
+            new Vector2(0, 0),
+            false
+        );
+
+        entitySet = new TreeSet<>(Comparator.comparingInt(SpriteEntity::getPriority)
+            .thenComparingInt(Object::hashCode));
+
+
+
+
+
+        TmxMapLoader.Parameters params = new TmxMapLoader.Parameters();
+        params.textureMinFilter = Texture.TextureFilter.Nearest;
+        params.textureMagFilter = Texture.TextureFilter.Nearest;
+        params.generateMipMaps = false;
+        params.convertObjectToTileSpace = false;
+
+        map = new TmxMapLoader().load(initLevel.getMapName(), params);
+        renderer = new OrthoCachedTiledMapRenderer(map, 1f / unitScaleMap);
+        renderer.setBlending(true);
+        loadCollisions();
+
+
+
+        mainHeroEntity = (MainHeroEntity) generalSettings.getMainHero().extractEntity(factory);
+        entitySet.add(mainHeroEntity);
+
+        entitySet.addAll(initLevel.getEntities(factory));
+    }
+
+    private void loadCollisions() {
+        collisions = generateCollisions();
+
+        collisions.forEach(e -> {
+            BodyDef def = new BodyDef();
+            def.type = BodyDef.BodyType.StaticBody;
+            def.position.x = e.getX() + e.getWidth() / 2;
+            def.position.y = e.getY() + e.getHeight() / 2;
+
+            Body body = world.createBody(def);
+
+            FixtureDef fDef = new FixtureDef();
+            PolygonShape shape = new PolygonShape();
+            shape.setAsBox(e.getWidth() / 2, e.getHeight() / 2);
+            fDef.shape = shape;
+            fDef.density = 100f;
+            fDef.friction = 0.5f;
+
+            body.createFixture(fDef);
+        });
+    }
+
+    public Set<Rectangle> generateCollisions() {
+        String collisionLayerName = "Колізіонєри";
         MapLayer layer = getMap().getLayers().get(collisionLayerName);
 
         Set<Rectangle> result = new HashSet<>();
@@ -60,43 +125,12 @@ public class GameLevel implements Disposable {
             });
         }
 
-        result.forEach(e -> {
-            BodyDef def = new BodyDef();
-            def.type = BodyDef.BodyType.StaticBody;
-            def.position.x = e.getX() + e.getWidth() / 2;
-            def.position.y = e.getY() + e.getHeight() / 2;
-
-            Body body = world.createBody(def);
-
-            FixtureDef fDef = new FixtureDef();
-            PolygonShape shape = new PolygonShape();
-            shape.setAsBox(e.getWidth() / 2, e.getHeight() / 2);
-            fDef.shape = shape;
-            fDef.density = 100f;
-            fDef.friction = 0.5f;
-
-            body.createFixture(fDef);
-        });
-    }
-
-    public GameLevel(InitialGameLevel initLevel, EntityFactory factory) {
-        entitySet = new TreeSet<>(Comparator.comparingInt(SpriteEntity::getPriority)
-            .thenComparingInt(Object::hashCode));
-        entitySet.addAll(initLevel.getEntities(factory));
-
-        TmxMapLoader.Parameters params = new TmxMapLoader.Parameters();
-        params.textureMinFilter = Texture.TextureFilter.Nearest;
-        params.textureMagFilter = Texture.TextureFilter.Nearest;
-        params.generateMipMaps = false;
-        params.convertObjectToTileSpace = false;
-
-        map = new TmxMapLoader().load(initLevel.getMapName(), params);
-        renderer = new OrthoCachedTiledMapRenderer(map, 1f / unitScaleMap);
-        renderer.setBlending(true);
+        return result;
     }
 
     @Override
     public void dispose() {
+        world.dispose();
         renderer.dispose();
     }
 }

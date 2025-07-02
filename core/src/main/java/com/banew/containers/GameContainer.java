@@ -4,13 +4,9 @@ import box2dLight.PointLight;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
 import com.banew.entities.MainHeroEntity;
 import com.banew.external.GeneralSettings;
@@ -19,37 +15,33 @@ import com.banew.other.dto.PlayerInfo;
 import lombok.Getter;
 
 import java.util.Map;
-import java.util.function.BiConsumer;
+import java.util.Set;
+import java.util.function.Consumer;
 
 public class GameContainer implements Disposable {
-    private final World world;
     private final MainHeroEntity mainHeroEntity;
     private final OrthographicCamera camera;
     private GameLevel currentLevel;
+    private final Set<GameLevel> levels;
     private boolean isMoving = false;
     @Getter
     private final PlayerInfo playerInfo;
-
     private float staminaReloadTimer = 0f;
+
+    public static boolean isDebug = true;
 
     public GameContainer(Camera camera, GeneralSettings generalSettings, PlayerInfo playerInfo) {
         this.camera = (OrthographicCamera) camera;
         this.playerInfo = playerInfo;
         String COLLISION_LAYER_NAME = generalSettings.getCollision_level_name();
 
-        world = new World(
-            new Vector2(0, 0),
-            false
-        );
+        EntityFactory entityFactory = new EntityFactory(generalSettings);
 
+        levels = generalSettings.getLevels(entityFactory);
+        currentLevel = levels.stream().toList().get(0);
 
+        mainHeroEntity = currentLevel.getMainHeroEntity();
 
-        EntityFactory entityFactory = new EntityFactory(generalSettings, world);
-        this.currentLevel = generalSettings.getLevels(entityFactory).stream().toList().get(0);
-
-        mainHeroEntity = (MainHeroEntity) generalSettings.getMainHero().extractEntity(entityFactory);
-        currentLevel.getEntitySet().add(mainHeroEntity);
-        currentLevel.loadCollisions(world, COLLISION_LAYER_NAME);
         // light initialization
         lightPlayground();
     }
@@ -57,7 +49,7 @@ public class GameContainer implements Disposable {
     RayHandler rayHandler;
     private void lightPlayground() {
          // якщо Box2D є, або new RayHandler(null)
-        rayHandler = new RayHandler(world);
+        rayHandler = new RayHandler(currentLevel.getWorld());
         rayHandler.setAmbientLight(1f); // повний день (1.0 = світло, 0.0 = ніч)
 
         // 2) Змінюєш яскравість для дня і ночі
@@ -77,14 +69,37 @@ public class GameContainer implements Disposable {
         rayHandler.updateAndRender();
     }
 
+    public static final Texture WHITE_PIXEL;
+
+    static {
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA4444);
+        pixmap.setColor(new Color(1, 1, 1, .5f));
+        pixmap.fill();
+        WHITE_PIXEL = new Texture(pixmap);
+        pixmap.dispose();
+    }
+
     public void renderSprites(SpriteBatch spriteBatch) {
         isMoving = false;
 
-        world.step(Gdx.graphics.getDeltaTime(), 1, 1);
+        currentLevel.getWorld().step(Gdx.graphics.getDeltaTime(), 1, 1);
 
         movingRender();
-        drawVisibleEntities(spriteBatch);
 
+        currentLevel.getEntitySet().forEach(e -> {
+            e.draw(spriteBatch);
+            e.render();
+
+            if (isDebug) {
+                e.getCollisionSprite(WHITE_PIXEL).draw(spriteBatch);
+            }
+        });
+
+        if (isDebug) {
+            currentLevel.getCollisions().forEach(r -> {
+                spriteBatch.draw(WHITE_PIXEL, r.x, r.y, r.width, r.height);
+            });
+        }
     }
 
     public void renderScene() {
@@ -95,6 +110,10 @@ public class GameContainer implements Disposable {
 
 
     private void movingRender() {
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+            isDebug = !isDebug;
+        }
+
         moveMainHeroRender();
         reloadStamina();
 
@@ -105,18 +124,18 @@ public class GameContainer implements Disposable {
     }
 
     private void reloadStamina() {
-        if (isMoving) {
+        if (mainHeroEntity.isRunning()) {
             staminaReloadTimer = 0f;
         }
         staminaReloadTimer += Gdx.graphics.getDeltaTime();
-        if (staminaReloadTimer > 3 && !isMoving && getPlayerInfo().getPlayerStamina() < getPlayerInfo().getMaxPlayerStamina()) {
+        if (staminaReloadTimer > 3 && getPlayerInfo().getPlayerStamina() < getPlayerInfo().getMaxPlayerStamina()) {
             getPlayerInfo().setPlayerStamina(getPlayerInfo().getPlayerStamina() + .7f);
         }
     }
 
 
-    private void moveMainHero(float x, float y, boolean isRunning) {
-        mainHeroEntity.move(-x, -y, isRunning);
+    private void moveMainHero(float x, float y) {
+        mainHeroEntity.move(-x, -y);
     }
 
     private float computeStep() {
@@ -125,22 +144,24 @@ public class GameContainer implements Disposable {
     }
 
     private void moveMainHeroRender() {
-        Map<Integer, BiConsumer<Float, Boolean>> keysMovementAction = Map.of(
-            Input.Keys.W, (speed, isRunning) -> moveMainHero(0, -speed, isRunning),
-            Input.Keys.S, (speed, isRunning) -> moveMainHero(0, speed, isRunning),
-            Input.Keys.A, (speed, isRunning) -> moveMainHero(speed, 0, isRunning),
-            Input.Keys.D, (speed, isRunning) -> moveMainHero(-speed, 0, isRunning)
+        Map<Integer, Consumer<Float>> keysMovementAction = Map.of(
+            Input.Keys.W, (speed) -> moveMainHero(0, -speed),
+            Input.Keys.S, (speed) -> moveMainHero(0, speed),
+            Input.Keys.A, (speed) -> moveMainHero(speed, 0),
+            Input.Keys.D, (speed) -> moveMainHero(-speed, 0)
         );
 
         mainHeroEntity.doNotMove();
         keysMovementAction.forEach((key, value) -> {
             if (Gdx.input.isKeyPressed(key)) {
                 if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && getPlayerInfo().getPlayerStamina() > 0) {
-                    value.accept(computeStep() * 1.5f, true);
-                    getPlayerInfo().setPlayerStamina(getPlayerInfo().getPlayerStamina() - .3f);
+                    mainHeroEntity.setRunning(true);
+                    value.accept(computeStep() * 1.5f);
+                    getPlayerInfo().setPlayerStamina(getPlayerInfo().getPlayerStamina() - .05f);
                 }
                 else {
-                    value.accept(computeStep(), false);
+                    mainHeroEntity.setRunning(false);
+                    value.accept(computeStep());
                 }
 
                 isMoving = true;
@@ -156,13 +177,8 @@ public class GameContainer implements Disposable {
         return camera.zoom + (targetZoom - camera.zoom) * zoomSpeed * Gdx.graphics.getDeltaTime();
     }
 
-    private void drawVisibleEntities(SpriteBatch spriteBatch) {
-        currentLevel.getEntitySet().forEach(e -> e.draw(spriteBatch));
-    }
-
     @Override
     public void dispose() {
         currentLevel.dispose();
-        world.dispose();
     }
 }

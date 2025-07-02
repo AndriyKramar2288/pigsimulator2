@@ -1,5 +1,6 @@
 package com.banew.entities;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -14,6 +15,8 @@ public class SpriteEntity {
     @Setter
     @Getter
     private int priority = 0;
+    @Setter
+    private Vector2 currentScales = new Vector2(1, 1);
 
     protected Sprite getSprite() {
         return sprite;
@@ -23,6 +26,8 @@ public class SpriteEntity {
         this.sprite = sprite;
         this.body = body;
     }
+
+    public void render() { }
 
     public void replace(float stepX, float stepY) {
         sprite.translate(stepX, stepY);
@@ -45,6 +50,19 @@ public class SpriteEntity {
             sprite.getX() + (sprite.getWidth() / 2),
             sprite.getY() + (sprite.getHeight() / 2)
         );
+    }
+
+    public Sprite getCollisionSprite(Texture texture) {
+        Sprite sprite = new Sprite(texture);
+        sprite.setSize(
+            getSprite().getWidth() * currentScales.x,
+            getSprite().getHeight() * currentScales.y
+        );
+        sprite.setPosition(
+            getCenterCoordinates().x - sprite.getWidth() / 2,
+            getCenterCoordinates().y - sprite.getHeight() / 2
+        );
+        return sprite;
     }
 
     public void setTextureScale(float scale) {

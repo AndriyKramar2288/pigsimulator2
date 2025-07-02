@@ -1,10 +1,12 @@
 package com.banew.entities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
 import java.util.List;
@@ -21,16 +23,14 @@ public class AnimatedEntity extends SpriteEntity {
     private boolean isAnimating = false;
     private final Random random = new Random();
 
-
     public AnimatedEntity(
         Sprite sprite,
         Body body,
         TextureRegion waitingRegion,
         Float delayBetween,
         List<List<TextureRegion>> regionsList
-    ) {
+        ) {
         super(sprite, body);
-
         this.delayBetween = delayBetween;
         this.waitingRegion = waitingRegion;
 

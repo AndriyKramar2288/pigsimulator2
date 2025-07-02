@@ -3,7 +3,11 @@ package com.banew.external.textures;
 import com.banew.utilites.TextureExtractor;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
@@ -13,6 +17,6 @@ import lombok.Data;
 @Data
 public abstract class AbstractInitialTexture {
     public abstract TextureExtractor extractTextureExtractor();
-    private float widthScale = 1;
-    private float heightScale = 1;
+    protected float widthScale = 1;
+    protected float heightScale = 1;
 }

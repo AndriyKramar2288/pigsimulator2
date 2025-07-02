@@ -4,15 +4,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.banew.containers.GameLevel;
 import com.banew.entities.AnimatedEntity;
 import com.banew.entities.MainHeroEntity;
 import com.banew.entities.SpriteEntity;
+import com.banew.entities.Zombie;
 import com.banew.external.GeneralSettings;
 import com.banew.external.entities.InitialAnimatedEntity;
 import com.banew.external.entities.InitialMainHeroEntity;
 import com.banew.external.entities.InitialSpriteEntity;
+import com.banew.external.entities.InitialZombie;
 import com.banew.utilites.TextureExtractor;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,10 +26,11 @@ import java.util.Map;
 public class EntityFactory {
     private final TextureAtlas textureAtlas;
     private final Map<String, TextureRegion[][]> cashedRegions;
-    private final World world;
+    private MainHeroEntity mainHeroEntity;
+    @Setter
+    private GameLevel currentGameLevel;
 
-    public EntityFactory(GeneralSettings generalSettings, World world) {
-        this.world = world;
+    public EntityFactory(GeneralSettings generalSettings) {
         String atlas_path = "textures-generated/game.atlas";
         textureAtlas = new TextureAtlas(Gdx.files.internal(atlas_path));
         cashedRegions = new HashMap<>();
@@ -65,7 +71,17 @@ public class EntityFactory {
             extractor.getHeightScale() * src.getSize_y()
         );
 
-        return new AnimatedEntity(sprite, body, waitingRegion, src.getAnimationDelay(), regionsList);
+        AnimatedEntity entity = new AnimatedEntity(
+            sprite,
+            body,
+            waitingRegion,
+            src.getAnimationDelay(),
+            regionsList
+        );
+
+        entity.setCurrentScales(new Vector2(extractor.getWidthScale(), extractor.getHeightScale()));
+
+        return entity;
     }
 
     public MainHeroEntity createMainHeroEntity(InitialMainHeroEntity src) {
@@ -75,11 +91,34 @@ public class EntityFactory {
         );
         Body body = generateDynamicBody(src.getX(), src.getY(), src.getSize_x(), src.getSize_y());
 
-        return new MainHeroEntity(
+        mainHeroEntity = new MainHeroEntity(
             sprite,
             body,
             src.getAnimations(),
             textureAtlas
+        );
+
+        return mainHeroEntity;
+    }
+
+    public Zombie createZombie(InitialZombie src) {
+        if (mainHeroEntity == null) {
+            throw new RuntimeException("Головний перс ще не був створений!");
+        }
+
+        Sprite sprite = generateBasicSprite(
+            src.getAnimations().get("down").getWaitingTexture().extractTextureExtractor().extractRegions(textureAtlas),
+            src.getX(), src.getY(), src.getSize_x(), src.getSize_y()
+        );
+        Body body = generateDynamicBody(src.getX(), src.getY(), src.getSize_x(), src.getSize_y());
+
+        return new Zombie(
+            sprite,
+            body,
+            src.getAnimations(),
+            textureAtlas,
+            mainHeroEntity,
+            currentGameLevel.getCollisions()
         );
     }
 
@@ -92,7 +131,7 @@ public class EntityFactory {
         // позиція — ЦЕНТР фікстури!
         bodyDef.position.set(x + size_x / 2f, y + size_y / 2f);
 
-        Body body = world.createBody(bodyDef);
+        Body body = currentGameLevel.getWorld().createBody(bodyDef);
         body.createFixture(generateBasicFicture(size_x, size_y));
         return body;
     }
@@ -103,8 +142,9 @@ public class EntityFactory {
 
         // позиція — ЦЕНТР фікстури!
         bodyDef.position.set(x + size_x / 2f, y + size_y / 2f);
+        bodyDef.bullet = true;
 
-        Body body = world.createBody(bodyDef);
+        Body body = currentGameLevel.getWorld().createBody(bodyDef);
         body.createFixture(generateBasicFicture(size_x, size_y));
         return body;
     }

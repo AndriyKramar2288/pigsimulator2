@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.banew.other.records.MatrixVector;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TextureExtractorDeep implements TextureExtractor {
     private final String region;

@@ -23,7 +23,7 @@ public class GeneralSettings {
 
     public Set<GameLevel> getLevels(EntityFactory factory) {
         return gameLevels.stream()
-            .map(initSet -> new GameLevel(initSet, factory))
+            .map(initSet -> new GameLevel(initSet, factory, this))
             .collect(Collectors.toSet());
     }
 

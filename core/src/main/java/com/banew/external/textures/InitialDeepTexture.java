@@ -3,11 +3,14 @@ package com.banew.external.textures;
 import com.banew.other.records.MatrixVector;
 import com.banew.utilites.TextureExtractor;
 import com.banew.utilites.TextureExtractorDeep;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class InitialDeepTexture extends AbstractInitialTexture {
     private String region;
     private int sizeX;

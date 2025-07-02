@@ -11,7 +11,8 @@ import lombok.Data;
 @JsonSubTypes({
     @JsonSubTypes.Type(value = InitialSpriteEntity.class, name = "static"),
     @JsonSubTypes.Type(value = InitialAnimatedEntity.class, name = "animated"),
-    @JsonSubTypes.Type(value = InitialMainHeroEntity.class, name = "main_hero")
+    @JsonSubTypes.Type(value = InitialMainHeroEntity.class, name = "main_hero"),
+    @JsonSubTypes.Type(value = InitialZombie.class, name = "zombie")
 })
 @Data
 public abstract class AbstractInitialEntity {

@@ -4,17 +4,18 @@ import com.banew.entities.SpriteEntity;
 import com.banew.external.textures.InitialDeepTexture;
 import com.banew.factories.EntityFactory;
 import com.banew.other.records.InitialMovingEntityTexturesPerDirectionPack;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.List;
 import java.util.Map;
 
-public class InitialMainHeroEntity extends InitialMovingEntity {
+public class InitialZombie extends InitialMovingEntity {
+    public InitialZombie() {
+        initializeDefaultTexture();
+    }
+
     @Override
     public SpriteEntity extractEntity(EntityFactory factory) {
-        initializeDefaultTexture();
-        return factory.createMainHeroEntity(this);
+        return factory.createZombie(this);
     }
 
     private void initializeDefaultTexture() {
@@ -122,11 +123,9 @@ public class InitialMainHeroEntity extends InitialMovingEntity {
                         .build()
                 )).build()
         ));
-
-        getAnimations().values().forEach(v -> {
-            v.getWaitingTexture().setWidthScale(.8f);
-            v.getWaitingTexture().setHeightScale(.45f);
+        getAnimations().values().forEach(a -> {
+            a.getWaitingTexture().setHeightScale(.5f);
+            a.getWaitingTexture().setWidthScale(.5f);
         });
-
     }
 }

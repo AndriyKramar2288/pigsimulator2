@@ -1,6 +1,7 @@
 package com.banew.entities;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.banew.containers.GameLevel;
 import com.banew.other.records.GameContext;
@@ -9,32 +10,42 @@ import lombok.Setter;
 
 import java.util.Set;
 
+@Getter
 public class LevelsDoor extends SpriteEntity {
-    @Getter
-    private final String lavelFrom;
-    @Getter
-    private final String lavelTo;
 
-    @Getter
+    private final static float REOPEN_DISTANCE = 1f;
+    private final static float TELEPORT_DISTANCE = .5f;
+
+    private final String levelFrom;
+    private final String levelTo;
+    private final String singleName;
+
     @Setter
     private boolean isOpen = false;
 
-    public LevelsDoor(Sprite sprite, Body body, String lavelFrom, String lavelTo) {
-        super(sprite, body);
 
-        this.lavelFrom = lavelFrom;
-        this.lavelTo = lavelTo;
+    public LevelsDoor(Sprite sprite, String levelFrom, String levelTo, String singleName) {
+        super(sprite, null);
+
+        this.levelFrom = levelFrom;
+        this.levelTo = levelTo;
+        this.singleName = singleName;
     }
 
     @Override
-    public GameContext render(GameContext context) {
+    public void draw(SpriteBatch spriteBatch) {
+        getSprite().draw(spriteBatch);
+    }
+
+    @Override
+    public void render(GameContext context) {
         MainHeroEntity mainHeroEntity = context.currentLevel().getMainHeroEntity();
         Set<GameLevel> levels = context.levels();
         GameLevel currentLevel = context.currentLevel();
 
-        if (mainHeroEntity.getCenterCoordinates().sub(getCenterCoordinates()).len2() < .5f && isOpen()) {
+        if (mainHeroEntity.getCenterCoordinates().sub(getCenterCoordinates()).len2() < TELEPORT_DISTANCE && isOpen()) {
             GameLevel targetLevel = levels.stream()
-                .filter(l -> l.getLevelName().equals(getLavelTo()))
+                .filter(l -> l.getLevelName().equals(getLevelTo()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Рівня такого нема, довбойоб"));
 
@@ -42,15 +53,16 @@ public class LevelsDoor extends SpriteEntity {
                 "Рівень змінюється з " + currentLevel.getLevelName() + " на " + targetLevel.getLevelName()
             );
 
-            targetLevel.setMainHeroEntity(mainHeroEntity);
-            context = context.withCurrentLevel(targetLevel);
+            LevelsDoor targetDoor = targetLevel.getDoorByName(singleName);
+            targetDoor.setOpen(false);
+            targetLevel.setMainHeroEntity(mainHeroEntity, targetDoor.getCenterCoordinates());
+
+            context.currentLevelRef().setGameLevel(targetLevel);
             context.lightContainer().setWorld(targetLevel.getWorld(), mainHeroEntity);
             setOpen(false);
         }
-        if (mainHeroEntity.getCenterCoordinates().sub(getCenterCoordinates()).len2() > 3f) {
+        if (mainHeroEntity.getCenterCoordinates().sub(getCenterCoordinates()).len2() > REOPEN_DISTANCE) {
             setOpen(true);
         }
-
-        return super.render(context);
     }
 }

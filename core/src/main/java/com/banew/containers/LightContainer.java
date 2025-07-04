@@ -12,7 +12,7 @@ import com.banew.entities.MainHeroEntity;
 public class LightContainer implements Disposable {
     private final OrthographicCamera camera;
     private final RayHandler rayHandler;
-    Light light;
+    private final Light light;
 
     public LightContainer(OrthographicCamera camera, World world, MainHeroEntity mainHeroEntity) {
         this.camera = camera;

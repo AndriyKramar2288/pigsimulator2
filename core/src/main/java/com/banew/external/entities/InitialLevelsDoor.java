@@ -15,7 +15,7 @@ public class InitialLevelsDoor extends AbstractInitialEntity {
     @Override
     public SpriteEntity extractEntity(EntityFactory factory) {
         return factory.createLevelsDoor(
-            levelFrom, levelTo, singleName
+            this
         );
     }
 }

@@ -17,10 +17,7 @@ import com.banew.containers.GameLevel;
 import com.banew.entities.*;
 import com.banew.external.GeneralSettings;
 import com.banew.external.InitialGameLevel;
-import com.banew.external.entities.InitialAnimatedEntity;
-import com.banew.external.entities.InitialMainHeroEntity;
-import com.banew.external.entities.InitialSpriteEntity;
-import com.banew.external.entities.InitialZombie;
+import com.banew.external.entities.*;
 import com.banew.utilites.TextureExtractor;
 import lombok.Setter;
 
@@ -35,7 +32,7 @@ public class EntityFactory {
     private GameLevel currentGameLevel;
 
     public EntityFactory(GeneralSettings generalSettings) {
-        String atlas_path = "textures-generated/game.atlas";
+        String atlas_path = generalSettings.getMain_atlas_src();
         textureAtlas = new TextureAtlas(Gdx.files.internal(atlas_path));
         cashedRegions = new HashMap<>();
     }
@@ -48,7 +45,8 @@ public class EntityFactory {
         );
         Body body = generateBasicBody(
             src.getX(), src.getY(),
-            src.getSize_x(), src.getSize_y()
+            src.getSize_x(), src.getSize_y(),
+            src.getTexture().getWidthScale(), src.getTexture().getHeightScale()
         );
 
         return new SpriteEntity(sprite, body);
@@ -71,8 +69,9 @@ public class EntityFactory {
 
         Body body = generateBasicBody(
             src.getX(), src.getY(),
-            extractor.getWidthScale() * src.getSize_x(),
-            extractor.getHeightScale() * src.getSize_y()
+            src.getSize_x(),
+            src.getSize_y(),
+            src.getTexture().getWidthScale(), src.getTexture().getHeightScale()
         );
 
         AnimatedEntity entity = new AnimatedEntity(
@@ -93,7 +92,9 @@ public class EntityFactory {
             src.getAnimations().get("down").getWaitingTexture().extractTextureExtractor().extractRegions(textureAtlas),
             src.getX(), src.getY(), src.getSize_x(), src.getSize_y()
         );
-        Body body = generateDynamicBody(src.getX(), src.getY(), src.getSize_x(), src.getSize_y());
+        Body body = generateDynamicBody(
+            src.getX(), src.getY(), src.getSize_x(), src.getSize_y()
+        );
 
         return new MainHeroEntity(
             sprite,
@@ -108,7 +109,9 @@ public class EntityFactory {
             src.getAnimations().get("down").getWaitingTexture().extractTextureExtractor().extractRegions(textureAtlas),
             src.getX(), src.getY(), src.getSize_x(), src.getSize_y()
         );
-        Body body = generateDynamicBody(src.getX(), src.getY(), src.getSize_x(), src.getSize_y());
+        Body body = generateDynamicBody(
+            src.getX(), src.getY(), src.getSize_x(), src.getSize_y()
+        );
 
         return new Zombie(
             sprite,
@@ -120,14 +123,13 @@ public class EntityFactory {
     }
 
     public LevelsDoor createLevelsDoor(
-        String levelFrom, String levelTo,
-        String singleName
+        InitialLevelsDoor src
     ) {
 
         List<InitialGameLevel> levels = GeneralSettings.importSettings().getGameLevels();
 
         InitialGameLevel level = levels.stream()
-            .filter(l -> l.getLevelName().equals(levelFrom))
+            .filter(l -> l.getLevelName().equals(src.getLevelFrom()))
             .findFirst()
             .orElseThrow(
             () -> new RuntimeException("Ти обісрався, братішка!")
@@ -136,7 +138,7 @@ public class EntityFactory {
         TiledMap map = new TmxMapLoader().load(level.getMapName());
 
         Rectangle rectangle = GameLevel.fromMapObject(
-            map.getLayers().get("Doors").getObjects().get(singleName)
+            map.getLayers().get("Doors").getObjects().get(src.getSingleName())
         );
 
         Sprite invisibleSprite = new Sprite();
@@ -146,14 +148,17 @@ public class EntityFactory {
 
         return new LevelsDoor(
             invisibleSprite,
-            generateBasicBody(rectangle.getX(), rectangle.getY(), 0f, 0f),
-            levelFrom, levelTo
+            src.getLevelFrom(), src.getLevelTo(), src.getSingleName()
         );
     }
 
     // -------------------- GENERATE BASIC SMTH ------------------------
 
     private Body generateBasicBody(Float x, Float y, Float size_x, Float size_y) {
+        return generateBasicBody(x, y, size_x, size_y, 1f, 1f);
+    }
+
+    private Body generateBasicBody(Float x, Float y, Float size_x, Float size_y, Float scaleX, Float scaleY) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
 
@@ -161,11 +166,15 @@ public class EntityFactory {
         bodyDef.position.set(x + size_x / 2f, y + size_y / 2f);
 
         Body body = currentGameLevel.getWorld().createBody(bodyDef);
-        body.createFixture(generateBasicFicture(size_x, size_y));
+        body.createFixture(generateBasicFicture(size_x * scaleX, size_y * scaleY));
         return body;
     }
 
     private Body generateDynamicBody(Float x, Float y, Float size_x, Float size_y) {
+        return generateDynamicBody(x, y, size_x, size_y, 1f, 1f);
+    }
+
+    private Body generateDynamicBody(Float x, Float y, Float size_x, Float size_y, Float scaleX, Float scaleY) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
@@ -174,7 +183,7 @@ public class EntityFactory {
         bodyDef.bullet = true;
 
         Body body = currentGameLevel.getWorld().createBody(bodyDef);
-        body.createFixture(generateBasicFicture(size_x, size_y));
+        body.createFixture(generateBasicFicture(size_x * scaleX, size_y * scaleY));
         return body;
     }
 

@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Disposable;
+import com.banew.entities.LevelsDoor;
 import com.banew.entities.MainHeroEntity;
 import com.banew.entities.SpriteEntity;
 import com.banew.external.GeneralSettings;
@@ -51,20 +52,29 @@ public class GameLevel implements Disposable {
 
     private final InitialGameLevel initLevel;
 
-    public void setMainHeroEntity(MainHeroEntity mainHeroEntity) {
+    public LevelsDoor getDoorByName(String name) {
+        return (LevelsDoor) entitySet.stream()
+            .filter(e -> e instanceof LevelsDoor)
+            .filter(e -> ((LevelsDoor) e).getSingleName().equals(name))
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Нема двері на рівні " + getLevelName() + " з назвою " + name));
+    }
+
+    public void setMainHeroEntity(MainHeroEntity mainHeroEntity, Vector2 newPosition) {
         entitySet.add(mainHeroEntity);
         mainHeroEntity.setBody(
-            replaceBody(mainHeroEntity.getBody(), mainHeroEntity.generateFixtureDef())
+            replaceBody(mainHeroEntity.getBody(), mainHeroEntity.generateFixtureDef(), newPosition)
         );
+        mainHeroEntity.setSpritePosition(newPosition);
 
         this.mainHeroEntity = mainHeroEntity;
     }
 
-    private Body replaceBody(Body oldBody, FixtureDef newFixture) {
+    private Body replaceBody(Body oldBody, FixtureDef newFixture, Vector2 newPosition) {
         // Створюємо нове тіло в іншому світі:
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = oldBody.getType();
-        bodyDef.position.set(oldBody.getPosition());
+        bodyDef.position.set(newPosition);
         bodyDef.angle = oldBody.getAngle();
         bodyDef.linearVelocity.set(oldBody.getLinearVelocity());
         bodyDef.angularVelocity = oldBody.getAngularVelocity();

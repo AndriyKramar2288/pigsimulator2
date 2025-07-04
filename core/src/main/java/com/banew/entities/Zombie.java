@@ -26,7 +26,7 @@ public class Zombie extends MovingEntity {
     }
 
     @Override
-    public GameContext render(GameContext context) {
+    public void render(GameContext context) {
         Vector2 stepToTarget = followTarget(
             getBody().getPosition(),
             context.currentLevel().getMainHeroEntity().getCenterCoordinates(),
@@ -34,7 +34,6 @@ public class Zombie extends MovingEntity {
         );
 
         move(stepToTarget.x, stepToTarget.y);
-        return context;
     }
 
     private Vector2 followTarget(Vector2 myPos, Vector2 playerPos, float speed) {

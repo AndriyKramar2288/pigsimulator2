@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 @Data
 public class GeneralSettings {
+    private String main_atlas_src;
     private String collision_level_name;
     private InitialMainHeroEntity mainHero;
     private List<InitialGameLevel> gameLevels = new ArrayList<>();

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.banew.entities.MainHeroEntity;
@@ -11,6 +12,7 @@ import com.banew.external.GeneralSettings;
 import com.banew.factories.EntityFactory;
 import com.banew.other.dto.PlayerInfo;
 import com.banew.other.records.GameContext;
+import com.banew.utilites.GameLevelRef;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,13 +44,16 @@ public class GameContainer implements Disposable {
         EntityFactory entityFactory = new EntityFactory(generalSettings);
 
         var levels = generalSettings.getLevels();
-        var currentLevel = levels.stream().toList().get(0);
-        entityFactory.setCurrentGameLevel(currentLevel);
+        var currentLevel = levels.stream()
+            .filter(l -> l.getLevelName().equals("main"))
+            .findFirst()
+            .orElseThrow();
+
         levels.forEach(level -> level.loadEntites(generalSettings, entityFactory));
 
         entityFactory.setCurrentGameLevel(currentLevel);
         var mainHeroEntity = (MainHeroEntity) generalSettings.getMainHero().extractEntity(entityFactory);
-        currentLevel.setMainHeroEntity(mainHeroEntity);
+        currentLevel.setMainHeroEntity(mainHeroEntity, mainHeroEntity.getBody().getPosition());
 
         var lightContainer = new LightContainer((OrthographicCamera) camera, currentLevel.getWorld(), mainHeroEntity);
 
@@ -56,7 +61,7 @@ public class GameContainer implements Disposable {
             mainHeroEntity,
             camera,
             lightContainer,
-            currentLevel,
+            new GameLevelRef(currentLevel),
             levels,
             playerInfo
         );
@@ -72,7 +77,7 @@ public class GameContainer implements Disposable {
 
         context.currentLevel().getEntitySet().forEach(e -> {
             e.draw(spriteBatch);
-            context = e.render(context);
+            e.render(context);
 
             if (isDebug) {
                 e.getCollisionSprite(WHITE_PIXEL).draw(spriteBatch);

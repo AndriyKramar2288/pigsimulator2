@@ -25,13 +25,17 @@ public class SpriteEntity {
         return sprite;
     }
 
+    public void setSpritePosition(Vector2 position) {
+        sprite.setPosition(position.x, position.y);
+    }
+
     public SpriteEntity(Sprite sprite, Body body) {
         this.sprite = sprite;
         this.body = body;
     }
 
-    public GameContext render(GameContext context) {
-        return context;
+    public void render(GameContext context) {
+
     }
 
     public void replace(float stepX, float stepY) {

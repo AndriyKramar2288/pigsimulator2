@@ -1,4 +1,5 @@
 {
+  "main_atlas_src": "textures-generated/game.atlas",
   "collision_level_name": "Колізіонєри",
   "mainHero": {
     "type": "main_hero",

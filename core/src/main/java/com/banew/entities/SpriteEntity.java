@@ -11,7 +11,8 @@ import lombok.Setter;
 public class SpriteEntity {
     private final Sprite sprite;
     @Getter
-    private final Body body;
+    @Setter
+    private Body body;
     @Setter
     @Getter
     private int priority = 0;

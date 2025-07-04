@@ -1,13 +1,12 @@
 package com.banew.containers;
 
-import box2dLight.PointLight;
-import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import com.banew.entities.LevelsDoor;
 import com.banew.entities.MainHeroEntity;
 import com.banew.external.GeneralSettings;
 import com.banew.factories.EntityFactory;
@@ -19,8 +18,9 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 public class GameContainer implements Disposable {
-    private final MainHeroEntity mainHeroEntity;
+    private MainHeroEntity mainHeroEntity;
     private final OrthographicCamera camera;
+    private final LightContainer lightContainer;
     private GameLevel currentLevel;
     private final Set<GameLevel> levels;
     private boolean isMoving = false;
@@ -28,49 +28,9 @@ public class GameContainer implements Disposable {
     private final PlayerInfo playerInfo;
     private float staminaReloadTimer = 0f;
 
-    public static boolean isDebug = true;
-
-    public GameContainer(Camera camera, GeneralSettings generalSettings, PlayerInfo playerInfo) {
-        this.camera = (OrthographicCamera) camera;
-        this.playerInfo = playerInfo;
-        String COLLISION_LAYER_NAME = generalSettings.getCollision_level_name();
-
-        EntityFactory entityFactory = new EntityFactory(generalSettings);
-
-        levels = generalSettings.getLevels(entityFactory);
-        currentLevel = levels.stream().toList().get(0);
-
-        mainHeroEntity = currentLevel.getMainHeroEntity();
-
-        // light initialization
-        lightPlayground();
-    }
-
-    RayHandler rayHandler;
-    private void lightPlayground() {
-         // якщо Box2D є, або new RayHandler(null)
-        rayHandler = new RayHandler(currentLevel.getWorld());
-        rayHandler.setAmbientLight(1f); // повний день (1.0 = світло, 0.0 = ніч)
-
-        // 2) Змінюєш яскравість для дня і ночі
-        rayHandler.setAmbientLight(0.3f); // темна ніч
-
-        PointLight torch = new PointLight(rayHandler, 256);
-        torch.setPosition(3, 3);
-        torch.setDistance(4);
-        torch.setSoftnessLength(2f);
-        torch.setColor(new Color(1f, 0.5f, 0f, 0.4f));
-        torch.attachToBody(mainHeroEntity.getBody());
-
-    }
-
-    public void renderLight() {
-        rayHandler.setCombinedMatrix(camera); // синхронізує з камерою
-        rayHandler.updateAndRender();
-    }
+    public static boolean isDebug = false;
 
     public static final Texture WHITE_PIXEL;
-
     static {
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA4444);
         pixmap.setColor(new Color(1, 1, 1, .5f));
@@ -78,6 +38,28 @@ public class GameContainer implements Disposable {
         WHITE_PIXEL = new Texture(pixmap);
         pixmap.dispose();
     }
+
+    public GameContainer(Camera camera, GeneralSettings generalSettings, PlayerInfo playerInfo) {
+        this.camera = (OrthographicCamera) camera;
+
+
+        this.playerInfo = playerInfo;
+        String COLLISION_LAYER_NAME = generalSettings.getCollision_level_name();
+
+        EntityFactory entityFactory = new EntityFactory(generalSettings);
+
+        levels = generalSettings.getLevels();
+        currentLevel = levels.stream().toList().get(0);
+        entityFactory.setCurrentGameLevel(currentLevel);
+        levels.forEach(level -> level.loadEntites(generalSettings, entityFactory));
+
+        entityFactory.setCurrentGameLevel(currentLevel);
+        mainHeroEntity = (MainHeroEntity) generalSettings.getMainHero().extractEntity(entityFactory);
+        currentLevel.setMainHeroEntity(mainHeroEntity);
+
+        this.lightContainer = new LightContainer((OrthographicCamera) camera, currentLevel.getWorld());
+    }
+
 
     public void renderSprites(SpriteBatch spriteBatch) {
         isMoving = false;
@@ -89,6 +71,32 @@ public class GameContainer implements Disposable {
         currentLevel.getEntitySet().forEach(e -> {
             e.draw(spriteBatch);
             e.render();
+
+            if (e instanceof LevelsDoor) {
+                if (mainHeroEntity.getCenterCoordinates().sub(e.getCenterCoordinates()).len2() < 2f) {
+                    System.out.println("Ми поруч з порталом в " + ((LevelsDoor) e).getLavelTo());
+                }
+
+
+                if (mainHeroEntity.getCenterCoordinates().sub(e.getCenterCoordinates()).len2() < .5f && ((LevelsDoor) e).isOpen()) {
+                    GameLevel targetLevel = levels.stream()
+                        .filter(l -> l.getLevelName().equals(((LevelsDoor) e).getLavelTo()))
+                        .findFirst()
+                        .orElseThrow(() -> new RuntimeException("Рівня такого нема, довбойоб"));
+
+                    System.out.println(
+                        "Рівень змінюється з " + currentLevel.getLevelName() + " на " + targetLevel.getLevelName()
+                    );
+
+                    targetLevel.setMainHeroEntity(mainHeroEntity);
+                    currentLevel = targetLevel;
+                    lightContainer.setWorld(targetLevel.getWorld());
+                    ((LevelsDoor) e).setOpen(false);
+                }
+                if (mainHeroEntity.getCenterCoordinates().sub(e.getCenterCoordinates()).len2() > 3f) {
+                    ((LevelsDoor) e).setOpen(true);
+                }
+            }
 
             if (isDebug) {
                 e.getCollisionSprite(WHITE_PIXEL).draw(spriteBatch);
@@ -180,5 +188,10 @@ public class GameContainer implements Disposable {
     @Override
     public void dispose() {
         currentLevel.dispose();
+        lightContainer.dispose();
+    }
+
+    public void renderLight() {
+        lightContainer.render();
     }
 }

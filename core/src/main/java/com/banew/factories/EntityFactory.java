@@ -4,14 +4,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.banew.containers.GameContainer;
 import com.banew.containers.GameLevel;
-import com.banew.entities.AnimatedEntity;
-import com.banew.entities.MainHeroEntity;
-import com.banew.entities.SpriteEntity;
-import com.banew.entities.Zombie;
+import com.banew.entities.*;
 import com.banew.external.GeneralSettings;
+import com.banew.external.InitialGameLevel;
 import com.banew.external.entities.InitialAnimatedEntity;
 import com.banew.external.entities.InitialMainHeroEntity;
 import com.banew.external.entities.InitialSpriteEntity;
@@ -26,6 +31,7 @@ import java.util.Map;
 public class EntityFactory {
     private final TextureAtlas textureAtlas;
     private final Map<String, TextureRegion[][]> cashedRegions;
+    @Setter
     private MainHeroEntity mainHeroEntity;
     @Setter
     private GameLevel currentGameLevel;
@@ -119,6 +125,38 @@ public class EntityFactory {
             textureAtlas,
             mainHeroEntity,
             currentGameLevel.getCollisions()
+        );
+    }
+
+    public LevelsDoor createLevelsDoor(
+        String levelFrom, String levelTo,
+        String singleName
+    ) {
+
+        List<InitialGameLevel> levels = GeneralSettings.importSettings().getGameLevels();
+
+        InitialGameLevel level = levels.stream()
+            .filter(l -> l.getLevelName().equals(levelFrom))
+            .findFirst()
+            .orElseThrow(
+            () -> new RuntimeException("Ти обісрався, братішка!")
+        );
+
+        TiledMap map = new TmxMapLoader().load(level.getMapName());
+
+        Rectangle rectangle = GameLevel.fromMapObject(
+            map.getLayers().get("Doors").getObjects().get(singleName)
+        );
+
+        Sprite invisibleSprite = new Sprite();
+        invisibleSprite.setPosition(rectangle.getX(), rectangle.getY());
+        invisibleSprite.setSize(0, 0);
+        invisibleSprite.setTexture(GameContainer.WHITE_PIXEL);
+
+        return new LevelsDoor(
+            invisibleSprite,
+            generateBasicBody(rectangle.getX(), rectangle.getY(), 0f, 0f),
+            levelFrom, levelTo
         );
     }
 

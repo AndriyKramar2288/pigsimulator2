@@ -53,6 +53,24 @@
           "size_y": 1,
           "x": 3,
           "y": 2
+        },
+        {
+          "type": "door",
+          "levelFrom": "main",
+          "levelTo": "oblivion",
+          "singleName": "penis"
+        }
+      ]
+    },
+    {
+      "levelName": "oblivion",
+      "mapName": "maps/test2.tmx",
+      "initialEntities": [
+        {
+          "type": "door",
+          "levelFrom": "oblivion",
+          "levelTo": "main",
+          "singleName": "penis"
         }
       ]
     }

@@ -3,9 +3,6 @@ package com.banew.external;
 import com.badlogic.gdx.Gdx;
 import com.banew.containers.GameLevel;
 import com.banew.external.entities.InitialMainHeroEntity;
-import com.banew.factories.EntityFactory;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 
@@ -21,9 +18,9 @@ public class GeneralSettings {
     private InitialMainHeroEntity mainHero;
     private List<InitialGameLevel> gameLevels = new ArrayList<>();
 
-    public Set<GameLevel> getLevels(EntityFactory factory) {
+    public Set<GameLevel> getLevels() {
         return gameLevels.stream()
-            .map(initSet -> new GameLevel(initSet, factory, this))
+            .map(initSet -> new GameLevel(initSet, this))
             .collect(Collectors.toSet());
     }
 

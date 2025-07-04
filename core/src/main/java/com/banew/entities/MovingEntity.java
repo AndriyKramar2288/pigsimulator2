@@ -4,10 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.*;
 import com.banew.external.textures.AbstractInitialTexture;
 import com.banew.other.records.InitialMovingEntityTexturesPerDirectionPack;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
@@ -102,7 +99,7 @@ public class MovingEntity extends SpriteEntity {
         }
     }
 
-    private void resetBody() {
+    public FixtureDef generateFixtureDef() {
         FixtureDef def = new FixtureDef();
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(
@@ -113,9 +110,15 @@ public class MovingEntity extends SpriteEntity {
         def.density = 1f;
         def.friction = 0.5f;
 
-        Fixture oldFixture = getBody().getFixtureList().first();
-        getBody().createFixture(def);
-        getBody().destroyFixture(oldFixture);
+        return def;
+    }
+
+    private void resetBody() {
+        if (getBody().getFixtureList().size > 0) {
+            Fixture oldFixture = getBody().getFixtureList().first();
+            getBody().destroyFixture(oldFixture);
+        }
+        getBody().createFixture(generateFixtureDef());
 
         setCurrentScales(new Vector2( // для дебагу (відображення колізій)
             animationsScales.get(movingSide).x, animationsScales.get(movingSide).y

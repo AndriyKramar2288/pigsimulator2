@@ -3,6 +3,7 @@ package com.banew.containers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -17,6 +18,7 @@ import com.banew.external.GeneralSettings;
 import com.banew.external.InitialGameLevel;
 import com.banew.factories.EntityFactory;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -31,7 +33,7 @@ public class GameLevel implements Disposable {
     @Getter
     private final Set<SpriteEntity> entitySet;
     @Getter
-    private final MainHeroEntity mainHeroEntity;
+    private MainHeroEntity mainHeroEntity;
     @Getter
     private final TiledMap map;
     private final OrthoCachedTiledMapRenderer renderer;
@@ -40,15 +42,51 @@ public class GameLevel implements Disposable {
     public static final float unitScaleMap = 32f;
     @Getter
     private final World world;
+    @Getter
+    private final String levelName;
 
     public void renderMap(OrthographicCamera camera) {
         renderer.setView(camera);
         renderer.render();
     }
 
-    public GameLevel(InitialGameLevel initLevel, EntityFactory factory, GeneralSettings generalSettings) {
-        factory.setCurrentGameLevel(this);
+    private final InitialGameLevel initLevel;
 
+    public void setMainHeroEntity(MainHeroEntity mainHeroEntity) {
+        entitySet.add(mainHeroEntity);
+        mainHeroEntity.setBody(
+            replaceBody(mainHeroEntity.getBody(), mainHeroEntity.generateFixtureDef())
+        );
+
+        this.mainHeroEntity = mainHeroEntity;
+    }
+
+    private Body replaceBody(Body oldBody, FixtureDef newFixture) {
+        // Створюємо нове тіло в іншому світі:
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(oldBody.getPosition());
+        bodyDef.angle = oldBody.getAngle();
+        bodyDef.linearVelocity.set(oldBody.getLinearVelocity());
+        bodyDef.angularVelocity = oldBody.getAngularVelocity();
+        bodyDef.fixedRotation = oldBody.isFixedRotation();
+        bodyDef.bullet = oldBody.isBullet();
+        bodyDef.gravityScale = oldBody.getGravityScale();
+
+        Body newBody = world.createBody(bodyDef);
+        newBody.createFixture(newFixture);
+
+        // Переносимо юзер дату
+        newBody.setUserData(oldBody.getUserData());
+
+        // ВИДАЛЯЄМО старе тіло зі старого світу (якщо потрібно)
+        oldBody.getWorld().destroyBody(oldBody);
+        return newBody;
+    }
+
+    public GameLevel(InitialGameLevel initLevel, GeneralSettings generalSettings) {
+        levelName = initLevel.getLevelName();
+        this.initLevel = initLevel;
         world = new World(
             new Vector2(0, 0),
             false
@@ -56,10 +94,6 @@ public class GameLevel implements Disposable {
 
         entitySet = new TreeSet<>(Comparator.comparingInt(SpriteEntity::getPriority)
             .thenComparingInt(Object::hashCode));
-
-
-
-
 
         TmxMapLoader.Parameters params = new TmxMapLoader.Parameters();
         params.textureMinFilter = Texture.TextureFilter.Nearest;
@@ -70,18 +104,19 @@ public class GameLevel implements Disposable {
         map = new TmxMapLoader().load(initLevel.getMapName(), params);
         renderer = new OrthoCachedTiledMapRenderer(map, 1f / unitScaleMap);
         renderer.setBlending(true);
+
+
+
         loadCollisions();
+    }
 
-
-
-        mainHeroEntity = (MainHeroEntity) generalSettings.getMainHero().extractEntity(factory);
-        entitySet.add(mainHeroEntity);
-
+    public void loadEntites(GeneralSettings generalSettings, EntityFactory factory) {
+        factory.setCurrentGameLevel(this);
         entitySet.addAll(initLevel.getEntities(factory));
     }
 
     private void loadCollisions() {
-        collisions = generateCollisions();
+        collisions = generateCollisions("Колізіонєри");
 
         collisions.forEach(e -> {
             BodyDef def = new BodyDef();
@@ -97,35 +132,37 @@ public class GameLevel implements Disposable {
             fDef.shape = shape;
             fDef.density = 100f;
             fDef.friction = 0.5f;
-
             body.createFixture(fDef);
         });
     }
 
-    public Set<Rectangle> generateCollisions() {
-        String collisionLayerName = "Колізіонєри";
+    public Set<Rectangle> generateCollisions(String collisionLayerName) {
         MapLayer layer = getMap().getLayers().get(collisionLayerName);
 
         Set<Rectangle> result = new HashSet<>();
 
         if (layer != null) {
             layer.getObjects().forEach(obj -> {
-                final float PPU = GameLevel.unitScaleMap;
-                Rectangle rectCollisionPixels = ((RectangleMapObject) obj).getRectangle();
 
-                // Нормалізуємо
-                Rectangle rectCollision = new Rectangle(
-                    rectCollisionPixels.x / PPU,
-                    rectCollisionPixels.y / PPU,
-                    rectCollisionPixels.width / PPU,
-                    rectCollisionPixels.height / PPU
-                );
-
+                Rectangle rectCollision = fromMapObject(obj);
                 result.add(rectCollision);
             });
         }
 
         return result;
+    }
+
+    public static Rectangle fromMapObject(MapObject obj) {
+        final float PPU = GameLevel.unitScaleMap;
+        Rectangle rectCollisionPixels = ((RectangleMapObject) obj).getRectangle();
+
+        // Нормалізуємо
+        return new Rectangle(
+            rectCollisionPixels.x / PPU,
+            rectCollisionPixels.y / PPU,
+            rectCollisionPixels.width / PPU,
+            rectCollisionPixels.height / PPU
+        );
     }
 
     @Override

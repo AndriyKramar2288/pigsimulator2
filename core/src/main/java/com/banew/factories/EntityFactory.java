@@ -32,8 +32,6 @@ public class EntityFactory {
     private final TextureAtlas textureAtlas;
     private final Map<String, TextureRegion[][]> cashedRegions;
     @Setter
-    private MainHeroEntity mainHeroEntity;
-    @Setter
     private GameLevel currentGameLevel;
 
     public EntityFactory(GeneralSettings generalSettings) {
@@ -97,21 +95,15 @@ public class EntityFactory {
         );
         Body body = generateDynamicBody(src.getX(), src.getY(), src.getSize_x(), src.getSize_y());
 
-        mainHeroEntity = new MainHeroEntity(
+        return new MainHeroEntity(
             sprite,
             body,
             src.getAnimations(),
             textureAtlas
         );
-
-        return mainHeroEntity;
     }
 
     public Zombie createZombie(InitialZombie src) {
-        if (mainHeroEntity == null) {
-            throw new RuntimeException("Головний перс ще не був створений!");
-        }
-
         Sprite sprite = generateBasicSprite(
             src.getAnimations().get("down").getWaitingTexture().extractTextureExtractor().extractRegions(textureAtlas),
             src.getX(), src.getY(), src.getSize_x(), src.getSize_y()
@@ -123,7 +115,6 @@ public class EntityFactory {
             body,
             src.getAnimations(),
             textureAtlas,
-            mainHeroEntity,
             currentGameLevel.getCollisions()
         );
     }

@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.banew.other.dto.PlayerInfo;
+import com.banew.other.records.GameContext;
 
 public class GuiContainer implements Disposable {
     private final Stage stage;
@@ -56,8 +57,8 @@ public class GuiContainer implements Disposable {
         guiViewport.update(width, height, true);
     }
 
-    public void render(GameContainer gameContainer) {
-        staminaBar.setValue(gameContainer.getPlayerInfo().getPlayerStamina());
+    public void render(GameContext context) {
+        staminaBar.setValue(context.playerInfo().getPlayerStamina());
 
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();

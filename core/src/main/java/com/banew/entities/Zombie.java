@@ -5,35 +5,36 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.banew.containers.GameContainer;
+import com.banew.other.records.GameContext;
 import com.banew.other.records.InitialMovingEntityTexturesPerDirectionPack;
 
 import java.util.Map;
 import java.util.Set;
 
 public class Zombie extends MovingEntity {
-    private final MainHeroEntity mainHeroEntity;
     private final Set<Rectangle> collisions;
 
     public Zombie(
         Sprite sprite,
         Body body,
         Map<String, InitialMovingEntityTexturesPerDirectionPack> animations,
-        TextureAtlas textureAtlas, MainHeroEntity mainHeroEntity,
+        TextureAtlas textureAtlas,
         Set<Rectangle> collisions) {
         super(sprite, body, animations, textureAtlas);
-        this.mainHeroEntity = mainHeroEntity;
         this.collisions = collisions;
     }
 
     @Override
-    public void render() {
+    public GameContext render(GameContext context) {
         Vector2 stepToTarget = followTarget(
             getBody().getPosition(),
-            mainHeroEntity.getBody().getPosition(),
+            context.currentLevel().getMainHeroEntity().getCenterCoordinates(),
             .01f
         );
 
         move(stepToTarget.x, stepToTarget.y);
+        return context;
     }
 
     private Vector2 followTarget(Vector2 myPos, Vector2 playerPos, float speed) {

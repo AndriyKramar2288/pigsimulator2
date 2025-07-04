@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.banew.containers.GameContainer;
+import com.banew.other.records.GameContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,7 +30,9 @@ public class SpriteEntity {
         this.body = body;
     }
 
-    public void render() { }
+    public GameContext render(GameContext context) {
+        return context;
+    }
 
     public void replace(float stepX, float stepY) {
         sprite.translate(stepX, stepY);

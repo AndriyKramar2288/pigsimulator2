@@ -18,7 +18,6 @@ import com.banew.external.GeneralSettings;
 import com.banew.external.InitialGameLevel;
 import com.banew.factories.EntityFactory;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -64,7 +63,7 @@ public class GameLevel implements Disposable {
     private Body replaceBody(Body oldBody, FixtureDef newFixture) {
         // Створюємо нове тіло в іншому світі:
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.type = oldBody.getType();
         bodyDef.position.set(oldBody.getPosition());
         bodyDef.angle = oldBody.getAngle();
         bodyDef.linearVelocity.set(oldBody.getLinearVelocity());

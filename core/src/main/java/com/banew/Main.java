@@ -2,6 +2,7 @@ package com.banew;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FillViewport;
@@ -17,19 +18,17 @@ public class Main implements ApplicationListener {
 
     private GameContainer gameContainer;
     private GuiContainer guiContainer;
-    private GeneralSettings generalSettings;
 
     @Override
     public void create() {
-        generalSettings = GeneralSettings.importSettings();
+        GeneralSettings generalSettings = GeneralSettings.importSettings();
 
         spriteBatch = new SpriteBatch();
         viewport = new FillViewport(8, 5);
 
         PlayerInfo playerInfo = new PlayerInfo();
-        gameContainer = new GameContainer(viewport.getCamera(), generalSettings, playerInfo);
+        gameContainer = new GameContainer((OrthographicCamera) viewport.getCamera(), generalSettings, playerInfo);
         guiContainer = new GuiContainer(playerInfo);
-
     }
 
     @Override
@@ -51,7 +50,7 @@ public class Main implements ApplicationListener {
         gameContainer.renderSprites(spriteBatch);
         spriteBatch.end();
         gameContainer.renderLight();
-        guiContainer.render(gameContainer);
+        guiContainer.render(gameContainer.getContext());
     }
 
     @Override

@@ -6,29 +6,25 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
-import com.banew.entities.LevelsDoor;
 import com.banew.entities.MainHeroEntity;
 import com.banew.external.GeneralSettings;
 import com.banew.factories.EntityFactory;
 import com.banew.other.dto.PlayerInfo;
+import com.banew.other.records.GameContext;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
 public class GameContainer implements Disposable {
-    private MainHeroEntity mainHeroEntity;
-    private final OrthographicCamera camera;
-    private final LightContainer lightContainer;
-    private GameLevel currentLevel;
-    private final Set<GameLevel> levels;
     private boolean isMoving = false;
-    @Getter
-    private final PlayerInfo playerInfo;
     private float staminaReloadTimer = 0f;
-
     public static boolean isDebug = false;
+
+    @Getter
+    private GameContext context;
 
     public static final Texture WHITE_PIXEL;
     static {
@@ -39,64 +35,44 @@ public class GameContainer implements Disposable {
         pixmap.dispose();
     }
 
-    public GameContainer(Camera camera, GeneralSettings generalSettings, PlayerInfo playerInfo) {
-        this.camera = (OrthographicCamera) camera;
+    public GameContainer(OrthographicCamera camera, GeneralSettings generalSettings, PlayerInfo playerInfo) {
 
-
-        this.playerInfo = playerInfo;
         String COLLISION_LAYER_NAME = generalSettings.getCollision_level_name();
 
         EntityFactory entityFactory = new EntityFactory(generalSettings);
 
-        levels = generalSettings.getLevels();
-        currentLevel = levels.stream().toList().get(0);
+        var levels = generalSettings.getLevels();
+        var currentLevel = levels.stream().toList().get(0);
         entityFactory.setCurrentGameLevel(currentLevel);
         levels.forEach(level -> level.loadEntites(generalSettings, entityFactory));
 
         entityFactory.setCurrentGameLevel(currentLevel);
-        mainHeroEntity = (MainHeroEntity) generalSettings.getMainHero().extractEntity(entityFactory);
+        var mainHeroEntity = (MainHeroEntity) generalSettings.getMainHero().extractEntity(entityFactory);
         currentLevel.setMainHeroEntity(mainHeroEntity);
 
-        this.lightContainer = new LightContainer((OrthographicCamera) camera, currentLevel.getWorld());
+        var lightContainer = new LightContainer((OrthographicCamera) camera, currentLevel.getWorld(), mainHeroEntity);
+
+        context = new GameContext(
+            mainHeroEntity,
+            camera,
+            lightContainer,
+            currentLevel,
+            levels,
+            playerInfo
+        );
     }
 
 
     public void renderSprites(SpriteBatch spriteBatch) {
         isMoving = false;
 
-        currentLevel.getWorld().step(Gdx.graphics.getDeltaTime(), 1, 1);
+        context.currentLevel().getWorld().step(Gdx.graphics.getDeltaTime(), 1, 1);
 
         movingRender();
 
-        currentLevel.getEntitySet().forEach(e -> {
+        context.currentLevel().getEntitySet().forEach(e -> {
             e.draw(spriteBatch);
-            e.render();
-
-            if (e instanceof LevelsDoor) {
-                if (mainHeroEntity.getCenterCoordinates().sub(e.getCenterCoordinates()).len2() < 2f) {
-                    System.out.println("Ми поруч з порталом в " + ((LevelsDoor) e).getLavelTo());
-                }
-
-
-                if (mainHeroEntity.getCenterCoordinates().sub(e.getCenterCoordinates()).len2() < .5f && ((LevelsDoor) e).isOpen()) {
-                    GameLevel targetLevel = levels.stream()
-                        .filter(l -> l.getLevelName().equals(((LevelsDoor) e).getLavelTo()))
-                        .findFirst()
-                        .orElseThrow(() -> new RuntimeException("Рівня такого нема, довбойоб"));
-
-                    System.out.println(
-                        "Рівень змінюється з " + currentLevel.getLevelName() + " на " + targetLevel.getLevelName()
-                    );
-
-                    targetLevel.setMainHeroEntity(mainHeroEntity);
-                    currentLevel = targetLevel;
-                    lightContainer.setWorld(targetLevel.getWorld());
-                    ((LevelsDoor) e).setOpen(false);
-                }
-                if (mainHeroEntity.getCenterCoordinates().sub(e.getCenterCoordinates()).len2() > 3f) {
-                    ((LevelsDoor) e).setOpen(true);
-                }
-            }
+            context = e.render(context);
 
             if (isDebug) {
                 e.getCollisionSprite(WHITE_PIXEL).draw(spriteBatch);
@@ -104,15 +80,15 @@ public class GameContainer implements Disposable {
         });
 
         if (isDebug) {
-            currentLevel.getCollisions().forEach(r -> {
+            context.currentLevel().getCollisions().forEach(r -> {
                 spriteBatch.draw(WHITE_PIXEL, r.x, r.y, r.width, r.height);
             });
         }
     }
 
     public void renderScene() {
-        if (currentLevel != null) {
-            currentLevel.renderMap(camera);
+        if (context.currentLevel() != null) {
+            context.currentLevel().renderMap(context.camera());
         }
     }
 
@@ -125,25 +101,25 @@ public class GameContainer implements Disposable {
         moveMainHeroRender();
         reloadStamina();
 
-        camera.position.lerp(new Vector3(mainHeroEntity.getCenterCoordinates(), 0f), .125f);
-        camera.zoom = isMoving ? smoothZoom(1.05f) : smoothZoom(1f);
+        context.camera().position.lerp(new Vector3(context.mainHeroEntity().getCenterCoordinates(), 0f), .125f);
+        context.camera().zoom = isMoving ? smoothZoom(1.05f) : smoothZoom(1f);
 
-        camera.update();
+        context.camera().update();
     }
 
     private void reloadStamina() {
-        if (mainHeroEntity.isRunning()) {
+        if (context.mainHeroEntity().isRunning()) {
             staminaReloadTimer = 0f;
         }
         staminaReloadTimer += Gdx.graphics.getDeltaTime();
-        if (staminaReloadTimer > 3 && getPlayerInfo().getPlayerStamina() < getPlayerInfo().getMaxPlayerStamina()) {
-            getPlayerInfo().setPlayerStamina(getPlayerInfo().getPlayerStamina() + .7f);
+        if (staminaReloadTimer > 3 && context.playerInfo().getPlayerStamina() < context.playerInfo().getMaxPlayerStamina()) {
+            context.playerInfo().setPlayerStamina(context.playerInfo().getPlayerStamina() + .7f);
         }
     }
 
 
     private void moveMainHero(float x, float y) {
-        mainHeroEntity.move(-x, -y);
+        context.mainHeroEntity().move(-x, -y);
     }
 
     private float computeStep() {
@@ -159,16 +135,16 @@ public class GameContainer implements Disposable {
             Input.Keys.D, (speed) -> moveMainHero(-speed, 0)
         );
 
-        mainHeroEntity.doNotMove();
+        context.mainHeroEntity().doNotMove();
         keysMovementAction.forEach((key, value) -> {
             if (Gdx.input.isKeyPressed(key)) {
-                if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && getPlayerInfo().getPlayerStamina() > 0) {
-                    mainHeroEntity.setRunning(true);
+                if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && context.playerInfo().getPlayerStamina() > 0) {
+                    context.mainHeroEntity().setRunning(true);
                     value.accept(computeStep() * 1.5f);
-                    getPlayerInfo().setPlayerStamina(getPlayerInfo().getPlayerStamina() - .05f);
+                    context.playerInfo().setPlayerStamina(context.playerInfo().getPlayerStamina() - .05f);
                 }
                 else {
-                    mainHeroEntity.setRunning(false);
+                    context.mainHeroEntity().setRunning(false);
                     value.accept(computeStep());
                 }
 
@@ -182,16 +158,17 @@ public class GameContainer implements Disposable {
         float zoomSpeed = 4.5f; // одиниці за секунду
 
         // Поточний зум → поступово тягнемо до цілі
-        return camera.zoom + (targetZoom - camera.zoom) * zoomSpeed * Gdx.graphics.getDeltaTime();
+        return context.camera().zoom + (targetZoom - context.camera().zoom) * zoomSpeed * Gdx.graphics.getDeltaTime();
     }
 
     @Override
     public void dispose() {
-        currentLevel.dispose();
-        lightContainer.dispose();
+        context.levels().forEach(GameLevel::dispose);
+        context.lightContainer().dispose();
+        WHITE_PIXEL.dispose();
     }
 
     public void renderLight() {
-        lightContainer.render();
+        context.lightContainer().render();
     }
 }

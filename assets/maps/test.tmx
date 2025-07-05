@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="32">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="34">
  <tileset firstgid="1" name="Hills" tilewidth="16" tileheight="16" tilecount="77" columns="11">
   <image source="../Sprout Lands - Sprites - Basic pack/Tilesets/Hills.png" trans="ff00ff" width="176" height="112"/>
  </tileset>
@@ -69,7 +69,7 @@
   <object id="17" type="colision" x="406.418" y="67.9635" width="4.13084" height="10.5844"/>
   <object id="18" name="Кущ всемогущий" type="colision" x="341.81" y="146.333" width="4.13084" height="10.5844"/>
  </objectgroup>
- <objectgroup id="5" name="Doors">
-  <object id="30" name="penis" x="258.273" y="163.182"/>
+ <objectgroup id="7" name="Objects">
+  <object id="33" name="penis" x="257.25" y="158.75"/>
  </objectgroup>
 </map>

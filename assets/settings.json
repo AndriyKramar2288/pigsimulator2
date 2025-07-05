@@ -59,19 +59,20 @@
           "type": "door",
           "levelFrom": "main",
           "levelTo": "oblivion",
-          "singleName": "penis"
+          "nameInLevel": "penis"
         }
       ]
     },
     {
       "levelName": "oblivion",
+      "lightMode": "oblivion",
       "mapName": "maps/test2.tmx",
       "initialEntities": [
         {
           "type": "door",
           "levelFrom": "oblivion",
           "levelTo": "main",
-          "singleName": "penis"
+          "nameInLevel": "penis"
         },
         {
           "type": "animated",

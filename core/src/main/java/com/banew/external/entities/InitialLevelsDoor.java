@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 public class InitialLevelsDoor extends AbstractInitialEntity {
     private String levelFrom;
     private String levelTo;
-    private String singleName;
 
     @Override
     public SpriteEntity extractEntity(EntityFactory factory) {

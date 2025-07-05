@@ -2,7 +2,6 @@ package com.banew.entities;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.banew.containers.GameLevel;
 import com.banew.other.records.GameContext;
 import lombok.Getter;
@@ -58,7 +57,7 @@ public class LevelsDoor extends SpriteEntity {
             targetLevel.setMainHeroEntity(mainHeroEntity, targetDoor.getCenterCoordinates());
 
             context.currentLevelRef().setGameLevel(targetLevel);
-            context.lightContainer().updateLevel();
+            context.currentLevel().getLightMode().switchTo();
 
             setOpen(false);
         }

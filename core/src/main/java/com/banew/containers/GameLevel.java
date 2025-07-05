@@ -12,6 +12,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Disposable;
+import com.banew.containers.lightModes.DayNightLightMode;
+import com.banew.containers.lightModes.LightMode;
+import com.banew.containers.lightModes.OblivionLightMode;
 import com.banew.entities.LevelsDoor;
 import com.banew.entities.MainHeroEntity;
 import com.banew.entities.SpriteEntity;
@@ -44,6 +47,37 @@ public class GameLevel implements Disposable {
     private final World world;
     @Getter
     private final String levelName;
+    @Getter
+    private final LightMode lightMode;
+
+    public GameLevel(InitialGameLevel initLevel, GeneralSettings generalSettings) {
+        levelName = initLevel.getLevelName();
+        this.initLevel = initLevel;
+        world = new World(
+            new Vector2(0, 0),
+            false
+        );
+
+        entitySet = new TreeSet<>(Comparator.comparingInt(SpriteEntity::getPriority)
+            .thenComparingInt(Object::hashCode));
+
+        TmxMapLoader.Parameters params = new TmxMapLoader.Parameters();
+        params.textureMinFilter = Texture.TextureFilter.Nearest;
+        params.textureMagFilter = Texture.TextureFilter.Nearest;
+        params.generateMipMaps = false;
+        params.convertObjectToTileSpace = false;
+
+        map = new TmxMapLoader().load(initLevel.getMapName(), params);
+        renderer = new OrthoCachedTiledMapRenderer(map, 1f / unitScaleMap);
+        renderer.setBlending(true);
+
+        lightMode = switch (initLevel.getLightMode()) {
+            case "oblivion" -> new OblivionLightMode(this);
+            default -> new DayNightLightMode(this);
+        };
+
+        loadCollisions();
+    }
 
     public void renderMap(OrthographicCamera camera) {
         renderer.setView(camera);
@@ -68,6 +102,7 @@ public class GameLevel implements Disposable {
         mainHeroEntity.setSpritePosition(newPosition);
 
         this.mainHeroEntity = mainHeroEntity;
+        lightMode.switchTo();
     }
 
     private Body replaceBody(Body oldBody, FixtureDef newFixture, Vector2 newPosition) {
@@ -91,32 +126,6 @@ public class GameLevel implements Disposable {
         // ВИДАЛЯЄМО старе тіло зі старого світу (якщо потрібно)
         oldBody.getWorld().destroyBody(oldBody);
         return newBody;
-    }
-
-    public GameLevel(InitialGameLevel initLevel, GeneralSettings generalSettings) {
-        levelName = initLevel.getLevelName();
-        this.initLevel = initLevel;
-        world = new World(
-            new Vector2(0, 0),
-            false
-        );
-
-        entitySet = new TreeSet<>(Comparator.comparingInt(SpriteEntity::getPriority)
-            .thenComparingInt(Object::hashCode));
-
-        TmxMapLoader.Parameters params = new TmxMapLoader.Parameters();
-        params.textureMinFilter = Texture.TextureFilter.Nearest;
-        params.textureMagFilter = Texture.TextureFilter.Nearest;
-        params.generateMipMaps = false;
-        params.convertObjectToTileSpace = false;
-
-        map = new TmxMapLoader().load(initLevel.getMapName(), params);
-        renderer = new OrthoCachedTiledMapRenderer(map, 1f / unitScaleMap);
-        renderer.setBlending(true);
-
-
-
-        loadCollisions();
     }
 
     public void loadEntites(GeneralSettings generalSettings, EntityFactory factory) {
@@ -177,6 +186,7 @@ public class GameLevel implements Disposable {
     @Override
     public void dispose() {
         world.dispose();
+        lightMode.dispose();
         renderer.dispose();
     }
 }

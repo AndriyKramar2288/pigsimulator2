@@ -2,9 +2,11 @@ package com.banew.containers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.banew.entities.MainHeroEntity;
@@ -14,10 +16,8 @@ import com.banew.other.dto.PlayerInfo;
 import com.banew.other.records.GameContext;
 import com.banew.utilites.GameLevelRef;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Consumer;
 
 public class GameContainer implements Disposable {
@@ -55,18 +55,14 @@ public class GameContainer implements Disposable {
         var mainHeroEntity = (MainHeroEntity) generalSettings.getMainHero().extractEntity(entityFactory);
         currentLevel.setMainHeroEntity(mainHeroEntity, mainHeroEntity.getBody().getPosition());
 
-        var lightContainer = new LightContainer((OrthographicCamera) camera, currentLevel.getWorld(), mainHeroEntity);
 
         context = new GameContext(
             mainHeroEntity,
             camera,
-            lightContainer,
             new GameLevelRef(currentLevel),
             levels,
             playerInfo
         );
-
-        lightContainer.setContext(context);
     }
 
 
@@ -168,14 +164,13 @@ public class GameContainer implements Disposable {
         return context.camera().zoom + (targetZoom - context.camera().zoom) * zoomSpeed * Gdx.graphics.getDeltaTime();
     }
 
+    public void renderLight() {
+        context.currentLevel().getLightMode().render(context);
+    }
+
     @Override
     public void dispose() {
         context.levels().forEach(GameLevel::dispose);
-        context.lightContainer().dispose();
         WHITE_PIXEL.dispose();
-    }
-
-    public void renderLight() {
-        context.lightContainer().render();
     }
 }

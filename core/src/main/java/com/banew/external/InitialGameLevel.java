@@ -14,6 +14,7 @@ public class InitialGameLevel {
     private String levelName;
     private List<AbstractInitialEntity> initialEntities;
     private String mapName;
+    private String lightMode = "";
 
     public Set<SpriteEntity> getEntities(EntityFactory factory) {
         initialEntities.forEach(e -> e.setGameLevel(this));

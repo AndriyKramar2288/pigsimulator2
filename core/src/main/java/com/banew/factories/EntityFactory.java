@@ -137,18 +137,14 @@ public class EntityFactory {
 
         TiledMap map = new TmxMapLoader().load(level.getMapName());
 
-        Rectangle rectangle = GameLevel.fromMapObject(
-            map.getLayers().get("Doors").getObjects().get(src.getSingleName())
-        );
-
         Sprite invisibleSprite = new Sprite();
-        invisibleSprite.setPosition(rectangle.getX(), rectangle.getY());
-        invisibleSprite.setSize(0, 0);
+        invisibleSprite.setPosition(src.getX() + src.getSize_x() / 2, src.getY() + src.getSize_y() / 2);
+        invisibleSprite.setSize(src.getSize_x(), src.getSize_y());
         invisibleSprite.setTexture(GameContainer.WHITE_PIXEL);
 
         return new LevelsDoor(
             invisibleSprite,
-            src.getLevelFrom(), src.getLevelTo(), src.getSingleName()
+            src.getLevelFrom(), src.getLevelTo(), src.getNameInLevel()
         );
     }
 

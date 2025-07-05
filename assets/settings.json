@@ -72,6 +72,32 @@
           "levelFrom": "oblivion",
           "levelTo": "main",
           "singleName": "penis"
+        },
+        {
+          "type": "animated",
+          "animationDelay": 0.4,
+          "texture": {
+            "type": "classic",
+            "region": "hryak2/pig001",
+            "widthScale": 0.45
+          },
+          "animations": [
+            [
+              {
+                "type": "classic",
+                "region": "hryak2/pig001"
+              },
+              {
+                "type": "classic",
+                "region": "hryak2/pig002"
+              },
+              {
+                "type": "classic",
+                "region": "hryak2/pig003"
+              }
+            ]
+          ],
+          "nameInLevel": "soso"
         }
       ]
     }

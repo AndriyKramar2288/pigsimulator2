@@ -16,6 +16,8 @@ public class InitialGameLevel {
     private String mapName;
 
     public Set<SpriteEntity> getEntities(EntityFactory factory) {
+        initialEntities.forEach(e -> e.setGameLevel(this));
+
         return initialEntities.stream()
             .map(e -> e.extractEntity(factory))
             .collect(Collectors.toSet());

@@ -58,7 +58,8 @@ public class LevelsDoor extends SpriteEntity {
             targetLevel.setMainHeroEntity(mainHeroEntity, targetDoor.getCenterCoordinates());
 
             context.currentLevelRef().setGameLevel(targetLevel);
-            context.lightContainer().setWorld(targetLevel.getWorld(), mainHeroEntity);
+            context.lightContainer().updateLevel();
+
             setOpen(false);
         }
         if (mainHeroEntity.getCenterCoordinates().sub(getCenterCoordinates()).len2() > REOPEN_DISTANCE) {

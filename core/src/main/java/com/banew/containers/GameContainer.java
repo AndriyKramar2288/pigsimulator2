@@ -65,6 +65,8 @@ public class GameContainer implements Disposable {
             levels,
             playerInfo
         );
+
+        lightContainer.setContext(context);
     }
 
 

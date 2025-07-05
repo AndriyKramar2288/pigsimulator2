@@ -8,11 +8,15 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
 import com.banew.entities.MainHeroEntity;
+import com.banew.other.records.GameContext;
+import lombok.Setter;
 
 public class LightContainer implements Disposable {
     private final OrthographicCamera camera;
     private final RayHandler rayHandler;
     private final Light light;
+    @Setter
+    private GameContext context;
 
     public LightContainer(OrthographicCamera camera, World world, MainHeroEntity mainHeroEntity) {
         this.camera = camera;
@@ -29,9 +33,13 @@ public class LightContainer implements Disposable {
         light.attachToBody(mainHeroEntity.getBody());
     }
 
-    public void setWorld(World world, MainHeroEntity mainHeroEntity) {
-        rayHandler.setWorld(world);
-        light.attachToBody(mainHeroEntity.getBody());
+    public void updateLevel() {
+        if (context == null) {
+            throw new RuntimeException("Контекст ще не був інжектований в lightContainer!");
+        }
+
+        rayHandler.setWorld(context.currentLevel().getWorld());
+        light.attachToBody(context.mainHeroEntity().getBody());
     }
 
     public void render() {

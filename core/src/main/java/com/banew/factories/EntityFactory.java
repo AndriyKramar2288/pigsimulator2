@@ -74,13 +74,14 @@ public class EntityFactory {
             src.getTexture().getWidthScale(), src.getTexture().getHeightScale()
         );
 
-        AnimatedEntity entity = new AnimatedEntity(
-            sprite,
-            body,
-            waitingRegion,
-            src.getAnimationDelay(),
-            regionsList
-        );
+        AnimatedEntity entity;
+        try {
+            entity = src.getTargetClass()
+                .getConstructor(Sprite.class, Body.class, TextureRegion.class, Float.class, List.class)
+                .newInstance(sprite, body, waitingRegion, src.getAnimationDelay(), regionsList);
+        } catch (Exception e) {
+            throw new RuntimeException("Не вдалося створити AnimatedEntity-нащадка", e);
+        }
 
         entity.setCurrentScales(new Vector2(extractor.getWidthScale(), extractor.getHeightScale()));
 

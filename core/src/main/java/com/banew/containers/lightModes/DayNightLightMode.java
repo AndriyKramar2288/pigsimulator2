@@ -7,6 +7,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.banew.containers.GameLevel;
+import com.banew.entities.Torch;
+import com.banew.entities.Zombie;
 import com.banew.other.records.GameContext;
 
 public class DayNightLightMode implements LightMode {
@@ -18,6 +20,8 @@ public class DayNightLightMode implements LightMode {
     private final GameLevel gameLevel;
 
     public DayNightLightMode(GameLevel gameLevel) {
+        this.gameLevel = gameLevel;
+
         rayHandler = new RayHandler(gameLevel.getWorld());
         rayHandler.setAmbientLight(0.3f);
 
@@ -26,12 +30,20 @@ public class DayNightLightMode implements LightMode {
             new Color(1f, .3f, 0f, .2f), 3f, 0f, 0f
         );
 
-        this.gameLevel = gameLevel;
+        gameLevel.getEntitySet().forEach(e -> {
+            if (e instanceof Torch) {
+                Light torchLight = new PointLight(
+                    rayHandler, 4096,
+                    new Color(1f, .5f, 0f, .8f), 3f, 0f, 0f
+                );
+
+                torchLight.attachToBody(e.getBody());
+            }
+        });
     }
 
     @Override
     public void render(GameContext gameContext) {
-        timer += Gdx.graphics.getDeltaTime();
         float currentStage = (MathUtils.cos(timer * MathUtils.PI2 / 20) + 1f) / 2f;
 
         Color color = new Color(
@@ -49,6 +61,11 @@ public class DayNightLightMode implements LightMode {
 
         rayHandler.setCombinedMatrix(gameContext.camera()); // синхронізує з камерою
         rayHandler.updateAndRender();
+    }
+
+    @Override
+    public void step() {
+        timer += Gdx.graphics.getDeltaTime();
     }
 
     @Override

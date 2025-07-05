@@ -18,15 +18,14 @@ import com.banew.containers.lightModes.OblivionLightMode;
 import com.banew.entities.LevelsDoor;
 import com.banew.entities.MainHeroEntity;
 import com.banew.entities.SpriteEntity;
+import com.banew.entities.Torch;
 import com.banew.external.GeneralSettings;
 import com.banew.external.InitialGameLevel;
+import com.banew.external.entities.InitialAnimatedEntity;
 import com.banew.factories.EntityFactory;
 import lombok.Getter;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Інкапсулює усі дані про ігровий рівень, ще вже створено
@@ -50,9 +49,8 @@ public class GameLevel implements Disposable {
     @Getter
     private final LightMode lightMode;
 
-    public GameLevel(InitialGameLevel initLevel, GeneralSettings generalSettings) {
+    public GameLevel(InitialGameLevel initLevel, EntityFactory factory) {
         levelName = initLevel.getLevelName();
-        this.initLevel = initLevel;
         world = new World(
             new Vector2(0, 0),
             false
@@ -71,20 +69,27 @@ public class GameLevel implements Disposable {
         renderer = new OrthoCachedTiledMapRenderer(map, 1f / unitScaleMap);
         renderer.setBlending(true);
 
+        loadCollisions();
+        loadEntities(factory, initLevel);
+
+//        map.getLayers().get("Objects").getObjects().forEach(o -> {
+//            if (o.getProperties().get("Class") != null) {
+//                if (o.getProperties().get("Class").equals("Torch")) {
+//                    System.out.println("Торчок найден!");
+//                }
+//            }
+//        });
+
         lightMode = switch (initLevel.getLightMode()) {
             case "oblivion" -> new OblivionLightMode(this);
             default -> new DayNightLightMode(this);
         };
-
-        loadCollisions();
     }
 
     public void renderMap(OrthographicCamera camera) {
         renderer.setView(camera);
         renderer.render();
     }
-
-    private final InitialGameLevel initLevel;
 
     public LevelsDoor getDoorByName(String name) {
         return (LevelsDoor) entitySet.stream()
@@ -94,7 +99,7 @@ public class GameLevel implements Disposable {
             .orElseThrow(() -> new RuntimeException("Нема двері на рівні " + getLevelName() + " з назвою " + name));
     }
 
-    public void setMainHeroEntity(MainHeroEntity mainHeroEntity, Vector2 newPosition) {
+    public void switchTo(MainHeroEntity mainHeroEntity, Vector2 newPosition) {
         entitySet.add(mainHeroEntity);
         mainHeroEntity.setBody(
             replaceBody(mainHeroEntity.getBody(), mainHeroEntity.generateFixtureDef(), newPosition)
@@ -105,6 +110,13 @@ public class GameLevel implements Disposable {
         lightMode.switchTo();
     }
 
+    /**
+     * Переміщує Body у world поточного ігрового рівня, перемістивши при цьому тіло на нову позицію
+     * @param oldBody старе тіло
+     * @param newFixture нова форма
+     * @param newPosition нова позиція
+     * @return нове тіло (на основі старого)
+     */
     private Body replaceBody(Body oldBody, FixtureDef newFixture, Vector2 newPosition) {
         // Створюємо нове тіло в іншому світі:
         BodyDef bodyDef = new BodyDef();
@@ -128,7 +140,7 @@ public class GameLevel implements Disposable {
         return newBody;
     }
 
-    public void loadEntites(GeneralSettings generalSettings, EntityFactory factory) {
+    private void loadEntities(EntityFactory factory, InitialGameLevel initLevel) {
         factory.setCurrentGameLevel(this);
         entitySet.addAll(initLevel.getEntities(factory));
     }

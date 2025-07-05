@@ -20,6 +20,11 @@ public class OblivionLightMode implements LightMode {
     }
 
     @Override
+    public void step() {
+
+    }
+
+    @Override
     public void switchTo() {
 
     }

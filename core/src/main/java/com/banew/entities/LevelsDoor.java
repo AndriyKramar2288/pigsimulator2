@@ -54,10 +54,10 @@ public class LevelsDoor extends SpriteEntity {
 
             LevelsDoor targetDoor = targetLevel.getDoorByName(singleName);
             targetDoor.setOpen(false);
-            targetLevel.setMainHeroEntity(mainHeroEntity, targetDoor.getCenterCoordinates());
+            currentLevel.getEntitySet().remove(mainHeroEntity);
+            targetLevel.switchTo(mainHeroEntity, targetDoor.getCenterCoordinates());
 
             context.currentLevelRef().setGameLevel(targetLevel);
-            context.currentLevel().getLightMode().switchTo();
 
             setOpen(false);
         }

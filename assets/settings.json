@@ -12,6 +12,36 @@
       "mapName": "maps/test.tmx",
       "initialEntities": [
         {
+          "type": "torch",
+          "nameInLevel": "вася",
+          "animationDelay": 0.4,
+          "texture": {
+            "type": "classic",
+            "region": "hryak2/pig001",
+            "widthScale": 0.45
+          },
+          "animations": [
+            [
+              {
+                "type": "classic",
+                "region": "hryak2/pig001"
+              },
+              {
+                "type": "classic",
+                "region": "hryak2/pig002"
+              },
+              {
+                "type": "classic",
+                "region": "hryak2/pig003"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "zombie",
+          "nameInLevel": "rabyk"
+        },
+        {
           "type": "static",
           "texture": {
             "type": "deep",

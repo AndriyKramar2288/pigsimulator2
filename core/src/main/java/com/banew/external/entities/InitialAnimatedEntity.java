@@ -4,6 +4,7 @@ import com.banew.entities.AnimatedEntity;
 import com.banew.entities.SpriteEntity;
 import com.banew.external.textures.AbstractInitialTexture;
 import com.banew.factories.EntityFactory;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,6 +15,8 @@ import java.util.List;
 public class InitialAnimatedEntity extends AbstractInitialEntity {
     private float animationDelay;
     private List<List<AbstractInitialTexture>> animations;
+
+    private Class<? extends AnimatedEntity> targetClass = AnimatedEntity.class;
 
     @Override
     public SpriteEntity extractEntity(EntityFactory factory) {

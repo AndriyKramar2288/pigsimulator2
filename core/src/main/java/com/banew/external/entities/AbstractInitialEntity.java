@@ -19,7 +19,8 @@ import lombok.Data;
     @JsonSubTypes.Type(value = InitialAnimatedEntity.class, name = "animated"),
     @JsonSubTypes.Type(value = InitialMainHeroEntity.class, name = "main_hero"),
     @JsonSubTypes.Type(value = InitialZombie.class, name = "zombie"),
-    @JsonSubTypes.Type(value = InitialLevelsDoor.class, name = "door")
+    @JsonSubTypes.Type(value = InitialLevelsDoor.class, name = "door"),
+    @JsonSubTypes.Type(value = InitialTorch.class, name = "torch")
 })
 @Data
 public abstract class AbstractInitialEntity {

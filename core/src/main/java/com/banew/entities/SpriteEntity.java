@@ -7,11 +7,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.banew.containers.GameContainer;
 import com.banew.other.records.GameContext;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
 public class SpriteEntity {
-    private final Sprite sprite;
+    @Getter
+    @Setter
+    @JsonIgnore
+    private Sprite sprite;
     @Getter
     @Setter
     private Body body;
@@ -20,10 +24,6 @@ public class SpriteEntity {
     private int priority = 0;
     @Setter
     private Vector2 currentScales = new Vector2(1, 1);
-
-    protected Sprite getSprite() {
-        return sprite;
-    }
 
     public void setSpritePosition(Vector2 position) {
         sprite.setPosition(position.x, position.y);

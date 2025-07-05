@@ -17,6 +17,7 @@ import com.banew.other.records.GameContext;
 import com.banew.utilites.GameLevelRef;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -43,18 +44,16 @@ public class GameContainer implements Disposable {
 
         EntityFactory entityFactory = new EntityFactory(generalSettings);
 
-        var levels = generalSettings.getLevels();
+        var levels = generalSettings.getLevels(entityFactory);
+
         var currentLevel = levels.stream()
             .filter(l -> l.getLevelName().equals("main"))
             .findFirst()
             .orElseThrow();
 
-        levels.forEach(level -> level.loadEntites(generalSettings, entityFactory));
-
         entityFactory.setCurrentGameLevel(currentLevel);
         var mainHeroEntity = (MainHeroEntity) generalSettings.getMainHero().extractEntity(entityFactory);
-        currentLevel.setMainHeroEntity(mainHeroEntity, mainHeroEntity.getBody().getPosition());
-
+        currentLevel.switchTo(mainHeroEntity, mainHeroEntity.getBody().getPosition());
 
         context = new GameContext(
             mainHeroEntity,
@@ -73,7 +72,7 @@ public class GameContainer implements Disposable {
 
         movingRender();
 
-        context.currentLevel().getEntitySet().forEach(e -> {
+        new ArrayList<>(context.currentLevel().getEntitySet()).forEach(e -> {
             e.draw(spriteBatch);
             e.render(context);
 
@@ -95,6 +94,10 @@ public class GameContainer implements Disposable {
         }
     }
 
+    public void renderLight() {
+        context.levels().forEach(l -> l.getLightMode().step());
+        context.currentLevel().getLightMode().render(context);
+    }
 
     private void movingRender() {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
@@ -162,10 +165,6 @@ public class GameContainer implements Disposable {
 
         // Поточний зум → поступово тягнемо до цілі
         return context.camera().zoom + (targetZoom - context.camera().zoom) * zoomSpeed * Gdx.graphics.getDeltaTime();
-    }
-
-    public void renderLight() {
-        context.currentLevel().getLightMode().render(context);
     }
 
     @Override

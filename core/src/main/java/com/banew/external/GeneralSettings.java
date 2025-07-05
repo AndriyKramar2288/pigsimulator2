@@ -3,6 +3,7 @@ package com.banew.external;
 import com.badlogic.gdx.Gdx;
 import com.banew.containers.GameLevel;
 import com.banew.external.entities.InitialMainHeroEntity;
+import com.banew.factories.EntityFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 
@@ -19,12 +20,21 @@ public class GeneralSettings {
     private InitialMainHeroEntity mainHero;
     private List<InitialGameLevel> gameLevels = new ArrayList<>();
 
-    public Set<GameLevel> getLevels() {
+    /**
+     * Завантажує ігрові рівні
+     * @param factory фабрика для створення сутностей в рівнях
+     * @return сет з рівнями
+     */
+    public Set<GameLevel> getLevels(EntityFactory factory) {
         return gameLevels.stream()
-            .map(initSet -> new GameLevel(initSet, this))
+            .map(initSet -> new GameLevel(initSet, factory))
             .collect(Collectors.toSet());
     }
 
+    /**
+     * Створити екземпляр налаштувань на основі файлу "settings.json" в ./assets
+     * @return екземпляр
+     */
     public static GeneralSettings importSettings() {
         ObjectMapper objectMapper = new ObjectMapper();
         try {

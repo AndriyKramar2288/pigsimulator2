@@ -16,16 +16,6 @@ public class TextureExtractorClassic implements TextureExtractor {
         return texture;
     }
 
-    @Override
-    public float getWidthScale() {
-        return widthScale;
-    }
-
-    @Override
-    public float getHeightScale() {
-        return heightScale;
-    }
-
     public TextureExtractorClassic(String region, float widthScale, float heightScale) {
         this.region = region;
         this.heightScale = heightScale;

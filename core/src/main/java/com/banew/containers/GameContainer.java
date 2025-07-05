@@ -52,7 +52,11 @@ public class GameContainer implements Disposable {
             .orElseThrow();
 
         entityFactory.setCurrentGameLevel(currentLevel);
-        var mainHeroEntity = (MainHeroEntity) generalSettings.getMainHero().extractEntity(entityFactory);
+        var mainHeroEntity = (MainHeroEntity) currentLevel.getEntitySet().stream()
+            .filter(e -> e instanceof MainHeroEntity)
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Головного бандіта не найшли на поточному рівні!"));
+
         currentLevel.switchTo(mainHeroEntity, mainHeroEntity.getBody().getPosition());
 
         context = new GameContext(

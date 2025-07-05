@@ -1,64 +1,48 @@
 package com.banew.entities;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
-import com.banew.external.textures.AbstractInitialTexture;
-import com.banew.other.records.InitialMovingEntityTexturesPerDirectionPack;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.banew.other.records.GameContext;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class MovingEntity extends SpriteEntity {
     protected float timer = 0f;
 
-    private final List<TextureRegion> waitingRegions;
-    protected List<Animation<TextureRegion>> animationList;
-    protected List<Vector2> animationsScales;
+    private final List<TextureRegion> waitingRegions = new ArrayList<>();
+    protected List<Animation<TextureRegion>> animationList = new ArrayList<>();
+    protected List<Vector2> animationsScales = new ArrayList<>();
 
-    protected int movingSide = 0;
+    protected int movingSide = 3;
     private boolean isMoving = false;
 
     public MovingEntity(
         Sprite sprite,
         Body body,
-        Map<String, InitialMovingEntityTexturesPerDirectionPack> animations,
+        Map<String, MovingEntityTexturesPerDirectionPack> animations,
         TextureAtlas textureAtlas
     ) {
-        super(sprite, body);
+        super(sprite, body, animations.get("down").scaleTexture());
         List<String> directions = List.of("up", "left", "down", "right");
 
-        List<MovingEntityTexturesPerDirectionPack> texturePacks = directions.stream()
-            .map(direction -> new MovingEntityTexturesPerDirectionPack(
-                animations.get(direction).getWaitingTexture().extractTextureExtractor(),
-                animations.get(direction).getAnimation().stream()
-                    .map(AbstractInitialTexture::extractTextureExtractor)
-                    .toList(),
-                new Vector2(
-                    animations.get(direction).getWaitingTexture().getWidthScale(),
-                    animations.get(direction).getWaitingTexture().getHeightScale()
-                )
-            )).toList();
+        directions.forEach(direction -> {
+            MovingEntityTexturesPerDirectionPack pack = animations.get(direction);
 
-
-        this.waitingRegions = texturePacks.stream()
-            .map(MovingEntityTexturesPerDirectionPack::waitingTexture)
-            .map(t -> t.extractRegions(textureAtlas))
-            .toList();
-        this.animationList = texturePacks.stream()
-            .map(range -> new Animation<TextureRegion>(
-                0.25f,
-                range.animation().stream()
-                    .map(a -> a.extractRegions(textureAtlas))
-                    .toList().toArray(new TextureRegion[0])
-            ))
-            .toList();
-        this.animationsScales = texturePacks.stream()
-            .map(MovingEntityTexturesPerDirectionPack::scaleTexture)
-            .toList();
+            waitingRegions.add(pack.waitingTexture());
+            animationList.add(new Animation<>(
+                .7f, pack.animation().toArray(new TextureRegion[0])
+            ));
+            animationsScales.add(pack.scaleTexture());
+        });
 
         resetBody();
     }
@@ -136,5 +120,4 @@ public class MovingEntity extends SpriteEntity {
             return stepY > 0 ? 0 : 2; // 0 → вгору, 2 → вниз
         }
     }
-
 }

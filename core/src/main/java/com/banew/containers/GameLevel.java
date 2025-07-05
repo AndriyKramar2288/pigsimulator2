@@ -18,14 +18,14 @@ import com.banew.containers.lightModes.OblivionLightMode;
 import com.banew.entities.LevelsDoor;
 import com.banew.entities.MainHeroEntity;
 import com.banew.entities.SpriteEntity;
-import com.banew.entities.Torch;
-import com.banew.external.GeneralSettings;
 import com.banew.external.InitialGameLevel;
-import com.banew.external.entities.InitialAnimatedEntity;
 import com.banew.factories.EntityFactory;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Інкапсулює усі дані про ігровий рівень, ще вже створено
@@ -70,15 +70,9 @@ public class GameLevel implements Disposable {
         renderer.setBlending(true);
 
         loadCollisions();
-        loadEntities(factory, initLevel);
 
-//        map.getLayers().get("Objects").getObjects().forEach(o -> {
-//            if (o.getProperties().get("Class") != null) {
-//                if (o.getProperties().get("Class").equals("Torch")) {
-//                    System.out.println("Торчок найден!");
-//                }
-//            }
-//        });
+        factory.setCurrentGameLevel(this);
+        entitySet.addAll(factory.resolveMapObjects(map.getLayers().get("Objects").getObjects()));
 
         lightMode = switch (initLevel.getLightMode()) {
             case "oblivion" -> new OblivionLightMode(this);
@@ -138,11 +132,6 @@ public class GameLevel implements Disposable {
         // ВИДАЛЯЄМО старе тіло зі старого світу (якщо потрібно)
         oldBody.getWorld().destroyBody(oldBody);
         return newBody;
-    }
-
-    private void loadEntities(EntityFactory factory, InitialGameLevel initLevel) {
-        factory.setCurrentGameLevel(this);
-        entitySet.addAll(initLevel.getEntities(factory));
     }
 
     private void loadCollisions() {

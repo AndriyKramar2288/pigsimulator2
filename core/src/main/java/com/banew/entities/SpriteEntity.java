@@ -29,9 +29,10 @@ public class SpriteEntity {
         sprite.setPosition(position.x, position.y);
     }
 
-    public SpriteEntity(Sprite sprite, Body body) {
+    public SpriteEntity(Sprite sprite, Body body, Vector2 collisionScales) {
         this.sprite = sprite;
         this.body = body;
+        this.currentScales = collisionScales;
     }
 
     public void render(GameContext context) {

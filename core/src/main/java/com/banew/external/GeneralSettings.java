@@ -2,7 +2,6 @@ package com.banew.external;
 
 import com.badlogic.gdx.Gdx;
 import com.banew.containers.GameLevel;
-import com.banew.external.entities.InitialMainHeroEntity;
 import com.banew.factories.EntityFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
 public class GeneralSettings {
     private String main_atlas_src;
     private String collision_level_name;
-    private InitialMainHeroEntity mainHero;
     private List<InitialGameLevel> gameLevels = new ArrayList<>();
 
     /**

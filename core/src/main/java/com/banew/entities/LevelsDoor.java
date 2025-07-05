@@ -2,6 +2,7 @@ package com.banew.entities;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.banew.containers.GameLevel;
 import com.banew.other.records.GameContext;
 import lombok.Getter;
@@ -24,7 +25,7 @@ public class LevelsDoor extends SpriteEntity {
 
 
     public LevelsDoor(Sprite sprite, String levelFrom, String levelTo, String singleName) {
-        super(sprite, null);
+        super(sprite, null, new Vector2());
 
         this.levelFrom = levelFrom;
         this.levelTo = levelTo;

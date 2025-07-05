@@ -5,9 +5,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.banew.containers.GameContainer;
 import com.banew.other.records.GameContext;
-import com.banew.other.records.InitialMovingEntityTexturesPerDirectionPack;
+import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
 
 import java.util.Map;
 import java.util.Set;
@@ -15,15 +14,15 @@ import java.util.Set;
 public class Zombie extends MovingEntity {
     private final Set<Rectangle> collisions;
 
-    public Zombie(
-        Sprite sprite,
-        Body body,
-        Map<String, InitialMovingEntityTexturesPerDirectionPack> animations,
-        TextureAtlas textureAtlas,
-        Set<Rectangle> collisions) {
+    public Zombie(Sprite sprite,
+                  Body body,
+                  Map<String, MovingEntityTexturesPerDirectionPack> animations,
+                  TextureAtlas textureAtlas,
+                  Set<Rectangle> collisions) {
         super(sprite, body, animations, textureAtlas);
         this.collisions = collisions;
     }
+
 
     @Override
     public void render(GameContext context) {

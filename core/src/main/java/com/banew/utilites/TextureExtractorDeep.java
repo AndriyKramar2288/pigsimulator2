@@ -2,37 +2,49 @@ package com.banew.utilites;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.banew.other.records.MatrixVector;
 
-import java.util.*;
+import java.awt.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TextureExtractorDeep implements TextureExtractor {
-    private final String region;
+    private String region;
     private final int sizeX;
     private final int sizeY;
     private final int cordX;
     private final int cordY;
     private static final Map<String, TextureRegion[][]> cashedRegions = new HashMap<>();
 
-    private final float heightScale;
-    private final float widthScale;
-
-    public TextureExtractorDeep(String region, MatrixVector size, MatrixVector cords, float widthScale, float heightScale) {
+    public TextureExtractorDeep(String region, int width, int height, Point cord) {
         this.region = region;
-        this.sizeX = size.x();
-        this.sizeY = size.y();
-        this.cordX = cords.x();
-        this.cordY = cords.y();
-        this.widthScale = widthScale;
-        this.heightScale = heightScale;
+        this.sizeX = width;
+        this.sizeY = height;
+        this.cordX = cord.x;
+        this.cordY = cord.y;
     }
 
-    public static List<? extends TextureExtractor> fromOneSubtexture(
-        String region, MatrixVector size, float widthScale, float heightScale, MatrixVector ... cords
+    public static Point getTilePosition(int index, int width, int height) {
+        if (index < 1 || index > width * height) {
+            throw new IllegalArgumentException("Індекс виходить за межі сітки");
+        }
+
+        int adjustedIndex = index - 1;
+        int row = adjustedIndex / width + 1;
+        int column = adjustedIndex % width + 1;
+
+        return new Point(column, row);
+    }
+
+    public static List<TextureRegion> fromOneSubtexture(
+        String region, int width, int height, TextureAtlas atlas, Integer ... indexes
     ) {
-        return Arrays.stream(cords)
-            .map(cord -> new TextureExtractorDeep(region, size, cord, widthScale, heightScale))
-            .toList();
+        return Arrays.stream(indexes)
+            .map(index -> new TextureExtractorDeep(
+                region, width, height, getTilePosition(index, width, height
+            )))
+            .map(each -> each.extractRegions(atlas)).toList();
     }
 
     @Override
@@ -41,21 +53,16 @@ public class TextureExtractorDeep implements TextureExtractor {
         TextureRegion[][] grid = cashedRegions.computeIfAbsent(key, s -> {
 
             TextureRegion fullRegion = atlas.findRegion(region);
+
+            if (fullRegion == null) {
+                throw new RuntimeException("Не знайшли регіон: " + region);
+            }
+
             int tileWidth = fullRegion.getRegionWidth() / sizeX;
             int tileHeight = fullRegion.getRegionHeight() / sizeY;
             return fullRegion.split(tileWidth, tileHeight);
         });
 
         return grid[cordY - 1][cordX - 1];
-    }
-
-    @Override
-    public float getWidthScale() {
-        return widthScale;
-    }
-
-    @Override
-    public float getHeightScale() {
-        return heightScale;
     }
 }

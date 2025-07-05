@@ -1,136 +1,15 @@
 {
   "main_atlas_src": "textures-generated/game.atlas",
   "collision_level_name": "Колізіонєри",
-  "mainHero": {
-    "type": "main_hero",
-    "x": 4,
-    "y": 4
-  },
   "gameLevels": [
     {
       "levelName": "main",
-      "mapName": "maps/test.tmx",
-      "initialEntities": [
-        {
-          "type": "torch",
-          "nameInLevel": "вася",
-          "animationDelay": 0.4,
-          "texture": {
-            "type": "classic",
-            "region": "hryak2/pig001",
-            "widthScale": 0.45
-          },
-          "animations": [
-            [
-              {
-                "type": "classic",
-                "region": "hryak2/pig001"
-              },
-              {
-                "type": "classic",
-                "region": "hryak2/pig002"
-              },
-              {
-                "type": "classic",
-                "region": "hryak2/pig003"
-              }
-            ]
-          ]
-        },
-        {
-          "type": "zombie",
-          "nameInLevel": "rabyk"
-        },
-        {
-          "type": "static",
-          "texture": {
-            "type": "deep",
-            "region": "Objects/Basic_Plants",
-            "sizeX": 6,
-            "sizeY": 2,
-            "cordX": 1,
-            "cordY": 1
-          },
-          "size_x": 1,
-          "size_y": 1,
-          "x": 3,
-          "y": 10
-        },
-        {
-          "type": "animated",
-          "animationDelay": 0.4,
-          "texture": {
-            "type": "classic",
-            "region": "hryak2/pig001",
-            "widthScale": 0.45
-          },
-          "animations": [
-            [
-              {
-                "type": "classic",
-                "region": "hryak2/pig001"
-              },
-              {
-                "type": "classic",
-                "region": "hryak2/pig002"
-              },
-              {
-                "type": "classic",
-                "region": "hryak2/pig003"
-              }
-            ]
-          ],
-          "size_x": 1,
-          "size_y": 1,
-          "x": 3,
-          "y": 2
-        },
-        {
-          "type": "door",
-          "levelFrom": "main",
-          "levelTo": "oblivion",
-          "nameInLevel": "penis"
-        }
-      ]
+      "mapName": "maps/test.tmx"
     },
     {
       "levelName": "oblivion",
       "lightMode": "oblivion",
-      "mapName": "maps/test2.tmx",
-      "initialEntities": [
-        {
-          "type": "door",
-          "levelFrom": "oblivion",
-          "levelTo": "main",
-          "nameInLevel": "penis"
-        },
-        {
-          "type": "animated",
-          "animationDelay": 0.4,
-          "texture": {
-            "type": "classic",
-            "region": "hryak2/pig001",
-            "widthScale": 0.45
-          },
-          "animations": [
-            [
-              {
-                "type": "classic",
-                "region": "hryak2/pig001"
-              },
-              {
-                "type": "classic",
-                "region": "hryak2/pig002"
-              },
-              {
-                "type": "classic",
-                "region": "hryak2/pig003"
-              }
-            ]
-          ],
-          "nameInLevel": "soso"
-        }
-      ]
+      "mapName": "maps/test2.tmx"
     }
   ]
 }

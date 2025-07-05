@@ -28,9 +28,10 @@ public class AnimatedEntity extends SpriteEntity {
         Body body,
         TextureRegion waitingRegion,
         Float delayBetween,
-        List<List<TextureRegion>> regionsList
+        List<List<TextureRegion>> regionsList,
+        Vector2 collisionScales
         ) {
-        super(sprite, body);
+        super(sprite, body, collisionScales);
         this.delayBetween = delayBetween;
         this.waitingRegion = waitingRegion;
 

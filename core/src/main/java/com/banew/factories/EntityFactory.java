@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -18,7 +16,6 @@ import com.banew.containers.GameContainer;
 import com.banew.containers.GameLevel;
 import com.banew.entities.*;
 import com.banew.external.GeneralSettings;
-import com.banew.external.InitialGameLevel;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
 import com.banew.utilites.TextureExtractorDeep;
 import lombok.Setter;
@@ -27,6 +24,8 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.function.Function;
+
+import static com.banew.other.records.MovingEntityTexturesPerDirectionPack.fromOneSubtexture;
 
 public class EntityFactory {
     private final TextureAtlas textureAtlas;
@@ -90,19 +89,19 @@ public class EntityFactory {
         Rectangle rectangle = GameLevel.fromMapObject(object);
 
         Map<String, MovingEntityTexturesPerDirectionPack> textures = Map.of(
-            "right", MovingEntityTexturesPerDirectionPack.fromOneSubtexture(
+            "right", fromOneSubtexture(
                 "Characters/Basic Charakter Spritesheet", 4, 4, textureAtlas,
                 14, new Vector2(.25f, .35f), 13, 15, 16
             ),
-            "up", MovingEntityTexturesPerDirectionPack.fromOneSubtexture(
+            "up", fromOneSubtexture(
                 "Characters/Basic Charakter Spritesheet", 4, 4, textureAtlas,
                 6, new Vector2(.32f, .35f), 5, 7, 8
             ),
-            "left", MovingEntityTexturesPerDirectionPack.fromOneSubtexture(
+            "left", fromOneSubtexture(
                 "Characters/Basic Charakter Spritesheet", 4, 4, textureAtlas,
                 10, new Vector2(.25f, .35f), 9, 11, 12
             ),
-            "down", MovingEntityTexturesPerDirectionPack.fromOneSubtexture(
+            "down", fromOneSubtexture(
                 "Characters/Basic Charakter Spritesheet", 4, 4, textureAtlas,
                 2, new Vector2(.32f, .35f), 1, 3, 4
             )
@@ -120,19 +119,19 @@ public class EntityFactory {
         Rectangle rectangle = GameLevel.fromMapObject(mapObject);
 
         Map<String, MovingEntityTexturesPerDirectionPack> textures = Map.of(
-            "left", MovingEntityTexturesPerDirectionPack.fromOneSubtexture(
+            "left", fromOneSubtexture(
                 "Characters/zombie_n_skeleton2", 9, 4, textureAtlas,
                 11, new Vector2(.7f, .7f), 10, 11, 12
             ),
-            "up", MovingEntityTexturesPerDirectionPack.fromOneSubtexture(
+            "up", fromOneSubtexture(
                 "Characters/zombie_n_skeleton2", 9, 4, textureAtlas,
                 29, new Vector2(.7f, .7f), 28, 29, 30
             ),
-            "right", MovingEntityTexturesPerDirectionPack.fromOneSubtexture(
+            "right", fromOneSubtexture(
                 "Characters/zombie_n_skeleton2", 9, 4, textureAtlas,
                 20, new Vector2(.7f, .7f), 19, 20, 21
             ),
-            "down", MovingEntityTexturesPerDirectionPack.fromOneSubtexture(
+            "down", fromOneSubtexture(
                 "Characters/zombie_n_skeleton2", 9, 4, textureAtlas,
                 2, new Vector2(.7f, .7f), 1, 2, 3
             )
@@ -150,6 +149,11 @@ public class EntityFactory {
     public LevelsDoor createLevelsDoor(MapObject mapObject) {
         String from = mapObject.getProperties().get("from", String.class);
         String to = mapObject.getProperties().get("to", String.class);
+        String name = mapObject.getProperties().get("singleName", String.class);
+
+        if (from == null || to == null || name == null) {
+            throw new RuntimeException("Для дверей " + mapObject.getName() + " не було вказано поля 'from' або 'to'");
+        }
 
         Rectangle rectangle = GameLevel.fromMapObject(mapObject);
 
@@ -160,7 +164,7 @@ public class EntityFactory {
 
         return new LevelsDoor(
             invisibleSprite,
-            from, to, mapObject.getName()
+            from, to, name
         );
     }
 

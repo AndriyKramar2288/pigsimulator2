@@ -72,10 +72,11 @@
  <objectgroup id="6" name="Objects">
   <object id="33" name="soso" x="72.3333" y="158.667" width="20" height="45.3333"/>
   <object id="34" name="penis" x="236.5" y="89.5"/>
-  <object id="36" name="penis" x="390.667" y="199">
+  <object id="36" x="390.667" y="199">
    <properties>
     <property name="Class" value="door"/>
     <property name="from" value="oblivion"/>
+    <property name="singleName" value="penis"/>
     <property name="to" value="main"/>
    </properties>
   </object>

@@ -3,12 +3,12 @@ package com.banew.containers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.banew.entities.MainHeroEntity;
 import com.banew.external.GeneralSettings;
 import com.banew.factories.EntityFactory;
@@ -38,7 +38,7 @@ public class GameContainer implements Disposable {
         pixmap.dispose();
     }
 
-    public GameContainer(OrthographicCamera camera, GeneralSettings generalSettings, PlayerInfo playerInfo) {
+    public GameContainer(Viewport viewport, GeneralSettings generalSettings, PlayerInfo playerInfo) {
 
         String COLLISION_LAYER_NAME = generalSettings.getCollision_level_name();
 
@@ -61,7 +61,7 @@ public class GameContainer implements Disposable {
 
         context = new GameContext(
             mainHeroEntity,
-            camera,
+            viewport,
             new GameLevelRef(currentLevel),
             levels,
             playerInfo

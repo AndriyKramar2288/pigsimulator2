@@ -70,15 +70,16 @@
   <object id="18" name="Кущ всемогущий" type="colision" x="341.81" y="146.333" width="4.13084" height="10.5844"/>
  </objectgroup>
  <objectgroup id="7" name="Objects">
-  <object id="33" name="penis" x="257.25" y="158.75">
+  <object id="33" x="257.25" y="158.75">
    <properties>
     <property name="Class" value="door"/>
     <property name="from" value="main"/>
+    <property name="singleName" value="penis"/>
     <property name="to" value="oblivion"/>
    </properties>
   </object>
   <object id="34" name="rabyk" x="399.906" y="181" width="4.00343" height="3.88636"/>
-  <object id="35" name="вася" type="Torch" x="349.636" y="186.364" width="14.3636" height="21.4545">
+  <object id="35" name="вася" type="Torch" x="262.386" y="117.989" width="14.3636" height="21.4545">
    <properties>
     <property name="Class" value="torch"/>
    </properties>

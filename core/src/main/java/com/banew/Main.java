@@ -2,7 +2,6 @@ package com.banew;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FillViewport;
@@ -27,7 +26,7 @@ public class Main implements ApplicationListener {
         viewport = new FillViewport(8, 5);
 
         PlayerInfo playerInfo = new PlayerInfo();
-        gameContainer = new GameContainer((OrthographicCamera) viewport.getCamera(), generalSettings, playerInfo);
+        gameContainer = new GameContainer(viewport, generalSettings, playerInfo);
         guiContainer = new GuiContainer(playerInfo);
     }
 

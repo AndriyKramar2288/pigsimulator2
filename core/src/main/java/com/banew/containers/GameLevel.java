@@ -40,7 +40,7 @@ public class GameLevel implements Disposable {
     private final TiledMap map;
     private final OrthoCachedTiledMapRenderer renderer;
     @Getter
-    private Set<Rectangle> collisions;
+    private final Set<Rectangle> collisions = new HashSet<>();
     public static final float unitScaleMap = 32f;
     @Getter
     private final World world;
@@ -135,9 +135,12 @@ public class GameLevel implements Disposable {
     }
 
     private void loadCollisions() {
-        collisions = generateCollisions("Колізіонєри");
+        MapLayer layer = getMap().getLayers().get("Колізіонєри");
+        layer.getObjects().forEach(object -> {
+            Rectangle e = fromMapObject(object);
 
-        collisions.forEach(e -> {
+            collisions.add(e);
+
             BodyDef def = new BodyDef();
             def.type = BodyDef.BodyType.StaticBody;
             def.position.x = e.getX() + e.getWidth() / 2;
@@ -151,24 +154,11 @@ public class GameLevel implements Disposable {
             fDef.shape = shape;
             fDef.density = 100f;
             fDef.friction = 0.5f;
+            if ("wall".equals(object.getProperties().get("Class", String.class))) {
+                fDef.filter.categoryBits = 0x0002;
+            }
             body.createFixture(fDef);
         });
-    }
-
-    public Set<Rectangle> generateCollisions(String collisionLayerName) {
-        MapLayer layer = getMap().getLayers().get(collisionLayerName);
-
-        Set<Rectangle> result = new HashSet<>();
-
-        if (layer != null) {
-            layer.getObjects().forEach(obj -> {
-
-                Rectangle rectCollision = fromMapObject(obj);
-                result.add(rectCollision);
-            });
-        }
-
-        return result;
     }
 
     public static Rectangle fromMapObject(MapObject obj) {

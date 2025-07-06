@@ -59,10 +59,6 @@
   <object id="4" x="272" y="116.999" width="5" height="59.0005"/>
   <object id="6" x="203" y="144" width="5" height="32"/>
   <object id="7" x="203" y="117.002" width="5" height="11"/>
-  <object id="10" x="-6" y="-6" width="492" height="12.6667"/>
-  <object id="11" x="-6" y="312.333" width="492" height="12.6667"/>
-  <object id="12" x="473.818" y="6.89392" width="12" height="305.03"/>
-  <object id="13" x="-5.95455" y="6.88273" width="12" height="305.655"/>
   <object id="14" type="colision" x="199.406" y="20.0033" width="1.00584" height="7.08436"/>
   <object id="15" type="colision" x="130.993" y="128.966" width="9.95306" height="15.0288"/>
   <object id="16" type="colision" x="373.81" y="275.145" width="4.13084" height="10.5844"/>

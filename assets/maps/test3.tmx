@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="38">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="39">
  <tileset firstgid="1" name="Hills" tilewidth="16" tileheight="16" tilecount="77" columns="11">
   <image source="../Sprout Lands - Sprites - Basic pack/Tilesets/Hills.png" trans="ff00ff" width="176" height="112"/>
  </tileset>
@@ -68,20 +68,12 @@
  <objectgroup id="6" name="Objects">
   <object id="33" name="soso" x="72.3333" y="158.667" width="20" height="45.3333"/>
   <object id="34" name="penis" x="236.5" y="89.5"/>
-  <object id="36" x="390.667" y="199">
+  <object id="38" x="145" y="263">
    <properties>
     <property name="Class" value="door"/>
-    <property name="from" value="oblivion"/>
-    <property name="singleName" value="penis"/>
-    <property name="to" value="main"/>
-   </properties>
-  </object>
-  <object id="37" x="145" y="263">
-   <properties>
-    <property name="Class" value="door"/>
-    <property name="from" value="oblivion"/>
+    <property name="from" value="oblivion2"/>
     <property name="singleName" value="penis1"/>
-    <property name="to" value="oblivion2"/>
+    <property name="to" value="oblivion"/>
    </properties>
   </object>
  </objectgroup>

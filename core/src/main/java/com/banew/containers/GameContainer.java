@@ -57,8 +57,6 @@ public class GameContainer implements Disposable {
             .findFirst()
             .orElseThrow(() -> new RuntimeException("Головного бандіта не найшли на поточному рівні!"));
 
-        currentLevel.switchTo(mainHeroEntity, mainHeroEntity.getBody().getPosition());
-
         context = new GameContext(
             mainHeroEntity,
             viewport,
@@ -66,6 +64,8 @@ public class GameContainer implements Disposable {
             levels,
             playerInfo
         );
+
+        currentLevel.switchTo(mainHeroEntity, mainHeroEntity.getBody().getPosition(), context);
     }
 
 

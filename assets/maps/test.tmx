@@ -105,7 +105,7 @@
     <property name="Class" value="main_hero"/>
    </properties>
   </object>
-  <object id="37" x="388.5" y="144.75" width="32.25" height="9.5">
+  <object id="37" x="388.5" y="89.5833" width="40" height="8.91667">
    <properties>
     <property name="Class" value="zombie"/>
    </properties>

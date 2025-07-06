@@ -20,12 +20,11 @@ import com.banew.entities.MainHeroEntity;
 import com.banew.entities.SpriteEntity;
 import com.banew.external.InitialGameLevel;
 import com.banew.factories.EntityFactory;
+import com.banew.other.records.GameContext;
 import lombok.Getter;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Інкапсулює усі дані про ігровий рівень, ще вже створено
@@ -48,13 +47,19 @@ public class GameLevel implements Disposable {
     private final String levelName;
     @Getter
     private final LightMode lightMode;
+    private final Set<MusicPattern> musicSet;
 
-    public GameLevel(InitialGameLevel initLevel, EntityFactory factory) {
+    public GameLevel(InitialGameLevel initLevel, EntityFactory factory, Map<String, MusicPattern> musicMap) {
         levelName = initLevel.getLevelName();
         world = new World(
             new Vector2(0, 0),
             false
         );
+
+        musicSet = musicMap.entrySet().stream()
+            .filter(e -> initLevel.getMusicPatterns().contains(e.getKey()))
+            .map(Map.Entry::getValue)
+            .collect(Collectors.toSet());
 
         entitySet = new TreeSet<>(Comparator.comparingInt(SpriteEntity::getPriority)
             .thenComparingInt(Object::hashCode));
@@ -83,6 +88,7 @@ public class GameLevel implements Disposable {
     public void renderMap(OrthographicCamera camera) {
         renderer.setView(camera);
         renderer.render();
+        musicSet.forEach(MusicPattern::render);
     }
 
     public LevelsDoor getDoorByName(String name) {
@@ -93,7 +99,7 @@ public class GameLevel implements Disposable {
             .orElseThrow(() -> new RuntimeException("Нема двері на рівні " + getLevelName() + " з назвою " + name));
     }
 
-    public void switchTo(MainHeroEntity mainHeroEntity, Vector2 newPosition) {
+    public void switchTo(MainHeroEntity mainHeroEntity, Vector2 newPosition, GameContext context) {
         entitySet.add(mainHeroEntity);
         mainHeroEntity.setBody(
             replaceBody(mainHeroEntity.getBody(), mainHeroEntity.generateFixtureDef(), newPosition)
@@ -101,6 +107,11 @@ public class GameLevel implements Disposable {
         mainHeroEntity.setSpritePosition(newPosition);
 
         this.mainHeroEntity = mainHeroEntity;
+        context.levels().stream().filter(l -> l != this).forEach(l -> {
+            l.musicSet.stream()
+                .filter(p -> musicSet.stream().allMatch(my_p -> my_p != p))
+                .forEach(MusicPattern::stopPlay);
+        });
         lightMode.switchTo();
     }
 

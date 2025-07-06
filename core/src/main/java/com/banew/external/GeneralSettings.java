@@ -2,14 +2,13 @@ package com.banew.external;
 
 import com.badlogic.gdx.Gdx;
 import com.banew.containers.GameLevel;
+import com.banew.containers.MusicPattern;
 import com.banew.factories.EntityFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
@@ -17,6 +16,7 @@ public class GeneralSettings {
     private String main_atlas_src;
     private String collision_level_name;
     private List<InitialGameLevel> gameLevels = new ArrayList<>();
+    private Map<String, InitialMusicPattern> musicPatterns = new HashMap<>();
 
     /**
      * Завантажує ігрові рівні
@@ -24,8 +24,15 @@ public class GeneralSettings {
      * @return сет з рівнями
      */
     public Set<GameLevel> getLevels(EntityFactory factory) {
+
+        Map<String, MusicPattern> musicPatternMap = new HashMap<>();
+
+        musicPatterns.forEach((key, value) -> {
+            musicPatternMap.put(key, new MusicPattern(value, key));
+        });
+
         return gameLevels.stream()
-            .map(initSet -> new GameLevel(initSet, factory))
+            .map(initLevel -> new GameLevel(initLevel, factory, musicPatternMap))
             .collect(Collectors.toSet());
     }
 

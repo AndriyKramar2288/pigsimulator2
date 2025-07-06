@@ -4,11 +4,40 @@
   "gameLevels": [
     {
       "levelName": "main",
-      "mapName": "maps/test.tmx"
+      "mapName": "maps/test.tmx",
+      "musicPatterns": [
+        "nature"
+      ]
     },
     {
       "levelName": "oblivion",
-      "mapName": "maps/test2.tmx"
+      "mapName": "maps/test2.tmx",
+      "musicPatterns": [
+        "default"
+      ]
+    },
+    {
+      "levelName": "oblivion2",
+      "mapName": "maps/test3.tmx"
     }
-  ]
+  ],
+  "musicPatterns": {
+    "default": {
+      "delay": 1,
+      "songs": [
+        {
+          "src": "Coolio - Gansta's Paradise.mp3",
+          "volume": 0.01
+        }
+      ]
+    },
+    "nature": {
+      "songs": [
+        {
+          "src": "spring-forest-nature-332842.mp3",
+          "volume": 0.01
+        }
+      ]
+    }
+  }
 }

@@ -51,7 +51,6 @@ public class GameContainer implements Disposable {
             .findFirst()
             .orElseThrow();
 
-        entityFactory.setCurrentGameLevel(currentLevel);
         var mainHeroEntity = (MainHeroEntity) currentLevel.getEntitySet().stream()
             .filter(e -> e instanceof MainHeroEntity)
             .findFirst()

@@ -26,18 +26,31 @@ public class Zombie extends MovingEntity {
 
     @Override
     public void render(GameContext context) {
+        super.render(context);
+
         Vector2 stepToTarget = followTarget(
             getBody().getPosition(),
             context.currentLevel().getMainHeroEntity().getCenterCoordinates(),
-            .01f
+            .01f, context
         );
 
         move(stepToTarget.x, stepToTarget.y);
     }
 
-    private Vector2 followTarget(Vector2 myPos, Vector2 playerPos, float speed) {
+    private Vector2 followTarget(Vector2 myPos, Vector2 playerPos, float speed, GameContext context) {
         Vector2 direction = new Vector2(playerPos).sub(myPos);
-        if (direction.len2() < 1f) return new Vector2();
+        if (direction.len2() < .2f) {
+
+            context.playerInfo().setPlayerHealth(context.playerInfo().getPlayerHealth() - 3f);
+
+            context.mainHeroEntity().getBody().applyLinearImpulse(
+                getCenterCoordinates().sub(context.mainHeroEntity().getCenterCoordinates()).scl(-.04f),
+                context.mainHeroEntity().getCenterCoordinates(),
+                true
+            );
+
+            return new Vector2();
+        }
 
         direction.nor().scl(speed);
 

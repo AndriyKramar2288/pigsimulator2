@@ -39,6 +39,8 @@ public class LevelsDoor extends SpriteEntity {
 
     @Override
     public void render(GameContext context) {
+        super.render(context);
+
         MainHeroEntity mainHeroEntity = context.currentLevel().getMainHeroEntity();
         Set<GameLevel> levels = context.levels();
         GameLevel currentLevel = context.currentLevel();
@@ -54,11 +56,12 @@ public class LevelsDoor extends SpriteEntity {
             );
 
             LevelsDoor targetDoor = targetLevel.getDoorByName(singleName);
-            targetDoor.setOpen(false);
-            currentLevel.getEntitySet().remove(mainHeroEntity);
-            targetLevel.switchTo(mainHeroEntity, targetDoor.getCenterCoordinates(), context);
 
-            context.currentLevelRef().setGameLevel(targetLevel);
+            targetDoor.setOpen(false);
+
+            targetLevel.switchTo(mainHeroEntity, targetDoor.getCenterCoordinates().add(
+                mainHeroEntity.getCenterCoordinates().sub(getCenterCoordinates())
+            ), context);
 
             setOpen(false);
         }

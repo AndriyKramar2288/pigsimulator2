@@ -21,7 +21,11 @@ public class MovingEntity extends SpriteEntity {
     protected List<Vector2> animationsScales = new ArrayList<>();
 
     protected int movingSide = 3;
-    private boolean isMoving = false;
+    private Vector2 selfMoving = new Vector2();
+
+    private boolean isMoving() {
+        return selfMoving.len2() != 0;
+    }
 
     public MovingEntity(
         Sprite sprite,
@@ -53,28 +57,31 @@ public class MovingEntity extends SpriteEntity {
     @Override
     public void draw(SpriteBatch spriteBatch) {
         update(Gdx.graphics.getDeltaTime());
-        if (!isMoving && getBody().getLinearVelocity().len2() < .01f) {
+        if (!isMoving()) {
             getSprite().setRegion(waitingRegions.get(movingSide));
         }
         else {
             getSprite().setRegion(animationList.get(movingSide).getKeyFrame(timer, true));
         }
         super.draw(spriteBatch);
-        isMoving = false;
     }
 
     public void doNotMove() {
-        isMoving = false;
-        getBody().setLinearVelocity(0, 0);
+        getBody().setLinearVelocity(new Vector2(getBody().getLinearVelocity()).sub(selfMoving).scl(0.99f));
+        selfMoving = new Vector2();
     }
 
     public void move(float stepX, float stepY) {
-        getBody().setLinearVelocity(
-            stepX * 100 + getBody().getLinearVelocity().x,
-            stepY * 100 + getBody().getLinearVelocity().y
-        );
+        Vector2 externalVelocity = new Vector2(getBody().getLinearVelocity()).sub(selfMoving);
 
-        isMoving = true;
+        Vector2 currentStep = new Vector2(stepX * 100, stepY * 100);
+        selfMoving.add(currentStep);
+
+        Vector2 finalVelocity = new Vector2(selfMoving).add(externalVelocity.scl(0.95f));
+
+        getBody().setLinearVelocity(finalVelocity);
+
+        // 4. Перевірка зміни напрямку
         if (computeMovingSide(stepX, stepY) != movingSide) {
             movingSide = computeMovingSide(stepX, stepY);
             resetBody();

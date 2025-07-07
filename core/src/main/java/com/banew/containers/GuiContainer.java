@@ -59,6 +59,7 @@ public class GuiContainer implements Disposable {
 
     public void render(GameContext context) {
         staminaBar.setValue(context.playerInfo().getPlayerStamina());
+        hpBar.setValue(context.playerInfo().getPlayerHealth());
 
         guiViewport.apply();
         stage.act(Gdx.graphics.getDeltaTime());

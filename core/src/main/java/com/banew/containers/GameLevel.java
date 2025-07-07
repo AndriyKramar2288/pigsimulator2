@@ -100,18 +100,25 @@ public class GameLevel implements Disposable {
     }
 
     public void switchTo(MainHeroEntity mainHeroEntity, Vector2 newPosition, GameContext context) {
+        // присвоєння
+        context.currentLevel().getEntitySet().remove(mainHeroEntity);
         entitySet.add(mainHeroEntity);
+        this.mainHeroEntity = mainHeroEntity;
+        context.currentLevelRef().setGameLevel(this);
+
+        // оновити тіло / перемістити спрайт
         mainHeroEntity.setBody(
             replaceBody(mainHeroEntity.getBody(), mainHeroEntity.generateFixtureDef(), newPosition)
         );
         mainHeroEntity.setSpritePosition(newPosition);
 
-        this.mainHeroEntity = mainHeroEntity;
+        // зупинити музику, яку треба зупинити
         context.levels().stream().filter(l -> l != this).forEach(l -> {
             l.musicSet.stream()
                 .filter(p -> musicSet.stream().allMatch(my_p -> my_p != p))
                 .forEach(MusicPattern::stopPlay);
         });
+        // перемкнути світло
         lightMode.switchTo();
     }
 

@@ -33,7 +33,7 @@ public class Main implements ApplicationListener {
 
         PlayerInfo playerInfo = new PlayerInfo();
         gameContainer = new GameContainer(viewport, generalSettings, playerInfo);
-        guiContainer = new GuiContainer(playerInfo);
+        guiContainer = new GuiContainer(playerInfo, generalSettings);
     }
 
     @Override
@@ -75,5 +75,6 @@ public class Main implements ApplicationListener {
     @Override
     public void dispose() {
         gameContainer.dispose();
+        guiContainer.dispose();
     }
 }

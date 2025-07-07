@@ -12,6 +12,7 @@
     {
       "levelName": "oblivion",
       "mapName": "maps/test2.tmx",
+      "lightMode": "oblivion",
       "musicPatterns": [
         "default"
       ]
@@ -38,6 +39,12 @@
           "volume": 0.01
         }
       ]
+    }
+  },
+  "sounds" : {
+    "стони": {
+      "src": "ctohbi-1950.mp3",
+      "volume": 0.05
     }
   }
 }

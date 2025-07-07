@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class InitialMusicSong {
     private String src;
-    private Float volume = 0f;
+    private Float volume = .5f;
 }

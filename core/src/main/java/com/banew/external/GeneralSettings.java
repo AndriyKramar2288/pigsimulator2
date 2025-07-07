@@ -17,6 +17,7 @@ public class GeneralSettings {
     private String collision_level_name;
     private List<InitialGameLevel> gameLevels = new ArrayList<>();
     private Map<String, InitialMusicPattern> musicPatterns = new HashMap<>();
+    private Map<String, InitialMusicSong> sounds = new HashMap<>();
 
     /**
      * Завантажує ігрові рівні

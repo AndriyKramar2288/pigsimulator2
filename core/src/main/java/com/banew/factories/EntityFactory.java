@@ -1,6 +1,9 @@
 package com.banew.factories;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -160,7 +163,7 @@ public class EntityFactory {
         Sprite invisibleSprite = new Sprite();
         invisibleSprite.setPosition(rectangle.getX(), rectangle.getY());
         invisibleSprite.setSize(rectangle.getWidth(), rectangle.getHeight());
-        invisibleSprite.setTexture(GameContainer.WHITE_PIXEL);
+        invisibleSprite.setTexture(generateInvisibleTexture());
 
         return new LevelsDoor(
             invisibleSprite,
@@ -237,5 +240,12 @@ public class EntityFactory {
         return sprite;
     }
 
-
+    private Texture generateInvisibleTexture() {
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA4444);
+        pixmap.setColor(new Color(1, 1, 1, 0f));
+        pixmap.fill();
+        Texture texture = new Texture(pixmap);
+        pixmap.dispose();
+        return texture;
+    }
 }

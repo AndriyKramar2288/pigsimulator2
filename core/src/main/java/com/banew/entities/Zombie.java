@@ -43,6 +43,8 @@ public class Zombie extends MovingEntity {
 
             context.playerInfo().setPlayerHealth(context.playerInfo().getPlayerHealth() - 3f);
 
+            context.soundContainer().play("стони");
+
             context.mainHeroEntity().getBody().applyLinearImpulse(
                 getCenterCoordinates().sub(context.mainHeroEntity().getCenterCoordinates()).scl(-.04f),
                 context.mainHeroEntity().getCenterCoordinates(),

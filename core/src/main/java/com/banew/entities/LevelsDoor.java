@@ -14,7 +14,7 @@ import java.util.Set;
 public class LevelsDoor extends SpriteEntity {
 
     private final static float REOPEN_DISTANCE = 1f;
-    private final static float TELEPORT_DISTANCE = .5f;
+    private final static float TELEPORT_DISTANCE = .2f;
 
     private final String levelFrom;
     private final String levelTo;

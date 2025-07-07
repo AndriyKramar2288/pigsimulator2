@@ -61,7 +61,8 @@ public class GameContainer implements Disposable {
             viewport,
             new GameLevelRef(currentLevel),
             levels,
-            playerInfo
+            playerInfo,
+            new SoundContainer(generalSettings)
         );
 
         currentLevel.switchTo(mainHeroEntity, mainHeroEntity.getBody().getPosition(), context);
@@ -103,7 +104,7 @@ public class GameContainer implements Disposable {
     }
 
     private void movingRender() {
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             isDebug = !isDebug;
         }
 

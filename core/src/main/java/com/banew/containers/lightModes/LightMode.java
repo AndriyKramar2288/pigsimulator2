@@ -35,6 +35,12 @@ public abstract class LightMode implements Disposable {
     }
 
     /**
+     * Одержати те, що буде міститись зліва-знизу екрану (аля годинник)
+     * @return рядочок
+     */
+    public abstract String getGuiWatchText();
+
+    /**
      * Викликається завжди для всіх {@link com.banew.containers.GameLevel}
      */
     public abstract void step();

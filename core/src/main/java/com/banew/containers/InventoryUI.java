@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -34,9 +33,10 @@ public class InventoryUI {
     private final int cols = 7;
     // інвентар
     private final List<ImageButton> slots = new ArrayList<>();
+    private final Map<Integer, Integer> activeSlots = new HashMap<>(); // клавіша -> слот
     private int dragged_slot = -1; // індекс інвентарю, з якого ми 'витягнули', і ще нікуди не вставили
     private final DragAndDrop dragAndDrop = new DragAndDrop();
-    private TextureRegionDrawable slotDrawable; // текстура слота
+    private final TextureRegionDrawable slotDrawable; // текстура слота
     // висячі підказки
     private final TooltipManager tooltipManager;
     private final Map<Integer, Tooltip<Label>> slotTooltips = new HashMap<>();
@@ -52,6 +52,7 @@ public class InventoryUI {
 
     public InventoryUI(Stage stage, Skin skin, TextureAtlas atlas) {
         this.skin = skin;
+        slotDrawable = new TextureRegionDrawable(atlas.findRegion("gui/transparent-inventory-for-pvp"));
 
         tooltipManager = TooltipManager.getInstance();
         tooltipManager.initialTime = 0.3f;
@@ -75,13 +76,43 @@ public class InventoryUI {
         // напис "Інвентар" по центру
         addLabel("Інвентар", inventoryTable, skin);
         // слоти інвентарю
-        addInventorySlots(inventoryTable, atlas);
-
+        addInventorySlots(inventoryTable);
+        // напис
+        addLabel("Гарячі клавіші", inventoryTable, skin);
+        // гарячі клавіші
+        addHotKeySlots(inventoryTable);
     }
 
-    private void addInventorySlots(Table inventoryTable, TextureAtlas atlas) {
-        slotDrawable = new TextureRegionDrawable(atlas.findRegion("gui/transparent-inventory-for-pvp"));
+    private static final List<Integer> hotKeys = List.of(
+        Input.Keys.NUM_1,
+        Input.Keys.NUM_2,
+        Input.Keys.NUM_3,
+        Input.Keys.NUM_4,
+        Input.Keys.NUM_5
+    );
+    private void addHotKeySlots(Table inventoryTable) {
+        hotKeys.forEach(key -> {
+            ImageButton button = new ImageButton(slotDrawable.tint(new Color(.5f, .2f, .1f, .228f)));
+            button.getStyle().over = slotDrawable.tint(new Color(.5f, .2f, .1f, .2f));
+            inventoryTable.add(button)
+                .size(Value.percentWidth(.05f, inventoryTable))
+                .pad(5);
 
+            slots.add(button);
+            int index = slots.indexOf(button);
+            activeSlots.put(key, index);
+            setUpDragAndDrop(button, index);
+        });
+    }
+
+    public List<ImageButton> extractHotKeyButtons() {
+        return hotKeys.stream()
+            .map(activeSlots::get)
+            .map(slots::get)
+            .toList();
+    }
+
+    private void addInventorySlots(Table inventoryTable) {
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
                 ImageButton button = new ImageButton(slotDrawable.tint(new Color(.5f, .2f, .1f, .228f)));
@@ -138,6 +169,8 @@ public class InventoryUI {
 
                 dragged_slot = index;
 
+                context.soundContainer().play("inv_drop");
+
                 return payload;
             }
 
@@ -158,6 +191,7 @@ public class InventoryUI {
                 int fromIndex = (Integer) payload.getObject();
                 int toIndex = index;
 
+                context.soundContainer().play("inv_drop");
                 // обмін слотами
                 var fromRegion = getSlotItem(fromIndex);
                 var toRegion = getSlotItem(toIndex);
@@ -169,6 +203,11 @@ public class InventoryUI {
         });
     }
 
+    /**
+     * Отримати предмет по індексу в інвентарі
+     * @param index індекс в інвентарі
+     * @return предмет або null, якщо цей слот інвентарю пустий
+     */
     private AbstractItem getSlotItem(int index) {
         if (context != null) {
             return context.mainHeroEntity().getInventory().get(index);
@@ -203,18 +242,25 @@ public class InventoryUI {
         table.row();
     }
 
-    public void toggle() {
+    private void toggle() {
         visible = !visible;
         actors.forEach(e -> e.setVisible(visible));
     }
 
     public void update(GameContext context) {
         this.context = context;
-
+        // вкл / викл
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
             toggle();
         }
-
+        // використати предмети
+        activeSlots.forEach((key, value) -> {
+            if (Gdx.input.isKeyJustPressed(key)) {
+                AbstractItem item = getSlotItem(value);
+                if (item != null) item.use(context);
+            }
+        });
+        // відобразити елементи інвентарю
         clearDisplayedSlots();
         context.mainHeroEntity().getInventory().forEach(
             (k, v) -> {
@@ -223,7 +269,7 @@ public class InventoryUI {
         );
     }
 
-    public void setItem(int index, AbstractItem item) {
+    private void setItem(int index, AbstractItem item) {
         if (context != null) {
             if (item != null) {
                 context.mainHeroEntity().getInventory().put(index, item);
@@ -234,7 +280,7 @@ public class InventoryUI {
         }
     }
 
-    public void displayItem(int slotIndex, TextureRegion itemTexture) {
+    private void displayItem(int slotIndex, TextureRegion itemTexture) {
         if (slotIndex >= 0 && slotIndex < slots.size()) {
             ImageButton button = slots.get(slotIndex);
 
@@ -248,7 +294,7 @@ public class InventoryUI {
         }
     }
 
-    public void clearDisplayedSlots() {
+    private void clearDisplayedSlots() {
         for (int i = 0; i < slots.size(); i++) {
             if (context == null) break;
             if (context.mainHeroEntity().getInventory().get(i) == null) {

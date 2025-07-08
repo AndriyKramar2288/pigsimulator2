@@ -45,6 +45,14 @@
     "стони": {
       "src": "ctohbi-1950.mp3",
       "volume": 0.05
+    },
+    "хрю": {
+      "src": "khriu.mp3",
+      "volume": 0.5
+    },
+    "inv_drop": {
+      "src": "inv_drop.mp3",
+      "volume": 0.05
     }
   }
 }

@@ -25,6 +25,9 @@ public class SoundContainer {
         });
     }
 
+    /**
+     * @param name назва, що була вказана в конфігурації
+     */
     public void play(String name) {
         Sound sound = soundMap.get(name);
         if (sound != null) {

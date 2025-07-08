@@ -19,6 +19,11 @@ public class OblivionLightMode extends LightMode {
     }
 
     @Override
+    public String getGuiWatchText() {
+        return "тобі пезда";
+    }
+
+    @Override
     public void step() {
 
     }

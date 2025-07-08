@@ -117,7 +117,9 @@ public class EntityFactory {
             textures,
             textureAtlas
         );
-        mainHeroEntity.getInventory().put(3, new StupidItem(textureAtlas.findRegion("hryak1/tile002"), "штучка"));
+        mainHeroEntity.getInventory().put(
+            3, new StupidItem(textureAtlas.findRegion("hryak1/tile002"), "Хрюкающий подсвинок")
+        );
 
         return mainHeroEntity;
     }

@@ -86,6 +86,23 @@ public class DayNightLightMode extends LightMode {
         rayHandler.updateAndRender();
     }
 
+    @Override
+    public String getGuiWatchText() {
+        float timeInDay = timer % CYCLE_LENGTH;
+        float dayProgress = timeInDay / CYCLE_LENGTH;
+
+        // Конвертуємо в хвилини (з урахуванням старту з 12:00)
+        int totalMinutes = (int)((dayProgress * 1440 + 720) % 1440);
+        int hours24 = totalMinutes / 60;
+
+        // Конвертація в 12-годинний формат
+        int displayHour = hours24 % 12;
+        if (displayHour == 0) displayHour = 12;
+        String meridiem = (hours24 < 12) ? "AM" : "PM";
+
+        return String.format("%d %s", displayHour, meridiem);
+    }
+
     private float extractJesusFloat(float currentStage) {
         float alpha = 0f;
         if (currentStage >= 0.25f && currentStage < 0.75f) {

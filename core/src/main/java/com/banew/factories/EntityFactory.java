@@ -19,6 +19,7 @@ import com.banew.containers.GameContainer;
 import com.banew.containers.GameLevel;
 import com.banew.entities.*;
 import com.banew.external.GeneralSettings;
+import com.banew.items.StupidItem;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
 import com.banew.utilites.TextureExtractorDeep;
 import lombok.Setter;
@@ -110,12 +111,15 @@ public class EntityFactory {
             )
         );
 
-        return new MainHeroEntity(
+        MainHeroEntity mainHeroEntity = new MainHeroEntity(
             generateBasicSprite(rectangle, textures.get("down").waitingTexture()),
             generateDynamicBody(rectangle, textures.get("down").scaleTexture().x, textures.get("down").scaleTexture().y),
             textures,
             textureAtlas
         );
+        mainHeroEntity.getInventory().put(3, new StupidItem(textureAtlas.findRegion("hryak1/tile002"), "штучка"));
+
+        return mainHeroEntity;
     }
 
     public Zombie createZombie(MapObject mapObject) {

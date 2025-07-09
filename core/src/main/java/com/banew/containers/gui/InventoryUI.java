@@ -1,4 +1,4 @@
-package com.banew.containers;
+package com.banew.containers.gui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.banew.items.AbstractItem;
 import com.banew.other.records.GameContext;
 import lombok.Getter;
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class InventoryUI {
     // ключові елементи
@@ -36,6 +36,7 @@ public class InventoryUI {
     // інвентар
     private final List<ImageButton> slots = new ArrayList<>();
     private final Map<Integer, Integer> activeSlots = new HashMap<>(); // клавіша -> слот
+    private final Map<Integer, Integer> mouseSlots = new HashMap<>();
     private int dragged_slot = -1; // індекс інвентарю, з якого ми 'витягнули', і ще нікуди не вставили
     private final DragAndDrop dragAndDrop = new DragAndDrop();
     private final TextureRegionDrawable slotDrawable; // текстура слота
@@ -83,11 +84,13 @@ public class InventoryUI {
         // напис "Інвентар" по центру
         addLabel("Інвентар", inventoryTable, skin);
         // слоти інвентарю
-        addInventorySlots(inventoryTable);
+        addInventorySlots(inventoryTable, atlas);
         // напис
         addLabel("Гарячі клавіші", inventoryTable, skin);
         // гарячі клавіші
         addHotKeySlots(inventoryTable);
+        // ліва / права кнопка
+        addHandSlots(inventoryTable, atlas);
     }
 
     private static final List<Integer> hotKeys = List.of(
@@ -105,34 +108,99 @@ public class InventoryUI {
             .toList();
     }
 
-    private void addHotKeySlots(Table inventoryTable) {
-        hotKeys.forEach(key -> {
-            ImageButton button = new ImageButton(slotDrawable.tint(new Color(.5f, .2f, .1f, .228f)));
-            button.getStyle().over = slotDrawable.tint(new Color(.5f, .2f, .1f, .2f));
-            inventoryTable.add(button)
-                .size(Value.percentWidth(0.05f, inventoryTable))
-                .pad(Value.percentWidth(0.005f, inventoryTable));
+    public List<ImageButton> extractHandButtons() {
+        return Stream.of(
+            Input.Buttons.LEFT,
+            Input.Buttons.RIGHT
+        )
+            .map(mouseSlots::get)
+            .map(slots::get)
+            .toList();
+    }
 
-            slots.add(button);
+    private ImageButton generateSlotButton() {
+        ImageButton button = new ImageButton(slotDrawable.tint(new Color(.5f, .2f, .1f, .228f)));
+        button.getStyle().over = slotDrawable.tint(new Color(.5f, .2f, .1f, .2f));
+        slots.add(button);
+        int index = slots.indexOf(button);
+        setUpDragAndDrop(button, index);
+
+        return button;
+    }
+
+    private Cell<ImageButton> insertToInventory(Table ownTable, Table inventoryTable, ImageButton button) {
+        return ownTable.add(button)
+            .size(Value.percentWidth(0.03f, inventoryTable))
+            .pad(Value.percentWidth(0.003f, inventoryTable));
+    }
+
+    private Cell<ImageButton> insertToInventory(Table inventoryTable, ImageButton button) {
+        return insertToInventory(inventoryTable, inventoryTable, button);
+    }
+
+    private void addHandSlots(Table inventoryTable, TextureAtlas atlas) {
+        Table handTable = new Table();
+        handTable.setBackground(new TextureRegionDrawable(
+            atlas.findRegion("gui/hands_back")
+        ));
+        inventoryTable.add(handTable)
+            .colspan(2)
+            .size(
+                Value.percentWidth(0.06f, inventoryTable),
+                Value.percentWidth(0.03f, inventoryTable)
+            );
+
+        List.of(
+            Input.Buttons.LEFT,
+            Input.Buttons.RIGHT
+        ).forEach(key -> {
+            ImageButton button = generateSlotButton();
+            handTable.add(button)
+                .size(Value.percentWidth(0.03f, inventoryTable))
+                .pad(Value.zero);
+
             int index = slots.indexOf(button);
-            activeSlots.put(key, index);
-            setUpDragAndDrop(button, index);
+            mouseSlots.put(key, index);
         });
     }
 
-    private void addInventorySlots(Table inventoryTable) {
+    private void addHotKeySlots(Table inventoryTable) {
+        hotKeys.forEach(key -> {
+            ImageButton button = generateSlotButton();
+            insertToInventory(inventoryTable, button);
+
+            int index = slots.indexOf(button);
+            activeSlots.put(key, index);
+        });
+    }
+
+    private void addInventorySlots(Table inventoryTable, TextureAtlas atlas) {
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
-                ImageButton button = new ImageButton(slotDrawable.tint(new Color(.5f, .2f, .1f, .228f)));
-                button.getStyle().over = slotDrawable.tint(new Color(.5f, .2f, .1f, .2f));
-                inventoryTable.add(button)
-                    .size(Value.percentWidth(0.05f, inventoryTable))
-                    .pad(Value.percentWidth(0.005f, inventoryTable));
+                ImageButton button = generateSlotButton();
 
-                slots.add(button);
-                int index = slots.indexOf(button);
+                if (x == cols - 2) {
+                    Table buttonContainer = new Table();
+                    buttonContainer.setBackground(new TextureRegionDrawable(
+                        atlas.findRegion(switch (y) {
+                            case 0 -> "gui/inv_back_helmet";
+                            case 1 -> "gui/inv_back_armor";
+                            default -> "gui/inv_back_pants";
+                        })
+                    ));
+                    buttonContainer.add(button)
+                        .size(Value.percentWidth(0.03f, inventoryTable));
 
-                setUpDragAndDrop(button, index);
+                    inventoryTable.add(buttonContainer)
+                        .size(
+                            Value.percentWidth(0.06f, inventoryTable),
+                            Value.percentWidth(0.03f, inventoryTable)
+                        );
+                    x += 1;
+                }
+                else {
+                    insertToInventory(inventoryTable, button);
+                }
             }
             inventoryTable.row();
         }
@@ -240,7 +308,7 @@ public class InventoryUI {
     private void addLabel(String text, Table table, Skin skin) {
         Label topLabel = new Label(text, skin);
         topLabel.setColor(.8f, .8f, .8f, .4f);
-        dynamicLabelsContainer.put(topLabel, 0.8f);
+        dynamicLabelsContainer.put(topLabel, 0.5f);
         table.add(topLabel)
             .colspan(cols)
             .padBottom(Value.percentHeight(.01f, table))
@@ -266,6 +334,12 @@ public class InventoryUI {
             if (Gdx.input.isKeyJustPressed(key)) {
                 AbstractItem item = getSlotItem(value);
                 if (item != null) item.use(context);
+            }
+        });
+        mouseSlots.forEach((key, value) -> {
+            if (Gdx.input.isButtonJustPressed(key)) {
+                AbstractItem item = getSlotItem(value);
+                if (item != null && !visible) item.use(context);
             }
         });
         // відобразити елементи інвентарю

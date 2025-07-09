@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.banew.containers.GameContainer;
-import com.banew.containers.GuiContainer;
+import com.banew.containers.gui.GuiContainer;
 import com.banew.external.GeneralSettings;
 import com.banew.other.dto.PlayerInfo;
 
@@ -32,7 +32,7 @@ public class Main implements ApplicationListener {
 
         PlayerInfo playerInfo = new PlayerInfo();
         gameContainer = new GameContainer(viewport, generalSettings, playerInfo);
-        guiContainer = new GuiContainer(playerInfo, generalSettings);
+        guiContainer = new GuiContainer(generalSettings);
     }
 
     @Override

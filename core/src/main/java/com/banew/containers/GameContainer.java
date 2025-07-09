@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.banew.entities.MainHeroEntity;
@@ -24,6 +25,7 @@ import java.util.function.Consumer;
 public class GameContainer implements Disposable {
     private boolean isMoving = false;
     private float staminaReloadTimer = 0f;
+    private float hpReloadTimer = 0f;
     public static boolean isDebug = false;
 
     @Getter
@@ -109,7 +111,7 @@ public class GameContainer implements Disposable {
         }
 
         moveMainHeroRender();
-        reloadStamina();
+        reloadStats();
 
         context.camera().position.lerp(new Vector3(context.mainHeroEntity().getCenterCoordinates(), 0f), .125f);
         context.camera().zoom = isMoving ? smoothZoom(1.05f) : smoothZoom(1f);
@@ -117,13 +119,25 @@ public class GameContainer implements Disposable {
         context.camera().update();
     }
 
-    private void reloadStamina() {
+    private void reloadStats() {
         if (context.mainHeroEntity().isRunning()) {
             staminaReloadTimer = 0f;
         }
+
+        hpReloadTimer += Gdx.graphics.getDeltaTime();
         staminaReloadTimer += Gdx.graphics.getDeltaTime();
+
         if (staminaReloadTimer > 3 && context.playerInfo().getPlayerStamina() < context.playerInfo().getMaxPlayerStamina()) {
             context.playerInfo().setPlayerStamina(context.playerInfo().getPlayerStamina() + .7f);
+        }
+
+        if (context.playerInfo().getPlayerHealth() < context.playerInfo().getMaxPlayerHp()) {
+            if ((hpReloadTimer > 5)) {
+                context.playerInfo().setPlayerHealth(context.playerInfo().getPlayerHealth() + .1f);
+            }
+        }
+        else {
+            hpReloadTimer = 0;
         }
     }
 

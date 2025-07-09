@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.banew.items.AbstractItem;
 import com.banew.other.records.GameContext;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ public class InventoryUI {
     // ключові елементи
     private final List<Actor> actors = new ArrayList<>();
     private final Skin skin;
+    private final Stage stage;
     private boolean visible = false;
     private GameContext context;
     // розмір
@@ -40,6 +42,9 @@ public class InventoryUI {
     // висячі підказки
     private final TooltipManager tooltipManager;
     private final Map<Integer, Tooltip<Label>> slotTooltips = new HashMap<>();
+    // для динамічних Label
+    @Getter
+    private final DynamicLabelsContainer dynamicLabelsContainer;
 
     public static Texture makePixel(int width, int height, Color color) {
         Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
@@ -52,6 +57,8 @@ public class InventoryUI {
 
     public InventoryUI(Stage stage, Skin skin, TextureAtlas atlas) {
         this.skin = skin;
+        this.stage = stage;
+        this.dynamicLabelsContainer = new DynamicLabelsContainer(stage);
         slotDrawable = new TextureRegionDrawable(atlas.findRegion("gui/transparent-inventory-for-pvp"));
 
         tooltipManager = TooltipManager.getInstance();
@@ -90,20 +97,6 @@ public class InventoryUI {
         Input.Keys.NUM_4,
         Input.Keys.NUM_5
     );
-    private void addHotKeySlots(Table inventoryTable) {
-        hotKeys.forEach(key -> {
-            ImageButton button = new ImageButton(slotDrawable.tint(new Color(.5f, .2f, .1f, .228f)));
-            button.getStyle().over = slotDrawable.tint(new Color(.5f, .2f, .1f, .2f));
-            inventoryTable.add(button)
-                .size(Value.percentWidth(.05f, inventoryTable))
-                .pad(5);
-
-            slots.add(button);
-            int index = slots.indexOf(button);
-            activeSlots.put(key, index);
-            setUpDragAndDrop(button, index);
-        });
-    }
 
     public List<ImageButton> extractHotKeyButtons() {
         return hotKeys.stream()
@@ -112,14 +105,29 @@ public class InventoryUI {
             .toList();
     }
 
+    private void addHotKeySlots(Table inventoryTable) {
+        hotKeys.forEach(key -> {
+            ImageButton button = new ImageButton(slotDrawable.tint(new Color(.5f, .2f, .1f, .228f)));
+            button.getStyle().over = slotDrawable.tint(new Color(.5f, .2f, .1f, .2f));
+            inventoryTable.add(button)
+                .size(Value.percentWidth(0.05f, inventoryTable))
+                .pad(Value.percentWidth(0.005f, inventoryTable));
+
+            slots.add(button);
+            int index = slots.indexOf(button);
+            activeSlots.put(key, index);
+            setUpDragAndDrop(button, index);
+        });
+    }
+
     private void addInventorySlots(Table inventoryTable) {
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
                 ImageButton button = new ImageButton(slotDrawable.tint(new Color(.5f, .2f, .1f, .228f)));
                 button.getStyle().over = slotDrawable.tint(new Color(.5f, .2f, .1f, .2f));
                 inventoryTable.add(button)
-                    .size(Value.percentWidth(.05f, inventoryTable))
-                    .pad(5);
+                    .size(Value.percentWidth(0.05f, inventoryTable))
+                    .pad(Value.percentWidth(0.005f, inventoryTable));
 
                 slots.add(button);
                 int index = slots.indexOf(button);
@@ -231,14 +239,14 @@ public class InventoryUI {
 
     private void addLabel(String text, Table table, Skin skin) {
         Label topLabel = new Label(text, skin);
-        topLabel.setAlignment(Align.center); // Вирівнювання тексту всередині Label
         topLabel.setColor(.8f, .8f, .8f, .4f);
-        topLabel.setFontScale(.6f);
+        dynamicLabelsContainer.put(topLabel, 0.8f);
         table.add(topLabel)
             .colspan(cols)
-            .padBottom(2f)
+            .padBottom(Value.percentHeight(.01f, table))
             .left()
-            .padLeft(30f);
+            .padLeft(Value.percentWidth(.01f, table))
+            .width(Value.percentWidth(0.05f * rows, table));
         table.row();
     }
 
@@ -267,6 +275,8 @@ public class InventoryUI {
                 displayItem(k, v.getTextureRegion());
             }
         );
+        // оновити кляті Label
+        dynamicLabelsContainer.updateLabelSizes();
     }
 
     private void setItem(int index, AbstractItem item) {

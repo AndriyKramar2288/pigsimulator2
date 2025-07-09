@@ -3,7 +3,6 @@ package com.banew;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -48,13 +47,13 @@ public class Main implements ApplicationListener {
         // Draw your application here.
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
+        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
 
         renderGame();
     }
 
     private void renderGame() {
         gameContainer.renderScene();
-        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
         spriteBatch.begin();
         gameContainer.renderSprites(spriteBatch);
         spriteBatch.end();

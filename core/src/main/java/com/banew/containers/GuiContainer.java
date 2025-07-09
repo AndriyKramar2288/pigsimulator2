@@ -5,9 +5,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.banew.external.GeneralSettings;
@@ -16,6 +18,7 @@ import com.banew.other.records.GameContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class GuiContainer implements Disposable {
     private final Stage stage;
@@ -26,7 +29,7 @@ public class GuiContainer implements Disposable {
     private ProgressBar hpBar;
     private Label infoLabel;
 
-    private final List<Image> smallHotKeys = new ArrayList<>();
+    private final List<Cell<Image>> smallHotKeys = new ArrayList<>();
 
     private final InventoryUI inventoryUI;
 
@@ -44,8 +47,8 @@ public class GuiContainer implements Disposable {
         );
 
         initLeftInfo(freezing_skin, atlas);
-        initCenterButtomData(ugly_skin, atlas, playerInfo);
         initItemsData(freezing_skin, atlas);
+        initCenterButtomData(ugly_skin, atlas, playerInfo);
 
         Gdx.input.setInputProcessor(stage);
     }
@@ -53,15 +56,18 @@ public class GuiContainer implements Disposable {
     private void initLeftInfo(Skin freezingSkin, TextureAtlas atlas) {
         Table leftTable = new Table(freezingSkin);
         leftTable.setFillParent(true);
-        leftTable.left().bottom().pad(10);
+        leftTable.left().bottom().pad(Value.percentWidth(.005f));
         stage.addActor(leftTable);
 
         infoLabel = new Label("", freezingSkin);
         infoLabel.getStyle().fontColor = new Color(.2f, .2f, .2f, 1);
-        infoLabel.setFontScale(.65f);
+        inventoryUI.getDynamicLabelsContainer().put(infoLabel,.65f);
         Table container = new Table(freezingSkin);
         container.setBackground(new TextureRegionDrawable(atlas.findRegion("gui/infoBack")));
-        container.center().pad(0, 35, 20, 35);
+        container.center().pad(
+            Value.zero, Value.percentWidth(0.35f, infoLabel),
+            Value.percentHeight(0.3f, infoLabel), Value.percentWidth(0.35f, infoLabel)
+        );
         container.add(infoLabel);
         leftTable.add(container).center();
     }
@@ -70,7 +76,7 @@ public class GuiContainer implements Disposable {
         Table itemsTable = new Table(freezing_skin);
         itemsTable.setFillParent(true);
         itemsTable.right().bottom();
-        itemsTable.pad(10);
+        itemsTable.pad(Value.percentWidth(.005f));
         stage.addActor(itemsTable);
 
         Table hotKeysTable = new Table(freezing_skin);
@@ -79,11 +85,12 @@ public class GuiContainer implements Disposable {
 
         inventoryUI.extractHotKeyButtons().forEach(imageButton -> {
             Image smallHotKey = new Image(imageButton.getStyle().imageUp);
-            smallHotKeys.add(smallHotKey);
-            hotKeysTable.add(smallHotKey)
-                .width(60)
-                .height(60)
-                .pad(10, 10, 20, 10);
+
+            Cell<Image> smallHotKeyCell = hotKeysTable.add(smallHotKey)
+                .size(Value.percentWidth(.04f, itemsTable))
+                .pad(Value.percentWidth(.005f, itemsTable));
+
+            smallHotKeys.add(smallHotKeyCell);
         });
     }
 
@@ -91,6 +98,8 @@ public class GuiContainer implements Disposable {
         staminaBar = new ProgressBar(0, playerInfo.getMaxPlayerStamina(), 1, false, ugly_skin);
         hpBar = new ProgressBar(0, playerInfo.getMaxPlayerHp(), 1, false, ugly_skin);
         hpBar.setColor(Color.RED);
+        staminaBar.setSize(70, 10);
+        hpBar.setSize(70, 10);
 
         Table centerTable = new Table(ugly_skin);
         centerTable.setFillParent(true);
@@ -99,27 +108,43 @@ public class GuiContainer implements Disposable {
 
         Table playerInfoTable = new Table(ugly_skin);
         playerInfoTable.setBackground(new TextureRegionDrawable(atlas.findRegion("gui/long_back")));
-        centerTable.add(playerInfoTable).pad(5);
+        centerTable.add(playerInfoTable)
+            .pad(Value.percentWidth(.01f, centerTable))
+            .size(
+                Value.percentWidth(.3f, centerTable),
+                Value.percentHeight(.1f, centerTable)
+            );
 
-        playerInfoTable.add(new Image(atlas.findRegion("gui/threeangle_white")))
-            .width(Value.percentWidth(2))
-            .height(Value.percentHeight(2))
-            .padRight(5).padLeft(15);
+        Function<Cell<?>, Cell<?>> triangularPose = cell -> cell.size(
+                Value.percentWidth(.07f, playerInfoTable),
+                Value.percentHeight(.7f, playerInfoTable)
+            ).padRight(5)
+            .padLeft(15);
 
-        playerInfoTable.add(staminaBar)
-            .width(Value.percentWidth(1.5f))
-            .height(Value.percentHeight(1))
-            .pad(10, 0, 10, 20);
+        Function<Cell<?>, Cell<?>> barPose = cell -> cell
+            .size(Value.percentWidth(.35f, playerInfoTable))
+            .pad(
+                Value.percentWidth(.3f, playerInfoTable),
+                Value.zero,
+                Value.percentWidth(.3f, playerInfoTable),
+                Value.percentWidth(.02f, playerInfoTable)
+            );
 
-        playerInfoTable.add(new Image(atlas.findRegion("gui/threeangle_black")))
-            .width(Value.percentWidth(2))
-            .height(Value.percentHeight(2))
-            .pad(5);
+        triangularPose.apply(
+            playerInfoTable.add(new Image(atlas.findRegion("gui/threeangle_white")))
+        );
 
-        playerInfoTable.add(hpBar)
-            .width(Value.percentWidth(1.5f))
-            .height(Value.percentHeight(1))
-            .pad(10, 0, 10, 15);
+        barPose.apply(
+            playerInfoTable.add(staminaBar)
+        );
+
+        triangularPose.apply(
+            playerInfoTable.add(new Image(atlas.findRegion("gui/threeangle_black")))
+        );
+
+        barPose.apply(
+            playerInfoTable.add(hpBar)
+        );
     }
 
     public void resize(int width, int height) {
@@ -131,8 +156,12 @@ public class GuiContainer implements Disposable {
         hpBar.setValue(context.playerInfo().getPlayerHealth());
 
         inventoryUI.update(context);
+
+        List<ImageButton> inventoryHotKeyButtons = inventoryUI.extractHotKeyButtons();
         for (int i = 0; i < smallHotKeys.size(); i++) {
-            smallHotKeys.get(i).setDrawable(inventoryUI.extractHotKeyButtons().get(i).getStyle().imageUp);
+            Image image = new Image(inventoryHotKeyButtons.get(i).getStyle().imageUp);
+            smallHotKeys.get(i).clearActor();
+            smallHotKeys.get(i).setActor(image);
         }
 
         infoLabel.setText(context.currentLevel().getLightMode().getGuiWatchText());

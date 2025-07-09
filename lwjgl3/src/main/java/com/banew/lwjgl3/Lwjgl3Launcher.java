@@ -13,7 +13,7 @@ public class Lwjgl3Launcher {
     }
 
     private static Lwjgl3Application createApplication() {
-        processTexturePacker();
+        //processTexturePacker();
         //return null;
         return new Lwjgl3Application(new Main(), getDefaultConfiguration());
     }

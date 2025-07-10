@@ -74,7 +74,7 @@ public class MovingEntity extends SpriteEntity {
     public void move(float stepX, float stepY) {
         Vector2 externalVelocity = new Vector2(getBody().getLinearVelocity()).sub(selfMoving);
 
-        Vector2 currentStep = new Vector2(stepX * 100, stepY * 100);
+        Vector2 currentStep = new Vector2(stepX, stepY);
         selfMoving.add(currentStep);
 
         Vector2 finalVelocity = new Vector2(selfMoving).add(externalVelocity.scl(0.95f));

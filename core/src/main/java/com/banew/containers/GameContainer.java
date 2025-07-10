@@ -29,8 +29,9 @@ public class GameContainer implements Disposable {
     public static boolean isDebug = false;
 
     @Getter
-    private GameContext context;
+    private final GameContext context;
 
+    public static final float PLAYER_SPEED = .7f;
     public static final Texture WHITE_PIXEL;
     static {
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA4444);
@@ -146,11 +147,6 @@ public class GameContainer implements Disposable {
         context.mainHeroEntity().move(-x, -y);
     }
 
-    private float computeStep() {
-        float speed = 1f;
-        return speed * Gdx.graphics.getDeltaTime();
-    }
-
     private void moveMainHeroRender() {
         Map<Integer, Consumer<Float>> keysMovementAction = Map.of(
             Input.Keys.W, (speed) -> moveMainHero(0, -speed),
@@ -164,12 +160,12 @@ public class GameContainer implements Disposable {
             if (Gdx.input.isKeyPressed(key)) {
                 if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && context.playerInfo().getPlayerStamina() > 0) {
                     context.mainHeroEntity().setRunning(true);
-                    value.accept(computeStep() * 1.5f);
+                    value.accept(PLAYER_SPEED * 1.5f);
                     context.playerInfo().setPlayerStamina(context.playerInfo().getPlayerStamina() - .05f);
                 }
                 else {
                     context.mainHeroEntity().setRunning(false);
-                    value.accept(computeStep());
+                    value.accept(PLAYER_SPEED);
                 }
 
                 isMoving = true;

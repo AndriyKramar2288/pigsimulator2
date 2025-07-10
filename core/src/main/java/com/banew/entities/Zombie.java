@@ -31,7 +31,7 @@ public class Zombie extends MovingEntity {
         Vector2 stepToTarget = followTarget(
             getBody().getPosition(),
             context.currentLevel().getMainHeroEntity().getCenterCoordinates(),
-            .01f, context
+            1f, context
         );
 
         move(stepToTarget.x, stepToTarget.y);

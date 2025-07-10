@@ -128,8 +128,8 @@ com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
 	default-horizontal: {
-		background: progress-bar
-		knobBefore: progress-bar-knob
+		background: progress_bar_knob
+		knobBefore: progress_bar
 	}
 	default-vertical: {
 		background: slider-vertical

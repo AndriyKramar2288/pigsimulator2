@@ -2,6 +2,8 @@ package com.banew;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,6 +21,15 @@ public class Main implements ApplicationListener {
 
     private GameContainer gameContainer;
     private GuiContainer guiContainer;
+
+    private void toggleFullscreen() {
+        if (Gdx.graphics.isFullscreen()) {
+            Gdx.graphics.setWindowedMode(640, 480); // Або інші бажані розміри
+        } else {
+            Graphics.DisplayMode displayMode = Gdx.graphics.getDisplayMode();
+            Gdx.graphics.setFullscreenMode(displayMode);
+        }
+    }
 
     @Override
     public void create() {
@@ -45,10 +56,13 @@ public class Main implements ApplicationListener {
     @Override
     public void render() {
         // Draw your application here.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F11)) {
+            toggleFullscreen();
+        }
+
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
-
         renderGame();
     }
 

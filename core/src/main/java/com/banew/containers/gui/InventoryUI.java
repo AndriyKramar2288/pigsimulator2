@@ -27,7 +27,6 @@ public class InventoryUI {
     // ключові елементи
     private final List<Actor> actors = new ArrayList<>();
     private final Skin skin;
-    private final Stage stage;
     private boolean visible = false;
     private GameContext context;
     // розмір
@@ -58,7 +57,6 @@ public class InventoryUI {
 
     public InventoryUI(Stage stage, Skin skin, TextureAtlas atlas) {
         this.skin = skin;
-        this.stage = stage;
         this.dynamicLabelsContainer = new DynamicLabelsContainer(stage);
         slotDrawable = new TextureRegionDrawable(atlas.findRegion("gui/transparent-inventory-for-pvp"));
 
@@ -213,9 +211,8 @@ public class InventoryUI {
         Tooltip<Label> tooltip = slotTooltips.get(index);
         if (tooltip == null) {
             // створюємо лише ОДИН раз
-
             Label label = new Label(item.getName(), skin);
-            label.setFontScale(.4f);
+            dynamicLabelsContainer.put(label, .4f);
             label.setColor(.88f, .88f, .88f, 1);
 
             tooltip = new Tooltip<>(label, tooltipManager);
@@ -295,7 +292,7 @@ public class InventoryUI {
         // Напівпрозорий "блюр" фон (імітація)
         Image blurOverlay = new Image(
             new TextureRegionDrawable(
-                new TextureRegion(makePixel(1, 1, new Color(0, 0, 0, 0.2f)))
+                new TextureRegion(makePixel(1, 1, new Color(0, 0, 0, 0.1f)))
             )
         );
         blurOverlay.setFillParent(true);
@@ -350,7 +347,7 @@ public class InventoryUI {
             }
         );
         // оновити кляті Label
-        dynamicLabelsContainer.updateLabelSizes();
+        dynamicLabelsContainer.updateLabelSizes(context);
     }
 
     private void setItem(int index, AbstractItem item) {
@@ -383,11 +380,18 @@ public class InventoryUI {
             if (context == null) break;
             if (context.mainHeroEntity().getInventory().get(i) == null) {
                 ImageButton button = slots.get(i);
-                button.getStyle().imageUp = slotDrawable.tint(new Color(.5f, .2f, .1f, .228f));
+                // відтінок слотів, щоб було видно
+                float slotBrightness = 1 - context.currentLevel().getLightMode().getBrightness();
+                Color slotColor = new Color(
+                    slotBrightness, slotBrightness, slotBrightness, .35f
+                );
+                button.getStyle().imageUp = slotDrawable.tint(slotColor);
+                // чистка летючих підказок
                 int finalI = i;
                 button.getListeners().forEach(e -> {
                     if (e instanceof Tooltip<?>) {
-                        slotTooltips.remove(finalI);
+                        Tooltip<Label> tooltip = slotTooltips.remove(finalI);
+                        dynamicLabelsContainer.remove(tooltip.getActor());
                         button.removeListener(e);
                     }
                 });

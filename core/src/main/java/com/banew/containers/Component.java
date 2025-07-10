@@ -1,7 +1,7 @@
-package com.banew.containers.gui;
+package com.banew.containers;
 
 import com.banew.other.records.GameContext;
 
-public interface GuiComponent {
+public interface Component {
     void render(GameContext context);
 }

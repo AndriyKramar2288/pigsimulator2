@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class DayNightLightMode extends LightMode {
 
-    private static final float CYCLE_LENGTH = 60 * 10; // в секундах
+    private static final float CYCLE_LENGTH = 30; // в секундах
 
     private final Light playerLight;
     private final DirectionalLight jesusLight;
@@ -54,36 +54,46 @@ public class DayNightLightMode extends LightMode {
         });
     }
 
+    /**
+     * @return поточна стадія, від 0 до 1
+     */
+    private float currentStage() {
+        return (MathUtils.cos(timer * MathUtils.PI2 / CYCLE_LENGTH) + 1f) / 2f;
+    }
+
     @Override
     public void render(GameContext gameContext) {
         super.render(gameContext);
-        // поточна стадія, від 0 до 1
-        float currentStage = (MathUtils.cos(timer * MathUtils.PI2 / CYCLE_LENGTH) + 1f) / 2f;
         // колір ВСЬОГО
         Color color = new Color(
             .8f,
-            MathUtils.lerp(0, .7f, currentStage),
-            currentStage > .75f ? MathUtils.lerp(0, .25f, currentStage) : 0,
-            .3f + MathUtils.lerp(0, .15f, currentStage)
+            MathUtils.lerp(0, .7f, currentStage()),
+            currentStage() > .75f ? MathUtils.lerp(0, .25f, currentStage()) : 0,
+            .3f + MathUtils.lerp(0, .15f, currentStage())
         );
         // ініціалізуємо колір ВСЬОГО
-        color.mul(MathUtils.lerp(.4f, .9f, currentStage));
+        color.mul(MathUtils.lerp(.4f, .9f, currentStage()));
         rayHandler.setAmbientLight(color);
         // світло факелів
         torchLights.forEach(e -> e.setColor(
-            new Color(1f, .3f, 0f, 1 - MathUtils.lerp(.3f, .75f, currentStage))
+            new Color(1f, .3f, 0f, 1 - MathUtils.lerp(.3f, .75f, currentStage()))
         ));
         // лампочка в сраці гравця
-        playerLight.setColor(new Color(1f, .3f, 0f, 1 - MathUtils.lerp(.6f, .95f, currentStage)));
+        playerLight.setColor(new Color(1f, .3f, 0f, 1 - MathUtils.lerp(.6f, .95f, currentStage())));
         // світло тіпа від сонця
-        jesusLight.setDirection(currentStage * 180);
+        jesusLight.setDirection(currentStage() * 180);
         jesusLight.setColor(
             1f, .4f, 0f,
-            MathUtils.lerp(0, .25f, extractJesusFloat(currentStage))
+            MathUtils.lerp(0, .25f, extractJesusFloat(currentStage()))
         );
 
         rayHandler.setCombinedMatrix(gameContext.camera()); // синхронізує з камерою
         rayHandler.updateAndRender();
+    }
+
+    @Override
+    public float getBrightness() {
+        return currentStage();
     }
 
     @Override

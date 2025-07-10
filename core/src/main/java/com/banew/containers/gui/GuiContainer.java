@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.banew.containers.Component;
 import com.banew.external.GeneralSettings;
 import com.banew.other.records.GameContext;
 
@@ -19,13 +20,12 @@ public class GuiContainer implements Disposable {
 
     private final InventoryUI inventoryUI;
 
-    private final List<GuiComponent> componentList = new ArrayList<>();
+    private final List<Component> componentList = new ArrayList<>();
 
     public GuiContainer (GeneralSettings generalSettings) {
         guiViewport = new ScreenViewport();
         stage = new Stage(guiViewport);
 
-        Skin ugly_skin = new Skin(Gdx.files.internal("skin/ugly/freezing-ui.json"));
         Skin freezing_skin = new Skin(Gdx.files.internal("skin/freezing/freezing-ui.json"));
 
         TextureAtlas atlas = new TextureAtlas(Gdx.files.internal(generalSettings.getMain_atlas_src()));
@@ -33,20 +33,20 @@ public class GuiContainer implements Disposable {
             stage, freezing_skin, atlas
         );
 
-        componentList.add(new GuiContainerLeftInfo(
+        componentList.add(new ContainerLeftInfo(
             stage, freezing_skin, atlas, inventoryUI
         ));
-        componentList.add(new GuiContainerItemsData(
+        componentList.add(new ContainerItemsData(
             stage, atlas, inventoryUI
         ));
-        componentList.add(new GuiContainerPlayerInfo(
-            stage, ugly_skin, atlas
+        componentList.add(new ContainerPlayerInfo(
+            stage, freezing_skin, atlas
         ));
 
         Gdx.input.setInputProcessor(stage);
     }
 
-    public static final float gui_scale = .75f;
+    public static final float gui_scale = .5f;
 
     public void resize(int width, int height) {
         guiViewport.update(width, height, true);

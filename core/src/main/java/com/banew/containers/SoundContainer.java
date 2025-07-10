@@ -33,5 +33,8 @@ public class SoundContainer {
         if (sound != null) {
             sound.play(volumeMap.get(name));
         }
+        else {
+            System.out.println("Звук '" + name + "' слід змінити на латиницю, так воно не хоче!");
+        }
     }
 }

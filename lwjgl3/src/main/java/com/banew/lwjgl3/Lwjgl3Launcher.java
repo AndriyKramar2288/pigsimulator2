@@ -1,5 +1,6 @@
 package com.banew.lwjgl3;
 
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
@@ -13,7 +14,7 @@ public class Lwjgl3Launcher {
     }
 
     private static Lwjgl3Application createApplication() {
-        processTexturePacker();
+        //processTexturePacker();
         //return null;
         return new Lwjgl3Application(new Main(), getDefaultConfiguration());
     }

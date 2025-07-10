@@ -10,6 +10,6 @@ public class StupidItem extends AbstractItem {
 
     @Override
     public void use(GameContext gameContext) {
-        gameContext.soundContainer().play("хрю");
+        gameContext.soundContainer().play("hru");
     }
 }

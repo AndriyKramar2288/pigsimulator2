@@ -42,11 +42,11 @@
     }
   },
   "sounds" : {
-    "стони": {
+    "stons": {
       "src": "ctohbi-1950.mp3",
       "volume": 0.05
     },
-    "хрю": {
+    "hru": {
       "src": "khriu.mp3",
       "volume": 0.5
     },

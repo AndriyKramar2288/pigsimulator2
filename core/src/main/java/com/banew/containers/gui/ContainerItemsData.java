@@ -1,9 +1,11 @@
 package com.banew.containers.gui;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.banew.containers.Component;
 import com.banew.other.records.GameContext;
 
 import java.util.ArrayList;
@@ -11,12 +13,12 @@ import java.util.List;
 
 import static com.banew.containers.gui.GuiContainer.gui_scale;
 
-public class GuiContainerItemsData implements GuiComponent {
+public class ContainerItemsData implements Component {
     private final List<Cell<Image>> smallHotKeys = new ArrayList<>();
     private final List<Cell<Image>> smallHandKeys = new ArrayList<>();
     private final InventoryUI inventoryUI;
 
-    public GuiContainerItemsData (Stage stage, TextureAtlas atlas, InventoryUI inventoryUI) {
+    public ContainerItemsData(Stage stage, TextureAtlas atlas, InventoryUI inventoryUI) {
         this.inventoryUI = inventoryUI;
 
         Table itemsTable = new Table();
@@ -29,15 +31,23 @@ public class GuiContainerItemsData implements GuiComponent {
         Table handsTable = new Table();
         handsTable.setBackground(new TextureRegionDrawable(atlas.findRegion("gui/inv_hands")));
         itemsTable.add(handsTable).padRight(Value.percentWidth(.01f * gui_scale, itemsTable));
-        inventoryUI.extractHandButtons().forEach(imageButton -> {
+
+        for (int i = 0; i < inventoryUI.extractHandButtons().size(); i++) {
+            ImageButton imageButton = inventoryUI.extractHandButtons().get(i);
             Image smallHotKey = new Image(imageButton.getStyle().imageUp);
 
             Cell<Image> smallHotKeyCell = handsTable.add(smallHotKey)
                 .size(Value.percentWidth(.04f * gui_scale, itemsTable))
-                .pad(Value.percentWidth(.005f * gui_scale, itemsTable));
+                .pad(
+                    Value.percentWidth(.015f * gui_scale, itemsTable),
+                    Value.percentWidth((i == 0 ? 0.015f : .005f) * gui_scale, itemsTable),
+                    Value.percentWidth(.015f * gui_scale, itemsTable),
+                    Value.percentWidth((i != 0 ? 0.015f : .005f) * gui_scale * gui_scale, itemsTable)
+                );
 
             smallHandKeys.add(smallHotKeyCell);
-        });
+        }
+
         // гарячі клавіші
         Table hotKeysTable = new Table();
         hotKeysTable.setBackground(new TextureRegionDrawable(atlas.findRegion("gui/hot_keys")));

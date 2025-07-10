@@ -2,12 +2,21 @@
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
 	button: {
 		file: my-font.fnt
+		scaledSize: -1
+		markupEnabled: false
+		flip: false
 	}
 	font: {
 		file: my-font.fnt
+		scaledSize: -1
+		markupEnabled: false
+		flip: false
 	}
 	title: {
 		file: my-font.fnt
+		scaledSize: -1
+		markupEnabled: false
+		flip: false
 	}
 }
 com.badlogic.gdx.graphics.Color: {
@@ -119,8 +128,8 @@ com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
 	default-horizontal: {
-		background: slider-horizontal
-		knobBefore: slider-horizontal-p
+		background: progress_bar_knob
+		knobBefore: progress_bar
 	}
 	default-vertical: {
 		background: slider-vertical

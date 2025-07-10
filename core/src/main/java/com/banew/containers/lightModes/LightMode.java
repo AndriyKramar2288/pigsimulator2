@@ -41,6 +41,13 @@ public abstract class LightMode implements Disposable {
     public abstract String getGuiWatchText();
 
     /**
+     * @return яскравість ігрового світу
+     */
+    public float getBrightness() {
+        return 1;
+    }
+
+    /**
      * Викликається завжди для всіх {@link com.banew.containers.GameLevel}
      */
     public abstract void step();

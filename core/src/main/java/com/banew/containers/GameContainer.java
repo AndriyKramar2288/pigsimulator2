@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.banew.entities.MainHeroEntity;
@@ -15,7 +14,7 @@ import com.banew.external.GeneralSettings;
 import com.banew.factories.EntityFactory;
 import com.banew.other.dto.PlayerInfo;
 import com.banew.other.records.GameContext;
-import com.banew.utilites.GameLevelRef;
+import com.banew.utilites.Reference;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -62,7 +61,7 @@ public class GameContainer implements Disposable {
         context = new GameContext(
             mainHeroEntity,
             viewport,
-            new GameLevelRef(currentLevel),
+            new Reference<>(currentLevel),
             levels,
             playerInfo,
             new SoundContainer(generalSettings)

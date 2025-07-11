@@ -2,6 +2,7 @@ package com.banew.factories;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -36,11 +37,23 @@ public class EntityFactory {
     private final Map<String, TextureRegion[][]> cashedRegions;
     @Setter
     private GameLevel currentGameLevel;
+    private Cursor fineCursor;
+    private Cursor badCursor;
 
     public EntityFactory(GeneralSettings generalSettings) {
         String atlas_path = generalSettings.getMain_atlas_src();
         textureAtlas = new TextureAtlas(Gdx.files.internal(atlas_path));
         cashedRegions = new HashMap<>();
+        initChestCursors();
+    }
+
+    private void initChestCursors() {
+        Pixmap finePixmap = new Pixmap(Gdx.files.internal("textures/chest.png"));
+        Pixmap badPixmap = new Pixmap(Gdx.files.internal("textures/bad_chest.png"));
+        fineCursor = Gdx.graphics.newCursor(finePixmap, 3, 3);
+        badCursor = Gdx.graphics.newCursor(badPixmap, 3, 3);
+        finePixmap.dispose();
+        badPixmap.dispose();
     }
 
     private final Map<String, Function<MapObject, SpriteEntity>> resolver = Map.of(
@@ -48,6 +61,7 @@ public class EntityFactory {
         "main_hero", this::createMainHeroEntity,
         "door", this::createLevelsDoor,
         "zombie", this::createZombie
+        //"chest", this::createChest
     );
 
     public Set<SpriteEntity> resolveMapObjects(MapObjects objects) {
@@ -88,6 +102,16 @@ public class EntityFactory {
             new Vector2(.15f, .35f)
         );
     }
+
+//    private Chest createChest(MapObject object) {
+//        Rectangle rectangle = GameLevel.fromMapObject(object);
+//        return new Chest(
+//            generateBasicSprite(rectangle, textureAtlas.findRegion("gui/infoBack")),
+//            generateBasicBody(rectangle, 1f, 1f),
+//            new Vector2(1f, 1f),
+//            fineCursor, badCursor
+//        );
+//    }
 
     public MainHeroEntity createMainHeroEntity(MapObject object) {
         Rectangle rectangle = GameLevel.fromMapObject(object);

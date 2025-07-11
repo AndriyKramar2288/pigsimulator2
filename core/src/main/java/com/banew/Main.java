@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -21,6 +22,7 @@ public class Main implements ApplicationListener {
 
     private GameContainer gameContainer;
     private GuiContainer guiContainer;
+    private Cursor cursor;
 
     private void toggleFullscreen() {
         if (Gdx.graphics.isFullscreen()) {
@@ -39,7 +41,7 @@ public class Main implements ApplicationListener {
         viewport = new FillViewport(8, 5);
 
         Pixmap pixmap = new Pixmap(Gdx.files.internal("textures/cursor.png"));
-        Gdx.graphics.setCursor(Gdx.graphics.newCursor(pixmap, 9, 5));
+        cursor = Gdx.graphics.newCursor(pixmap, 9, 5);
 
         PlayerInfo playerInfo = new PlayerInfo();
         gameContainer = new GameContainer(viewport, generalSettings, playerInfo);
@@ -61,6 +63,7 @@ public class Main implements ApplicationListener {
         }
 
         ScreenUtils.clear(Color.BLACK);
+        Gdx.graphics.setCursor(cursor);
         viewport.apply();
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
         renderGame();

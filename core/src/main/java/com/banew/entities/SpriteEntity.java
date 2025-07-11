@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
-public class SpriteEntity {
+public abstract class SpriteEntity {
     @Getter
     @Setter
     @JsonIgnore
@@ -35,13 +35,7 @@ public class SpriteEntity {
         this.currentScales = collisionScales;
     }
 
-    public void render(GameContext context) {
-
-    }
-
-    public void replace(float stepX, float stepY) {
-        sprite.translate(stepX, stepY);
-    }
+    public void render(GameContext context) {}
 
     public void update(float delta) {
 

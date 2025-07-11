@@ -104,7 +104,7 @@ public class GameLevel implements Disposable {
         context.currentLevel().getEntitySet().remove(mainHeroEntity);
         entitySet.add(mainHeroEntity);
         this.mainHeroEntity = mainHeroEntity;
-        context.currentLevelRef().setGameLevel(this);
+        context.currentLevelRef().setElement(this);
 
         // оновити тіло / перемістити спрайт
         mainHeroEntity.setBody(

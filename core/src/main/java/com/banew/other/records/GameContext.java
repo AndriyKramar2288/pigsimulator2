@@ -6,20 +6,20 @@ import com.banew.containers.GameLevel;
 import com.banew.containers.SoundContainer;
 import com.banew.entities.MainHeroEntity;
 import com.banew.other.dto.PlayerInfo;
-import com.banew.utilites.GameLevelRef;
+import com.banew.utilites.Reference;
 
 import java.util.Set;
 
 public record GameContext(
     MainHeroEntity mainHeroEntity,
     Viewport viewport,
-    GameLevelRef currentLevelRef,
+    Reference<GameLevel> currentLevelRef,
     Set<GameLevel> levels,
     PlayerInfo playerInfo,
     SoundContainer soundContainer
 ) {
     public GameLevel currentLevel() {
-        return currentLevelRef.getGameLevel();
+        return currentLevelRef.getElement();
     }
 
     public OrthographicCamera camera() {

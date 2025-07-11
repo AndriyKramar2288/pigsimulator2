@@ -15,7 +15,7 @@ public class ContainerPlayerInfo implements Component {
 
     private Cell<ProgressBar> updateBarSize(Cell<ProgressBar> bar, Table table) {
         return bar.size(
-            Value.percentWidth(.25f * gui_scale, table),
+            Value.percentWidth(.3f * gui_scale, table),
             Value.percentHeight(.05f, table)
         ).padBottom(10);
     }

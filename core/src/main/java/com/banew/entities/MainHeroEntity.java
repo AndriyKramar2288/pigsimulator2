@@ -3,6 +3,7 @@ package com.banew.entities;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.banew.containers.ItemContainer;
 import com.banew.items.AbstractItem;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
 import lombok.Getter;
@@ -16,7 +17,10 @@ public class MainHeroEntity extends MovingEntity {
     @Getter
     private boolean isRunning;
     @Getter
-    private final Map<Integer, AbstractItem> inventory = new HashMap<>();
+    private final ItemContainer inventory = new ItemContainer(0);
+    @Setter
+    @Getter
+    private ContainerEntity openedContainer;
 
     public MainHeroEntity(
         Sprite sprite,

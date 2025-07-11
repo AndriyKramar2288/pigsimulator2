@@ -60,8 +60,8 @@ public class EntityFactory {
         "torch", this::createTorch,
         "main_hero", this::createMainHeroEntity,
         "door", this::createLevelsDoor,
-        "zombie", this::createZombie
-        //"chest", this::createChest
+        "zombie", this::createZombie,
+        "chest", this::createChest
     );
 
     public Set<SpriteEntity> resolveMapObjects(MapObjects objects) {
@@ -103,15 +103,15 @@ public class EntityFactory {
         );
     }
 
-//    private Chest createChest(MapObject object) {
-//        Rectangle rectangle = GameLevel.fromMapObject(object);
-//        return new Chest(
-//            generateBasicSprite(rectangle, textureAtlas.findRegion("gui/infoBack")),
-//            generateBasicBody(rectangle, 1f, 1f),
-//            new Vector2(1f, 1f),
-//            fineCursor, badCursor
-//        );
-//    }
+    private Chest createChest(MapObject object) {
+        Rectangle rectangle = GameLevel.fromMapObject(object);
+        return new Chest(
+            generateBasicSprite(rectangle, textureAtlas.findRegion("gui/infoBack")),
+            generateBasicBody(rectangle, 1f, 1f),
+            new Vector2(1f, 1f),
+            fineCursor, badCursor
+        );
+    }
 
     public MainHeroEntity createMainHeroEntity(MapObject object) {
         Rectangle rectangle = GameLevel.fromMapObject(object);

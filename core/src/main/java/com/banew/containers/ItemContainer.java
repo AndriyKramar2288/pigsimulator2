@@ -38,4 +38,8 @@ public class ItemContainer {
             .mapToObj(itemMap::get)
             .toList();
     }
+
+    public int size() {
+        return size;
+    }
 }

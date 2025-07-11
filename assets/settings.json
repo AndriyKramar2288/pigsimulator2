@@ -53,6 +53,14 @@
     "inv_drop": {
       "src": "inv_drop.mp3",
       "volume": 0.05
+    },
+    "chest": {
+      "src": "chest-opening.mp3",
+      "volume": 0.1
+    },
+    "chest_close": {
+      "src": "chest-slam.mp3",
+      "volume": 0.03
     }
   }
 }

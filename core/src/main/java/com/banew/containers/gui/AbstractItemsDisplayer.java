@@ -22,14 +22,12 @@ public abstract class AbstractItemsDisplayer {
     private final DynamicLabelsContainer labels;
     private final DragAndDrop dragAndDrop;
     private final TooltipContainer tooltipContainer;
+    private static float dragged_slot = -1;
 
     protected final TextureRegionDrawable slotDrawable;
     protected final Table table;
     protected final List<ImageButton> slots = new ArrayList<>();
-
-    protected static float dragged_slot = -1;
     protected GameContext context;
-
 
     protected Value widthPercent(float percent) {
         return Value.percentWidth(percent, inventoryTable);
@@ -39,8 +37,9 @@ public abstract class AbstractItemsDisplayer {
         return Value.percentWidth(percent, inventoryTable);
     }
 
-    protected void addToMainTable() {
-        inventoryTable.add(table);
+    protected void clearData() {
+        table.clearChildren();
+        slots.clear();
     }
 
     public AbstractItemsDisplayer(TextureAtlas atlas,
@@ -55,6 +54,7 @@ public abstract class AbstractItemsDisplayer {
         this.dragAndDrop = dragAndDrop;
 
         this.table = new Table();
+        inventoryTable.add(table).top().right().padLeft(widthPercent(.01f));
     }
 
     public Label addLabel(String text, Skin skin) {
@@ -92,7 +92,7 @@ public abstract class AbstractItemsDisplayer {
         }
     }
 
-    public ImageButton generateSlotButton() {
+    protected ImageButton generateSlotButton() {
         ImageButton button = new ImageButton(slotDrawable.tint(new Color(.5f, .2f, .1f, .228f)));
         button.getStyle().over = slotDrawable.tint(new Color(.5f, .2f, .1f, .2f));
         slots.add(button);
@@ -198,6 +198,7 @@ public abstract class AbstractItemsDisplayer {
 
     public void displayContainer(GameContext context) {
         this.context = context;
+        if (getContainer() == null) return;
         // відобразити елементи інвентарю
         clearDisplayedSlots(context);
         List<AbstractItem> items = getContainer().getList();
@@ -212,7 +213,7 @@ public abstract class AbstractItemsDisplayer {
         }
     }
 
-    public void successItemsChange() {
+    private void successItemsChange() {
         if (context != null) {
             context.soundContainer().play("inv_drop");
         }

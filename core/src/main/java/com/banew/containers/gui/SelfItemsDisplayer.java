@@ -57,8 +57,6 @@ public class SelfItemsDisplayer extends AbstractItemsDisplayer {
         addHotKeySlots();
         // ліва / права кнопка
         addHandSlots(atlas);
-
-        addToMainTable();
     }
 
     private static final List<Integer> hotKeys = List.of(

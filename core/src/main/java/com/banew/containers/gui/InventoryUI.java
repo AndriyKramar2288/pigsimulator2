@@ -22,15 +22,12 @@ import java.util.List;
 public class InventoryUI {
     // ключові елементи
     private final List<Actor> actors = new ArrayList<>();
-    private final TooltipContainer tooltipContainer;
     private final SelfItemsDisplayer selfItemsDisplayer;
-    private final Skin skin;
-    private final Table inventoryTable;
+    private final OtherContainerDisplayer otherContainerDisplayer;
     @Getter
     private boolean visible = false;
     private GameContext context;
 
-    private final DragAndDrop dragAndDrop = new DragAndDrop();
     // для динамічних Label
     @Getter
     private final DynamicLabelsContainer dynamicLabelsContainer;
@@ -46,22 +43,26 @@ public class InventoryUI {
 
     public InventoryUI(Stage stage, Skin skin, TextureAtlas atlas) {
         this.dynamicLabelsContainer = new DynamicLabelsContainer(stage);
-        this.skin = skin;
         // блюр
         initBlur(stage);
 
-        tooltipContainer = new TooltipContainer(
+        TooltipContainer tooltipContainer = new TooltipContainer(
             dynamicLabelsContainer, skin
         );
 
         // табличка
-        inventoryTable = new Table();
+        Table inventoryTable = new Table();
         inventoryTable.setFillParent(true);
         inventoryTable.right().padRight(Value.percentWidth(.03f)).top();
         inventoryTable.setVisible(false);
         stage.addActor(inventoryTable);
         actors.add(inventoryTable);
 
+        DragAndDrop dragAndDrop = new DragAndDrop();
+
+        otherContainerDisplayer = new OtherContainerDisplayer(
+            atlas, inventoryTable, dynamicLabelsContainer, dragAndDrop, skin
+        );
         selfItemsDisplayer = new SelfItemsDisplayer(
             inventoryTable, skin, atlas, dynamicLabelsContainer, dragAndDrop, tooltipContainer
         );
@@ -97,12 +98,14 @@ public class InventoryUI {
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
             toggle();
         }
+        if (context.mainHeroEntity().getOpenedContainer() != null) {
+            toggle(true);
+        }
         selfItemsDisplayer.displayContainer(context);
+        otherContainerDisplayer.displayContainer(context);
         // оновити кляті Label
         dynamicLabelsContainer.updateLabelSizes(context);
     }
-
-
 
     public List<ImageButton> extractHandButtons() {
         return selfItemsDisplayer.extractHandButtons();

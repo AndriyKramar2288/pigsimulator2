@@ -1,5 +1,6 @@
 package com.banew.entities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Rectangle;
@@ -8,11 +9,9 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.banew.other.records.GameContext;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Zombie extends MovingEntity {
-    private final Set<Rectangle> collisions;
 
     public Zombie(Sprite sprite,
                   Body body,
@@ -20,26 +19,40 @@ public class Zombie extends MovingEntity {
                   TextureAtlas textureAtlas,
                   Set<Rectangle> collisions) {
         super(sprite, body, animations, textureAtlas);
-        this.collisions = collisions;
     }
 
+    private List<Vector2> wayToPlayer = new ArrayList<>();
+    private float resetTimer = 0;
 
     @Override
     public void render(GameContext context) {
         super.render(context);
+        checkPlayer(context);
 
-        Vector2 stepToTarget = followTarget(
-            getBody().getPosition(),
-            context.currentLevel().getMainHeroEntity().getCenterCoordinates(),
-            1f, context
-        );
+        resetTimer += Gdx.graphics.getDeltaTime();
+        wayToPlayer.removeIf(v -> new Vector2(v).sub(getCenterCoordinates()).len2() < .5f);
 
-        move(stepToTarget.x, stepToTarget.y);
+        if (wayToPlayer.isEmpty() || resetTimer > 1) {
+            resetTimer = 0;
+            wayToPlayer = context.currentLevel().getPathFinder().findPath(
+                getCenterCoordinates(),
+                context.mainHeroEntity().getCenterCoordinates()
+            );
+        }
+        else {
+            Vector2 stepToTarget = followTarget(
+                getCenterCoordinates(),
+                wayToPlayer.get(0),
+                1f, context
+            );
+
+            doNotMove();
+            move(stepToTarget.x, stepToTarget.y);
+        }
     }
 
-    private Vector2 followTarget(Vector2 myPos, Vector2 playerPos, float speed, GameContext context) {
-        Vector2 direction = new Vector2(playerPos).sub(myPos);
-        if (direction.len2() < .2f) {
+    private void checkPlayer(GameContext context) {
+        if (getCenterCoordinates().sub(context.mainHeroEntity().getCenterCoordinates()).len2() < .2f) {
 
             context.playerInfo().setPlayerHealth(context.playerInfo().getPlayerHealth() - 3f);
 
@@ -50,47 +63,16 @@ public class Zombie extends MovingEntity {
                 context.mainHeroEntity().getCenterCoordinates(),
                 true
             );
-
-            return new Vector2();
-        }
-
-        direction.nor().scl(speed);
-
-        // Припустимо, у тебе є метод, що повертає bounding rectangle тіла в певній позиції
-        Rectangle futureRect = getBoundingRectangleAtPosition(myPos.x + direction.x * 2, myPos.y + direction.y * 2);
-
-        // Перевірка колізії
-        boolean collision = collisions.stream().anyMatch(rect -> rect.overlaps(futureRect));
-
-        if (!collision) {
-            doNotMove();
-            return new Vector2(direction.x, direction.y);
-        } else {
-            // Спробуємо рух по X
-            Rectangle futureRectX = getBoundingRectangleAtPosition(myPos.x + direction.x * 2, myPos.y);
-            boolean collisionX = collisions.stream().anyMatch(rect -> rect.overlaps(futureRectX));
-
-            // Спробуємо рух по Y
-            Rectangle futureRectY = getBoundingRectangleAtPosition(myPos.x, myPos.y + direction.y * 2);
-            boolean collisionY = collisions.stream().anyMatch(rect -> rect.overlaps(futureRectY));
-
-            if (!collisionX) {
-                doNotMove();
-                return new Vector2(direction.x > 0 ? speed : -speed, 0);
-            } else if (!collisionY) {
-                doNotMove();
-                return new Vector2(0, direction.y > 0 ? speed : -speed);
-            }
-           return new Vector2();
         }
     }
 
-    // Приклад методу, який отримує bounding box тіла в певній позиції
-    private Rectangle getBoundingRectangleAtPosition(float x, float y) {
-        // Припустимо, ти знаєш розміри тіла (ширина, висота)
-        float width = animationsScales.get(movingSide).x * getSprite().getWidth();  // заміни на реальні значення
-        float height = animationsScales.get(movingSide).y * getSprite().getHeight();
+    private Vector2 followTarget(Vector2 myPos, Vector2 playerPos, float speed, GameContext context) {
+        Vector2 direction = new Vector2(playerPos).sub(myPos);
 
-        return new Rectangle(x - width / 2, y - height / 2, width, height);
+        if (getBody().getLinearVelocity().len2() < 0.05f) {
+            return direction.nor().scl(speed).rotateDeg(new Random().nextFloat(-180, 180));
+        }
+
+        return direction.nor().scl(speed);
     }
 }

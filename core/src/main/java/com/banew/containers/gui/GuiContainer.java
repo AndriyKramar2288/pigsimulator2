@@ -8,6 +8,9 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.banew.containers.Component;
+import com.banew.containers.gui.components.ContainerItemsData;
+import com.banew.containers.gui.components.ContainerLeftInfo;
+import com.banew.containers.gui.components.ContainerPlayerInfo;
 import com.banew.external.GeneralSettings;
 import com.banew.other.records.GameContext;
 

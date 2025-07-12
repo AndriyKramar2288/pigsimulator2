@@ -22,6 +22,7 @@ import com.banew.external.InitialGameLevel;
 import com.banew.factories.EntityFactory;
 import com.banew.other.records.GameContext;
 import com.banew.utilites.WalkingAreaResolver;
+import com.banew.utilites.path_search.PathFinder;
 import lombok.Getter;
 
 import java.util.*;
@@ -50,6 +51,8 @@ public class GameLevel implements Disposable {
     private final LightMode lightMode;
     private final Set<MusicPattern> musicSet;
     private final WalkingAreaResolver walkingAreaResolver;
+    @Getter
+    private final PathFinder pathFinder;
 
     public GameLevel(InitialGameLevel initLevel, EntityFactory factory, Map<String, MusicPattern> musicMap) {
         levelName = initLevel.getLevelName();
@@ -89,6 +92,8 @@ public class GameLevel implements Disposable {
         walkingAreaResolver = new WalkingAreaResolver(
             map.getLayers().get("walkAreas"), initLevel.getDefaultWalkSound()
         );
+
+        pathFinder = new PathFinder(getCollisions());
     }
 
     public String getCurrentWalkSound() {

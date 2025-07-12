@@ -1,10 +1,11 @@
-package com.banew.containers.gui;
+package com.banew.containers.gui.components;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.banew.containers.Component;
+import com.banew.containers.gui.InventoryUI;
 import com.banew.other.records.GameContext;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.banew.containers.gui;
+package com.banew.containers.gui.storage_displayers;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.banew.containers.ItemContainer;
+import com.banew.containers.gui.DynamicLabelsContainer;
 import com.banew.entities.ContainerEntity;
 import com.banew.other.records.GameContext;
 

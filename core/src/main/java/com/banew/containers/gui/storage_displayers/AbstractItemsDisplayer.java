@@ -1,4 +1,4 @@
-package com.banew.containers.gui;
+package com.banew.containers.gui.storage_displayers;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.banew.containers.ItemContainer;
+import com.banew.containers.gui.DynamicLabelsContainer;
 import com.banew.entities.TooltipContainer;
 import com.banew.items.AbstractItem;
 import com.banew.other.records.GameContext;

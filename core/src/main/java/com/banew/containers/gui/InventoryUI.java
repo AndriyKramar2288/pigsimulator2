@@ -12,6 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.banew.containers.gui.storage_displayers.OtherContainerDisplayer;
+import com.banew.containers.gui.storage_displayers.SelfItemsDisplayer;
 import com.banew.entities.TooltipContainer;
 import com.banew.other.records.GameContext;
 import lombok.Getter;

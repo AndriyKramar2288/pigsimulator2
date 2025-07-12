@@ -15,7 +15,7 @@ public class WalkingSoundResolver {
                 sound.stop(currentWalkSoundId);
             }
             previousWalkAreaName = walkSound;
-            currentWalkSoundId = sound.loop();
+            currentWalkSoundId = sound.loop(context.soundContainer().getVolume(walkSound));
         }
         boolean isRunning = context.mainHeroEntity().isRunning();
         sound.setPitch(currentWalkSoundId, isRunning ? 2.0f : 1.6f);

@@ -38,6 +38,10 @@ public class SoundContainer {
         }
     }
 
+    public float getVolume(String name) {
+        return volumeMap.get(name);
+    }
+
     public Sound getSound(String name) {
         Sound sound = soundMap.get(name);
         if (sound != null) {

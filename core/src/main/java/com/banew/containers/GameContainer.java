@@ -8,30 +8,37 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.banew.containers.gui.GuiContainer;
 import com.banew.entities.MainHeroEntity;
 import com.banew.external.GeneralSettings;
 import com.banew.factories.EntityFactory;
 import com.banew.other.dto.PlayerInfo;
 import com.banew.other.records.GameContext;
 import com.banew.utilites.Reference;
-import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public class GameContainer implements Disposable {
+    private final SpriteBatch spriteBatch;
+    private final Viewport viewport;
+
+    private final GuiContainer guiContainer;
+
     private boolean isMoving = false;
     private float staminaReloadTimer = 0f;
     private float hpReloadTimer = 0f;
     public static boolean isDebug = false;
 
-    @Getter
     private final GameContext context;
 
-    public static final float PLAYER_SPEED = .7f;
-    public static final Texture WHITE_PIXEL;
+    private final WalkingSoundResolver walkingSoundResolver = new WalkingSoundResolver();
+
+    private static final float PLAYER_SPEED = .7f;
+    private static final Texture WHITE_PIXEL;
     static {
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA4444);
         pixmap.setColor(new Color(1, 1, 1, .5f));
@@ -40,7 +47,10 @@ public class GameContainer implements Disposable {
         pixmap.dispose();
     }
 
-    public GameContainer(Viewport viewport, GeneralSettings generalSettings, PlayerInfo playerInfo) {
+    public GameContainer(GeneralSettings generalSettings) {
+        spriteBatch = new SpriteBatch();
+        viewport = new FillViewport(8, 5);
+        guiContainer = new GuiContainer(generalSettings);
 
         String COLLISION_LAYER_NAME = generalSettings.getCollision_level_name();
 
@@ -63,15 +73,32 @@ public class GameContainer implements Disposable {
             viewport,
             new Reference<>(currentLevel),
             levels,
-            playerInfo,
+            new PlayerInfo(),
             new SoundContainer(generalSettings)
         );
 
         currentLevel.switchTo(mainHeroEntity, mainHeroEntity.getBody().getPosition(), context);
     }
 
+    public void render() {
+        viewport.apply();
+        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
 
-    public void renderSprites(SpriteBatch spriteBatch) {
+        renderScene();
+        spriteBatch.begin();
+        renderSprites(spriteBatch);
+        spriteBatch.end();
+        renderLight();
+        guiContainer.render(context);
+    }
+
+    public void resize(int width, int height) {
+        viewport.update(width, height, false);
+        guiContainer.resize(width, height);
+    }
+
+
+    private void renderSprites(SpriteBatch spriteBatch) {
         isMoving = false;
 
         context.currentLevel().getWorld().step(Gdx.graphics.getDeltaTime(), 1, 1);
@@ -94,13 +121,13 @@ public class GameContainer implements Disposable {
         }
     }
 
-    public void renderScene() {
+    private void renderScene() {
         if (context.currentLevel() != null) {
             context.currentLevel().renderMap(context.camera());
         }
     }
 
-    public void renderLight() {
+    private void renderLight() {
         context.levels().forEach(l -> l.getLightMode().step());
         context.currentLevel().getLightMode().render(context);
     }
@@ -112,6 +139,11 @@ public class GameContainer implements Disposable {
 
         moveMainHeroRender();
         reloadStats();
+
+        if (isMoving)
+            walkingSoundResolver.play(context);
+        else
+            walkingSoundResolver.stop(context);
 
         context.camera().position.lerp(new Vector3(context.mainHeroEntity().getCenterCoordinates(), 0f), .125f);
         context.camera().zoom = isMoving ? smoothZoom(1.05f) : smoothZoom(1f);
@@ -140,7 +172,6 @@ public class GameContainer implements Disposable {
             hpReloadTimer = 0;
         }
     }
-
 
     private void moveMainHero(float x, float y) {
         context.mainHeroEntity().move(-x, -y);
@@ -183,6 +214,7 @@ public class GameContainer implements Disposable {
     @Override
     public void dispose() {
         context.levels().forEach(GameLevel::dispose);
+        guiContainer.dispose();
         WHITE_PIXEL.dispose();
     }
 }

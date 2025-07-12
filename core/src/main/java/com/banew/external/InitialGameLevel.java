@@ -11,4 +11,5 @@ public class InitialGameLevel {
     private String mapName;
     private String lightMode = "";
     private List<String> musicPatterns = new ArrayList<>();
+    private String defaultWalkSound = "walk_default";
 }

@@ -21,6 +21,7 @@ import com.banew.entities.SpriteEntity;
 import com.banew.external.InitialGameLevel;
 import com.banew.factories.EntityFactory;
 import com.banew.other.records.GameContext;
+import com.banew.utilites.WalkingAreaResolver;
 import lombok.Getter;
 
 import java.util.*;
@@ -48,6 +49,7 @@ public class GameLevel implements Disposable {
     @Getter
     private final LightMode lightMode;
     private final Set<MusicPattern> musicSet;
+    private final WalkingAreaResolver walkingAreaResolver;
 
     public GameLevel(InitialGameLevel initLevel, EntityFactory factory, Map<String, MusicPattern> musicMap) {
         levelName = initLevel.getLevelName();
@@ -83,6 +85,17 @@ public class GameLevel implements Disposable {
             case "oblivion" -> new OblivionLightMode(this);
             default -> new DayNightLightMode(this);
         };
+
+        walkingAreaResolver = new WalkingAreaResolver(
+            map.getLayers().get("walkAreas"), initLevel.getDefaultWalkSound()
+        );
+    }
+
+    public String getCurrentWalkSound() {
+        if (mainHeroEntity != null) {
+            return walkingAreaResolver.getCurrentAreaSound(mainHeroEntity.getCenterCoordinates());
+        }
+        else throw new RuntimeException("Вказаний рівень не активний! " + levelName);
     }
 
     public void renderMap(OrthographicCamera camera) {

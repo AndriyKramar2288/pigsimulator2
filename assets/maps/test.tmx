@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="40">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="41">
  <tileset firstgid="1" name="Hills" tilewidth="16" tileheight="16" tilecount="77" columns="11">
   <image source="../Sprout Lands - Sprites - Basic pack/Tilesets/Hills.png" trans="ff00ff" width="176" height="112"/>
  </tileset>
@@ -115,6 +115,13 @@
   <object id="39" x="209.909" y="160.545" width="23.8182" height="10.9091">
    <properties>
     <property name="Class" value="chest"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="9" name="walkAreas">
+  <object id="40" x="208.074" y="117.06" width="63.9009" height="58.902">
+   <properties>
+    <property name="Class" value="walk_stone"/>
    </properties>
   </object>
  </objectgroup>

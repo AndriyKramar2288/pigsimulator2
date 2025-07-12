@@ -37,4 +37,12 @@ public class SoundContainer {
             System.out.println("Звук '" + name + "' слід змінити на латиницю, так воно не хоче!");
         }
     }
+
+    public Sound getSound(String name) {
+        Sound sound = soundMap.get(name);
+        if (sound != null) {
+            return sound;
+        }
+        else throw new RuntimeException("Звука '" + name + "' не знайдено!");
+    }
 }

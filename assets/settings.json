@@ -15,7 +15,8 @@
       "lightMode": "oblivion",
       "musicPatterns": [
         "default"
-      ]
+      ],
+      "defaultWalkSound": "walk_stone"
     },
     {
       "levelName": "oblivion2",
@@ -61,6 +62,14 @@
     "chest_close": {
       "src": "chest-slam.mp3",
       "volume": 0.03
+    },
+    "walk_default": {
+      "src": "footsteps-dirt-gravel-6823.mp3",
+      "volume": 0.1
+    },
+    "walk_stone": {
+      "src": "walking-96582.mp3",
+      "volume": 0.05
     }
   }
 }

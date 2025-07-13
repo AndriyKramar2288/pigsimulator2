@@ -79,11 +79,13 @@ public class TileGraph implements IndexedGraph<TileNode> {
     }
 
     private void buildPain() {
+        int nodesPerMert = (int) (1f / tileSize);
+
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 if (!nodes[x][y].walkable) {
-                    for (int dx = -10; dx <= 10; dx++) {
-                        for (int dy = -10; dy <= 10; dy++) {
+                    for (int dx = -nodesPerMert; dx <= nodesPerMert; dx++) {
+                        for (int dy = -nodesPerMert; dy <= nodesPerMert; dy++) {
                             int nx = x + dx;
                             int ny = y + dy;
                             if (inBounds(nx, ny)) {

@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -51,7 +52,6 @@ public class GameLevel implements Disposable {
     private final LightMode lightMode;
     private final Set<MusicPattern> musicSet;
     private final WalkingAreaResolver walkingAreaResolver;
-    @Getter
     private final PathFinder pathFinder;
 
     public GameLevel(InitialGameLevel initLevel, EntityFactory factory, Map<String, MusicPattern> musicMap) {
@@ -93,7 +93,14 @@ public class GameLevel implements Disposable {
             map.getLayers().get("walkAreas"), initLevel.getDefaultWalkSound()
         );
 
-        pathFinder = new PathFinder(getCollisions());
+        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(0);
+        float realWidth = (layer.getWidth() * layer.getTileWidth()) / unitScaleMap;
+        float realHeight = (layer.getHeight() * layer.getTileHeight()) / unitScaleMap;
+        pathFinder = new PathFinder(getCollisions(), (int) realWidth, (int) realHeight);
+    }
+
+    public List<Vector2> findPath(Vector2 start, Vector2 end) {
+        return pathFinder.findPath(start, end);
     }
 
     public String getCurrentWalkSound() {

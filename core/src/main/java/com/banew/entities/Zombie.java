@@ -34,7 +34,7 @@ public class Zombie extends MovingEntity {
 
         if (wayToPlayer.isEmpty() || resetTimer > 1) {
             resetTimer = 0;
-            wayToPlayer = context.currentLevel().getPathFinder().findPath(
+            wayToPlayer = context.currentLevel().findPath(
                 getCenterCoordinates(),
                 context.mainHeroEntity().getCenterCoordinates()
             );

@@ -11,9 +11,15 @@ import java.util.Set;
 
 public class PathFinder {
     private final TileGraph graph;
+    private final float graphTileSize;
+    private final Vector2 mapCenter;
 
-    public PathFinder(Set<Rectangle> collisions) {
-        graph = new TileGraph(1000, 1000, .1f, collisions);
+    public PathFinder(Set<Rectangle> collisions, int worldWidth, int worldHeight) {
+        int nodePerMetr = 5;
+        graphTileSize = 1f / nodePerMetr;
+        mapCenter = new Vector2(worldWidth / 2f, worldHeight / 2f);
+
+        graph = new TileGraph(worldWidth * nodePerMetr, worldHeight * nodePerMetr, graphTileSize, collisions);
     }
 
     public List<Vector2> findPath(Vector2 start, Vector2 end) {
@@ -21,12 +27,15 @@ public class PathFinder {
         TileNode startNode = graph.getNodeAtWorld(start.x, start.y);
         TileNode goalNode = graph.getNodeAtWorld(end.x, end.y);
 
+        if (startNode == null) return result;
+        if (goalNode == null) goalNode = graph.getNodeAtWorld(mapCenter.x, mapCenter.y);
+
         DefaultGraphPath<TileNode> path = new DefaultGraphPath<>();
         IndexedAStarPathFinder<TileNode> finder = new IndexedAStarPathFinder<>(graph, true);
         finder.searchNodePath(startNode, goalNode, new ManhattanHeuristic(), path);
 
         for (TileNode step : path) {
-            Vector2 worldStep = step.toWorldPos(.1f);
+            Vector2 worldStep = step.toWorldPos(graphTileSize);
             result.add(worldStep);
         }
 

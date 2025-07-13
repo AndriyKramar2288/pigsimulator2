@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.banew.containers.GameContainer;
+import com.banew.containers.GameLevel;
 import com.banew.other.records.GameContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
@@ -35,7 +35,16 @@ public abstract class SpriteEntity {
         this.currentScales = collisionScales;
     }
 
-    public void render(GameContext context) {}
+    public abstract void render(GameContext context);
+
+    public void step(GameContext context, GameLevel entityLevel) {
+        if (body != null) {
+            sprite.setPosition(
+                body.getPosition().x - sprite.getWidth() / 2f,
+                body.getPosition().y - sprite.getHeight() / 2f
+            );
+        }
+    }
 
     public void update(float delta) {
 
@@ -81,10 +90,6 @@ public abstract class SpriteEntity {
     }
 
     public void draw(SpriteBatch spriteBatch) {
-        sprite.setPosition(
-            body.getPosition().x - sprite.getWidth() / 2f,
-            body.getPosition().y - sprite.getHeight() / 2f
-        );
         sprite.draw(spriteBatch);
     }
 }

@@ -4,12 +4,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.banew.containers.ItemContainer;
-import com.banew.items.AbstractItem;
+import com.banew.other.records.GameContext;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class MainHeroEntity extends MovingEntity {
@@ -25,15 +24,19 @@ public class MainHeroEntity extends MovingEntity {
     public MainHeroEntity(
         Sprite sprite,
         Body body,
-        Map<String, MovingEntityTexturesPerDirectionPack> animations,
-        TextureAtlas textureAtlas
+        Map<String, MovingEntityTexturesPerDirectionPack> animations
     ) {
-        super(sprite, body, animations, textureAtlas);
+        super(sprite, body, animations);
     }
 
     @Override
     public void move(float stepX, float stepY) {
         animationList.get(movingSide).setFrameDuration(isRunning ? .15f : .25f);
         super.move(stepX, stepY);
+    }
+
+    @Override
+    public void render(GameContext context) {
+
     }
 }

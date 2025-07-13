@@ -18,7 +18,7 @@ import com.banew.other.dto.PlayerInfo;
 import com.banew.other.records.GameContext;
 import com.banew.utilites.Reference;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -101,11 +101,16 @@ public class GameContainer implements Disposable {
     private void renderSprites(SpriteBatch spriteBatch) {
         isMoving = false;
 
-        context.currentLevel().getWorld().step(Gdx.graphics.getDeltaTime(), 1, 1);
-
         movingRender();
 
-        new ArrayList<>(context.currentLevel().getEntitySet()).forEach(e -> {
+        context.levels().forEach(level -> {
+            level.getWorld().step(Gdx.graphics.getDeltaTime(), 1, 1);
+            new HashSet<>(level.getEntitySet()).forEach(
+                entity -> entity.step(context, level)
+            );
+        });
+
+        context.currentLevel().getEntitySet().forEach(e -> {
             e.draw(spriteBatch);
             e.render(context);
 

@@ -18,6 +18,7 @@ import com.banew.containers.lightModes.LightMode;
 import com.banew.containers.lightModes.OblivionLightMode;
 import com.banew.entities.LevelsDoor;
 import com.banew.entities.MainHeroEntity;
+import com.banew.entities.MovingEntity;
 import com.banew.entities.SpriteEntity;
 import com.banew.external.InitialGameLevel;
 import com.banew.factories.EntityFactory;
@@ -124,18 +125,22 @@ public class GameLevel implements Disposable {
             .orElseThrow(() -> new RuntimeException("Нема двері на рівні " + getLevelName() + " з назвою " + name));
     }
 
-    public void switchTo(MainHeroEntity mainHeroEntity, Vector2 newPosition, GameContext context) {
-        // присвоєння
-        context.currentLevel().getEntitySet().remove(mainHeroEntity);
-        entitySet.add(mainHeroEntity);
-        this.mainHeroEntity = mainHeroEntity;
-        context.currentLevelRef().setElement(this);
+    public void stealEntity(GameLevel sourceLevel, MovingEntity entity, Vector2 newPosition) {
+        sourceLevel.entitySet.remove(entity);
+        entitySet.add(entity);
 
         // оновити тіло / перемістити спрайт
-        mainHeroEntity.setBody(
-            replaceBody(mainHeroEntity.getBody(), mainHeroEntity.generateFixtureDef(), newPosition)
+        entity.setBody(
+            replaceBody(entity.getBody(), entity.generateFixtureDef(), newPosition)
         );
-        mainHeroEntity.setSpritePosition(newPosition);
+        entity.setSpritePosition(newPosition);
+    }
+
+    public void switchTo(MainHeroEntity mainHeroEntity, Vector2 newPosition, GameContext context) {
+        // присвоєння
+        stealEntity(context.currentLevel(), mainHeroEntity, newPosition);
+        this.mainHeroEntity = mainHeroEntity;
+        context.currentLevelRef().setElement(this);
 
         // зупинити музику, яку треба зупинити
         context.levels().stream().filter(l -> l != this).forEach(l -> {

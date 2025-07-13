@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class DayNightLightMode extends LightMode {
 
-    private static final float CYCLE_LENGTH = 30; // в секундах
+    private static final float CYCLE_LENGTH = 60 * 10; // в секундах
 
     private final Light playerLight;
     private final DirectionalLight jesusLight;

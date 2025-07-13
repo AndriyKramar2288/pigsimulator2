@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="39">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="48">
  <tileset firstgid="1" name="Hills" tilewidth="16" tileheight="16" tilecount="77" columns="11">
   <image source="../Sprout Lands - Sprites - Basic pack/Tilesets/Hills.png" trans="ff00ff" width="176" height="112"/>
  </tileset>
  <tileset firstgid="78" source="Wooden_House_Walls_Tilset.tsx"/>
+ <tileset firstgid="93" source="двері до сексу.tsx"/>
  <layer id="1" name="Прошарок плиток 1" width="30" height="20">
   <data encoding="csv">
 78,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,80,
@@ -14,7 +15,7 @@
 83,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,85,
 83,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,85,
 83,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,85,
-83,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,0,84,84,84,84,84,84,84,85,
+83,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,85,
 83,84,84,84,84,84,84,84,84,84,84,84,84,0,84,84,0,84,84,84,84,84,84,84,84,84,84,84,84,85,
 83,84,84,84,84,84,84,84,84,84,84,84,84,84,84,0,84,84,84,84,84,84,84,84,84,84,84,84,84,85,
 83,84,84,84,84,84,84,84,84,84,84,84,84,84,0,84,84,84,84,84,84,84,84,84,84,84,84,84,84,85,
@@ -45,7 +46,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,93,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,74,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,74,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -64,11 +65,31 @@
   <object id="16" type="colision" x="373.81" y="275.145" width="4.13084" height="10.5844"/>
   <object id="17" type="colision" x="406.418" y="67.9635" width="4.13084" height="10.5844"/>
   <object id="18" name="Кущ всемогущий" type="colision" x="341.81" y="146.333" width="4.13084" height="10.5844"/>
+  <object id="39" x="10.9678" y="307.333" width="458.024" height="12.6667">
+   <properties>
+    <property name="Class" value="wall"/>
+   </properties>
+  </object>
+  <object id="40" x="11.0335" y="-7.75364" width="457.938" height="12.6667">
+   <properties>
+    <property name="Class" value="wall"/>
+   </properties>
+  </object>
+  <object id="41" x="11.0872" y="5.08332" width="4.84017" height="302.232">
+   <properties>
+    <property name="Class" value="wall"/>
+   </properties>
+  </object>
+  <object id="42" x="464.052" y="4.97567" width="4.84017" height="302.232">
+   <properties>
+    <property name="Class" value="wall"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="6" name="Objects">
   <object id="33" name="soso" x="72.3333" y="158.667" width="20" height="45.3333"/>
   <object id="34" name="penis" x="236.5" y="89.5"/>
-  <object id="36" x="390.667" y="199">
+  <object id="36" x="360.054" y="224.036" width="15.913" height="31.913">
    <properties>
     <property name="Class" value="door"/>
     <property name="from" value="oblivion"/>
@@ -84,7 +105,7 @@
     <property name="to" value="oblivion2"/>
    </properties>
   </object>
-  <object id="38" x="278.5" y="276.042" width="40" height="8.91667">
+  <object id="38" x="295.875" y="269.914" width="14.7614" height="15.0454">
    <properties>
     <property name="Class" value="zombie"/>
    </properties>

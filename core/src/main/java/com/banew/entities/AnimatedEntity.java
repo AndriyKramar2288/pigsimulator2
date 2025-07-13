@@ -1,7 +1,6 @@
 package com.banew.entities;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import java.util.List;
 import java.util.Random;
 
-public class AnimatedEntity extends SpriteEntity {
+public abstract class AnimatedEntity extends SpriteEntity {
     private float timer = 0f;
     private final float delayBetween;
 

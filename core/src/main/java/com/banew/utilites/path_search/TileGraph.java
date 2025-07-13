@@ -79,7 +79,7 @@ public class TileGraph implements IndexedGraph<TileNode> {
     }
 
     private void buildPain() {
-        int nodesPerMert = (int) (1f / tileSize);
+        int nodesPerMert = (int) (.75f / tileSize);
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {

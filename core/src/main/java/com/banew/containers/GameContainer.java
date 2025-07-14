@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FillViewport;
@@ -14,7 +15,6 @@ import com.banew.containers.gui.GuiContainer;
 import com.banew.entities.MainHeroEntity;
 import com.banew.external.GeneralSettings;
 import com.banew.factories.EntityFactory;
-import com.banew.other.dto.PlayerInfo;
 import com.banew.other.records.GameContext;
 import com.banew.utilites.Reference;
 
@@ -54,7 +54,9 @@ public class GameContainer implements Disposable {
 
         String COLLISION_LAYER_NAME = generalSettings.getCollision_level_name();
 
-        EntityFactory entityFactory = new EntityFactory(generalSettings);
+        String atlas_path = generalSettings.getMain_atlas_src();
+        TextureAtlas textureAtlas = new TextureAtlas(Gdx.files.internal(atlas_path));
+        EntityFactory entityFactory = new EntityFactory(generalSettings, textureAtlas);
 
         var levels = generalSettings.getLevels(entityFactory);
 
@@ -73,8 +75,8 @@ public class GameContainer implements Disposable {
             viewport,
             new Reference<>(currentLevel),
             levels,
-            new PlayerInfo(),
-            new SoundContainer(generalSettings)
+            new SoundContainer(generalSettings),
+            new EffectAnimationsContainer(textureAtlas, generalSettings.getEffectAnimations())
         );
 
         currentLevel.switchTo(mainHeroEntity, mainHeroEntity.getBody().getPosition(), context);
@@ -118,6 +120,8 @@ public class GameContainer implements Disposable {
                 e.getCollisionSprite(WHITE_PIXEL).draw(spriteBatch);
             }
         });
+
+        context.effectAnimationsContainer().render(spriteBatch, Gdx.graphics.getDeltaTime());
 
         if (isDebug) {
             context.currentLevel().getCollisions().forEach(r -> {
@@ -164,13 +168,13 @@ public class GameContainer implements Disposable {
         hpReloadTimer += Gdx.graphics.getDeltaTime();
         staminaReloadTimer += Gdx.graphics.getDeltaTime();
 
-        if (staminaReloadTimer > 3 && context.playerInfo().getPlayerStamina() < context.playerInfo().getMaxPlayerStamina()) {
-            context.playerInfo().setPlayerStamina(context.playerInfo().getPlayerStamina() + .7f);
+        if (staminaReloadTimer > 3 && context.playerInfo().getStamina() < context.playerInfo().getMaxStamina()) {
+            context.playerInfo().setStamina(context.playerInfo().getStamina() + .7f);
         }
 
-        if (context.playerInfo().getPlayerHealth() < context.playerInfo().getMaxPlayerHp()) {
+        if (context.playerInfo().getHealth() < context.playerInfo().getMaxHp()) {
             if ((hpReloadTimer > 5)) {
-                context.playerInfo().setPlayerHealth(context.playerInfo().getPlayerHealth() + .1f);
+                context.playerInfo().setHealth(context.playerInfo().getHealth() + .1f);
             }
         }
         else {
@@ -193,10 +197,10 @@ public class GameContainer implements Disposable {
         context.mainHeroEntity().doNotMove();
         keysMovementAction.forEach((key, value) -> {
             if (Gdx.input.isKeyPressed(key)) {
-                if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && context.playerInfo().getPlayerStamina() > 0) {
+                if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && context.playerInfo().getStamina() > 0) {
                     context.mainHeroEntity().setRunning(true);
                     value.accept(PLAYER_SPEED * 1.5f);
-                    context.playerInfo().setPlayerStamina(context.playerInfo().getPlayerStamina() - .05f);
+                    context.playerInfo().setStamina(context.playerInfo().getStamina() - .05f);
                 }
                 else {
                     context.mainHeroEntity().setRunning(false);

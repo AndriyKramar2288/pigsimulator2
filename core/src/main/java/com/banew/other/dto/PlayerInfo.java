@@ -1,11 +1,10 @@
 package com.banew.other.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class PlayerInfo {
-    private float playerHealth = 100f;
-    private float playerStamina = 100f;
-    private float maxPlayerStamina = 100f;
-    private float maxPlayerHp = 100f;
+public class PlayerInfo extends AliveEntityInfo {
+
 }

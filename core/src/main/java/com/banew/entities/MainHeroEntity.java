@@ -1,9 +1,12 @@
 package com.banew.entities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.banew.containers.ItemContainer;
+import com.banew.other.dto.PlayerInfo;
 import com.banew.other.records.GameContext;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
 import lombok.Getter;
@@ -20,6 +23,8 @@ public class MainHeroEntity extends MovingEntity {
     @Setter
     @Getter
     private ContainerEntity openedContainer;
+    @Getter
+    private final PlayerInfo playerInfo;
 
     public MainHeroEntity(
         Sprite sprite,
@@ -27,6 +32,7 @@ public class MainHeroEntity extends MovingEntity {
         Map<String, MovingEntityTexturesPerDirectionPack> animations
     ) {
         super(sprite, body, animations);
+        playerInfo = new PlayerInfo();
     }
 
     @Override

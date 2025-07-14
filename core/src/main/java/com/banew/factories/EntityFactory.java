@@ -16,10 +16,13 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.banew.containers.CursorsContainer;
 import com.banew.containers.GameLevel;
 import com.banew.entities.*;
 import com.banew.external.GeneralSettings;
 import com.banew.items.StupidItem;
+import com.banew.other.dto.AliveEntityInfo;
+import com.banew.other.records.CursorPair;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
 import com.banew.utilites.TextureExtractorDeep;
 import lombok.Setter;
@@ -34,25 +37,14 @@ import static com.banew.other.records.MovingEntityTexturesPerDirectionPack.fromO
 public class EntityFactory {
     private final TextureAtlas textureAtlas;
     private final Map<String, TextureRegion[][]> cashedRegions;
+    private final CursorsContainer cursorsContainer;
     @Setter
     private GameLevel currentGameLevel;
-    private Cursor fineCursor;
-    private Cursor badCursor;
 
-    public EntityFactory(GeneralSettings generalSettings) {
-        String atlas_path = generalSettings.getMain_atlas_src();
-        textureAtlas = new TextureAtlas(Gdx.files.internal(atlas_path));
+    public EntityFactory(GeneralSettings generalSettings, TextureAtlas textureAtlas) {
+        this.textureAtlas = textureAtlas;
         cashedRegions = new HashMap<>();
-        initChestCursors();
-    }
-
-    private void initChestCursors() {
-        Pixmap finePixmap = new Pixmap(Gdx.files.internal("textures/chest.png"));
-        Pixmap badPixmap = new Pixmap(Gdx.files.internal("textures/bad_chest.png"));
-        fineCursor = Gdx.graphics.newCursor(finePixmap, 3, 3);
-        badCursor = Gdx.graphics.newCursor(badPixmap, 3, 3);
-        finePixmap.dispose();
-        badPixmap.dispose();
+        cursorsContainer = new CursorsContainer();
     }
 
     private final Map<String, Function<MapObject, SpriteEntity>> resolver = Map.of(
@@ -108,7 +100,7 @@ public class EntityFactory {
             generateBasicSprite(rectangle, textureAtlas.findRegion("gui/infoBack")),
             generateBasicBody(rectangle, 1f, 1f),
             new Vector2(1f, 1f),
-            fineCursor, badCursor
+            cursorsContainer.get("chest"), cursorsContainer.get("bad_chest")
         );
     }
 
@@ -187,10 +179,13 @@ public class EntityFactory {
             )
         );
 
+        AliveEntityInfo aliveEntityInfo = new AliveEntityInfo();
+        aliveEntityInfo.setAttackDistance(.2f);
+
         return new Zombie(
             generateBasicSprite(rectangle, textures.get("down").waitingTexture()),
             generateDynamicBody(rectangle, textures.get("down").scaleTexture().x, textures.get("down").scaleTexture().y),
-            textures
+            textures, cursorsContainer.getCursorPair("sword", "bad_sword"), aliveEntityInfo
         );
     }
 

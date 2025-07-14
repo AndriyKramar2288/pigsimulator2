@@ -29,7 +29,7 @@ public class Main implements ApplicationListener {
     public void create() {
         GeneralSettings generalSettings = GeneralSettings.importSettings();
 
-        Pixmap pixmap = new Pixmap(Gdx.files.internal("textures/cursor.png"));
+        Pixmap pixmap = new Pixmap(Gdx.files.internal("textures/cursors/cursor.png"));
         cursor = Gdx.graphics.newCursor(pixmap, 9, 5);
 
         gameContainer = new GameContainer(generalSettings);

@@ -150,6 +150,7 @@ public class GameLevel implements Disposable {
         });
         // перемкнути світло
         lightMode.switchTo();
+        context.effectAnimationsContainer().clear();
     }
 
     /**

@@ -38,9 +38,9 @@ public class ContainerPlayerInfo implements Component {
     }
 
     public void render(GameContext context) {
-        hpBar.setRange(0, context.playerInfo().getMaxPlayerHp());
-        staminaBar.setRange(0, context.playerInfo().getMaxPlayerStamina());
-        staminaBar.setValue(context.playerInfo().getPlayerStamina());
-        hpBar.setValue(context.playerInfo().getPlayerHealth());
+        hpBar.setRange(0, context.playerInfo().getMaxHp());
+        staminaBar.setRange(0, context.playerInfo().getMaxStamina());
+        staminaBar.setValue(context.playerInfo().getStamina());
+        hpBar.setValue(context.playerInfo().getHealth());
     }
 }

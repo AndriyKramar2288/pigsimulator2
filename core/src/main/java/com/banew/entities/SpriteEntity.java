@@ -1,9 +1,12 @@
 package com.banew.entities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.banew.containers.GameLevel;
 import com.banew.other.records.GameContext;
@@ -91,5 +94,27 @@ public abstract class SpriteEntity {
 
     public void draw(SpriteBatch spriteBatch) {
         sprite.draw(spriteBatch);
+    }
+
+    protected boolean cursorTouchDown(GameContext context) {
+        int screenX = Gdx.input.getX();
+        int screenY = Gdx.input.getY();
+        Camera camera = context.camera();
+        // Конвертація координат з екрану у світ
+        Vector3 touchPos = new Vector3(screenX, screenY, 0);
+        camera.unproject(touchPos); // важливо: без цього буде криво
+
+        // Координати спрайта
+        float x = getSprite().getX();
+        float y = getSprite().getY();
+        float width = getSprite().getWidth();
+        float height = getSprite().getHeight();
+
+        if (touchPos.x >= x && touchPos.x <= x + width &&
+            touchPos.y >= y && touchPos.y <= y + height) {
+            return true;
+        }
+
+        return false;
     }
 }

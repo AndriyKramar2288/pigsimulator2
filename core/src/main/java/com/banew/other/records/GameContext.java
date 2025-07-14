@@ -2,6 +2,7 @@ package com.banew.other.records;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.banew.containers.EffectAnimationsContainer;
 import com.banew.containers.GameLevel;
 import com.banew.containers.SoundContainer;
 import com.banew.entities.MainHeroEntity;
@@ -15,9 +16,12 @@ public record GameContext(
     Viewport viewport,
     Reference<GameLevel> currentLevelRef,
     Set<GameLevel> levels,
-    PlayerInfo playerInfo,
-    SoundContainer soundContainer
-) {
+    SoundContainer soundContainer,
+    EffectAnimationsContainer effectAnimationsContainer) {
+    public PlayerInfo playerInfo() {
+        return mainHeroEntity.getPlayerInfo();
+    }
+
     public GameLevel currentLevel() {
         return currentLevelRef.getElement();
     }

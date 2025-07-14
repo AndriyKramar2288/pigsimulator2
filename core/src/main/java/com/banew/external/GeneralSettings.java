@@ -18,6 +18,7 @@ public class GeneralSettings {
     private List<InitialGameLevel> gameLevels = new ArrayList<>();
     private Map<String, InitialMusicPattern> musicPatterns = new HashMap<>();
     private Map<String, InitialMusicSong> sounds = new HashMap<>();
+    private List<InitialEffectAnimation> effectAnimations = new ArrayList<>();
 
     /**
      * Завантажує ігрові рівні

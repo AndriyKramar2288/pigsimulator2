@@ -72,5 +72,13 @@
       "src": "walk_stone.mp3",
       "volume": 0.075
     }
-  }
+  },
+  "effectAnimations": [
+    {
+      "width": 7,
+      "height": 1,
+      "region": "effect_animations/blood",
+      "speed": 0.1
+    }
+  ]
 }

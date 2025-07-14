@@ -8,9 +8,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
-public class TextureExtractorDeep implements TextureExtractor {
-    private String region;
+public class TextureExtractorDeep {
+    private final String region;
     private final int sizeX;
     private final int sizeY;
     private final int cordX;
@@ -47,7 +48,18 @@ public class TextureExtractorDeep implements TextureExtractor {
             .map(each -> each.extractRegions(atlas)).toList();
     }
 
-    @Override
+    public static List<List<TextureRegion>> fromOneSubtexture(
+        String region, int width, int height, TextureAtlas atlas
+    ) {
+        return IntStream.range(0, height)
+            .mapToObj(row -> IntStream.range(0, width)
+                .mapToObj(col -> new TextureExtractorDeep(
+                    region, width, height, new Point(col + 1, row + 1)
+                ).extractRegions(atlas)
+                ).toList()
+            ).toList();
+    }
+
     public TextureRegion extractRegions(TextureAtlas atlas) {
         String key = region + "|" + sizeX + "|" + sizeY;
         TextureRegion[][] grid = cashedRegions.computeIfAbsent(key, s -> {

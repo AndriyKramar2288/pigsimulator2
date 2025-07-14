@@ -1,9 +1,6 @@
 package com.banew.entities;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.banew.containers.ItemContainer;
 import com.banew.other.dto.PlayerInfo;
@@ -13,8 +10,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Map;
+import java.util.Random;
 
-public class MainHeroEntity extends MovingEntity {
+public class MainHeroEntity extends AliveEntity {
     @Setter
     @Getter
     private boolean isRunning;
@@ -23,16 +21,27 @@ public class MainHeroEntity extends MovingEntity {
     @Setter
     @Getter
     private ContainerEntity openedContainer;
-    @Getter
-    private final PlayerInfo playerInfo;
 
-    public MainHeroEntity(
-        Sprite sprite,
-        Body body,
-        Map<String, MovingEntityTexturesPerDirectionPack> animations
-    ) {
-        super(sprite, body, animations);
-        playerInfo = new PlayerInfo();
+    public MainHeroEntity(Sprite sprite, Body body, Map<String, MovingEntityTexturesPerDirectionPack> animations) {
+        super(sprite, body, animations, null, new PlayerInfo());
+    }
+
+    public PlayerInfo getPlayerInfo() {
+        return (PlayerInfo) getInfo();
+    }
+
+    @Override
+    public void attack(AliveEntity target, GameContext gameContext) {
+        gameContext.soundContainer().play("metal_punch");
+
+        target.getBody().applyLinearImpulse(
+            getCenterCoordinates().sub(target.getCenterCoordinates()).nor().scl(-.5f),
+            target.getCenterCoordinates(),
+            true
+        );
+        target.getInfo().changeHealth(-new Random().nextFloat(5, 10));
+        gameContext.effectAnimationsContainer()
+            .playAnimation("effect_animations/blood_1", target.getCenterCoordinates(), .2f);
     }
 
     @Override

@@ -16,10 +16,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.banew.containers.lightModes.DayNightLightMode;
 import com.banew.containers.lightModes.LightMode;
 import com.banew.containers.lightModes.OblivionLightMode;
-import com.banew.entities.LevelsDoor;
-import com.banew.entities.MainHeroEntity;
-import com.banew.entities.MovingEntity;
-import com.banew.entities.SpriteEntity;
+import com.banew.entities.*;
 import com.banew.external.InitialGameLevel;
 import com.banew.factories.EntityFactory;
 import com.banew.other.records.GameContext;
@@ -102,6 +99,11 @@ public class GameLevel implements Disposable {
 
     public List<Vector2> findPath(Vector2 start, Vector2 end) {
         return pathFinder.findPath(start, end);
+    }
+
+    public void killAliveEntity(AliveEntity victim) {
+        world.destroyBody(victim.getBody());
+        entitySet.remove(victim);
     }
 
     public String getCurrentWalkSound() {

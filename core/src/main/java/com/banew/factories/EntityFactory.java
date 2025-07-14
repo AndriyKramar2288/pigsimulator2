@@ -179,8 +179,13 @@ public class EntityFactory {
             )
         );
 
-        AliveEntityInfo aliveEntityInfo = new AliveEntityInfo();
-        aliveEntityInfo.setAttackDistance(.2f);
+        AliveEntityInfo aliveEntityInfo = AliveEntityInfo.builder()
+            .attackDistance(.2f)
+            .maxHp(100)
+            .health(100)
+            .stamina(100)
+            .maxStamina(100)
+            .build();
 
         return new Zombie(
             generateBasicSprite(rectangle, textures.get("down").waitingTexture()),

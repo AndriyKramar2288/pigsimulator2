@@ -19,6 +19,7 @@ public class Zombie extends AliveEntity {
 
     private List<Vector2> wayToPlayer = new ArrayList<>();
     private float resetTimer = 0;
+    private float attackTimer = 0;
 
     public Zombie(Sprite sprite,
                   Body body,
@@ -29,11 +30,34 @@ public class Zombie extends AliveEntity {
     }
 
     @Override
+    public void attack(AliveEntity target, GameContext context) {
+        boolean near = getCenterCoordinates().sub(target.getCenterCoordinates()).len2() < getInfo().getAttackDistance();
+        boolean cooldown = attackTimer > .4f;
+
+        if (near && cooldown) {
+            attackTimer = 0;
+
+            context.effectAnimationsContainer()
+                .playAnimation("effect_animations/blood_1", target.getCenterCoordinates(), .2f);
+
+            context.playerInfo().changeHealth(-new Random().nextFloat(40, 70));
+            context.soundContainer().play("stons");
+
+            target.getBody().applyLinearImpulse(
+                getCenterCoordinates().sub(target.getCenterCoordinates()).nor().scl(-.3f),
+                target.getCenterCoordinates(),
+                true
+            );
+        }
+    }
+
+    @Override
     public void render(GameContext context) {
         super.render(context);
         checkPlayer(context);
 
         resetTimer += Gdx.graphics.getDeltaTime();
+        attackTimer += Gdx.graphics.getDeltaTime();
 
         if (wayToPlayer.isEmpty() || resetTimer > 1) {
             resetTimer = 0;
@@ -69,21 +93,7 @@ public class Zombie extends AliveEntity {
     }
 
     private void checkPlayer(GameContext context) {
-        if (getCenterCoordinates().sub(context.mainHeroEntity().getCenterCoordinates()).len2() < info.getAttackDistance()) {
-
-            context.effectAnimationsContainer()
-                .playAnimation("effect_animations/blood_1", context.mainHeroEntity().getCenterCoordinates(), .2f);
-
-            context.playerInfo().setHealth(context.playerInfo().getHealth() - 3f);
-
-            context.soundContainer().play("stons");
-
-            context.mainHeroEntity().getBody().applyLinearImpulse(
-                getCenterCoordinates().sub(context.mainHeroEntity().getCenterCoordinates()).scl(-.04f),
-                context.mainHeroEntity().getCenterCoordinates(),
-                true
-            );
-        }
+        attack(context.mainHeroEntity(), context);
     }
 
     private Vector2 followTarget(Vector2 myPos, Vector2 playerPos, float speed) {

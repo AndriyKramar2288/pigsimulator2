@@ -8,12 +8,14 @@ import com.banew.other.dto.AliveEntityInfo;
 import com.banew.other.records.CursorPair;
 import com.banew.other.records.GameContext;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
+import lombok.Getter;
 
 import java.util.Map;
 
 public abstract class AliveEntity extends MovingEntity {
     private final CursorPair attackCursor;
-    protected final AliveEntityInfo info;
+    @Getter
+    private final AliveEntityInfo info;
 
     public AliveEntity(Sprite sprite,
                        Body body,
@@ -24,8 +26,10 @@ public abstract class AliveEntity extends MovingEntity {
         this.info = info;
     }
 
-    public void attack(AliveEntity target) {
+    public abstract void attack(AliveEntity target, GameContext context);
 
+    public void дрочити() {
+        System.out.println("дрочу");
     }
 
     @Override
@@ -33,12 +37,17 @@ public abstract class AliveEntity extends MovingEntity {
         if (cursorTouchDown(context)) {
             boolean near = getCenterCoordinates().sub(context.mainHeroEntity().getCenterCoordinates()).len2() <
                 context.playerInfo().getAttackDistance();
+            attackCursor.use(near);
+            if (near && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                context.mainHeroEntity().attack(this, context);
+            }
+        }
+        if (info.getHealth() == 0) {
+            context.effectAnimationsContainer()
+                .playAnimation("effect_animations/blood_1", getCenterCoordinates(), 1f);
+            context.soundContainer().play("babah");
 
-//            attackCursor.use(near);
-//            if (near && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-//                context.effectAnimationsContainer()
-//                    .playAnimation("effect_animations/05_1", getCenterCoordinates());
-//            }
+            context.currentLevel().killAliveEntity(this);
         }
     }
 }

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class MovingEntity extends SpriteEntity {
-    protected float timer = 0f;
+    private float timer = 0f;
 
     private final List<TextureRegion> waitingRegions = new ArrayList<>();
     protected List<Animation<TextureRegion>> animationList = new ArrayList<>();

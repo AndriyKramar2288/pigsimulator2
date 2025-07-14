@@ -18,6 +18,7 @@ public record GameContext(
     Set<GameLevel> levels,
     SoundContainer soundContainer,
     EffectAnimationsContainer effectAnimationsContainer) {
+
     public PlayerInfo playerInfo() {
         return mainHeroEntity.getPlayerInfo();
     }

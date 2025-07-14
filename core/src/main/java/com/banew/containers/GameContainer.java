@@ -112,7 +112,7 @@ public class GameContainer implements Disposable {
             );
         });
 
-        context.currentLevel().getEntitySet().forEach(e -> {
+        new HashSet<>(context.currentLevel().getEntitySet()).forEach(e -> {
             e.draw(spriteBatch);
             e.render(context);
 
@@ -169,12 +169,12 @@ public class GameContainer implements Disposable {
         staminaReloadTimer += Gdx.graphics.getDeltaTime();
 
         if (staminaReloadTimer > 3 && context.playerInfo().getStamina() < context.playerInfo().getMaxStamina()) {
-            context.playerInfo().setStamina(context.playerInfo().getStamina() + .7f);
+            context.playerInfo().changeStamina(.7f);
         }
 
         if (context.playerInfo().getHealth() < context.playerInfo().getMaxHp()) {
             if ((hpReloadTimer > 5)) {
-                context.playerInfo().setHealth(context.playerInfo().getHealth() + .1f);
+                context.playerInfo().changeHealth(.1f);
             }
         }
         else {
@@ -200,7 +200,7 @@ public class GameContainer implements Disposable {
                 if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && context.playerInfo().getStamina() > 0) {
                     context.mainHeroEntity().setRunning(true);
                     value.accept(PLAYER_SPEED * 1.5f);
-                    context.playerInfo().setStamina(context.playerInfo().getStamina() - .05f);
+                    context.playerInfo().changeStamina(-0.05f);
                 }
                 else {
                     context.mainHeroEntity().setRunning(false);

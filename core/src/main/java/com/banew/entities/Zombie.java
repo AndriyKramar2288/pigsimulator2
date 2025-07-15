@@ -5,15 +5,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.banew.containers.GameLevel;
+import com.banew.items.AbstractWeapon;
 import com.banew.other.dto.AliveEntityInfo;
 import com.banew.other.records.CursorPair;
 import com.banew.other.records.GameContext;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class Zombie extends AliveEntity {
 
@@ -30,7 +28,8 @@ public class Zombie extends AliveEntity {
     }
 
     @Override
-    public void attack(AliveEntity target, GameContext context) {
+    public void attack(GameContext context, AbstractWeapon optionalWeapon) {
+        AliveEntity target = context.mainHeroEntity();
         boolean near = getCenterCoordinates().sub(target.getCenterCoordinates()).len2() < getInfo().getAttackDistance();
         boolean cooldown = attackTimer > .4f;
 
@@ -43,12 +42,23 @@ public class Zombie extends AliveEntity {
             context.playerInfo().changeHealth(-new Random().nextFloat(40, 70));
             context.soundContainer().play("stons");
 
+            target.injured();
             target.getBody().applyLinearImpulse(
                 getCenterCoordinates().sub(target.getCenterCoordinates()).nor().scl(-.3f),
                 target.getCenterCoordinates(),
                 true
             );
         }
+    }
+
+    @Override
+    protected float getReloadHpTime() {
+        return 5;
+    }
+
+    @Override
+    protected float getReloadHpSpeed() {
+        return 30;
     }
 
     @Override
@@ -93,7 +103,7 @@ public class Zombie extends AliveEntity {
     }
 
     private void checkPlayer(GameContext context) {
-        attack(context.mainHeroEntity(), context);
+        attack(context, null);
     }
 
     private Vector2 followTarget(Vector2 myPos, Vector2 playerPos, float speed) {

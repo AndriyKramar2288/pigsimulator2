@@ -101,6 +101,14 @@ public class GameLevel implements Disposable {
         return pathFinder.findPath(start, end);
     }
 
+    public Optional<AliveEntity> getFocusEntity(GameContext gameContext) {
+        return entitySet.stream()
+            .filter(e -> e instanceof AliveEntity && !(e instanceof MainHeroEntity))
+            .filter(e -> e.cursorTouchDown(gameContext))
+            .map(e -> (AliveEntity) e)
+            .findFirst();
+    }
+
     public void killAliveEntity(AliveEntity victim) {
         world.destroyBody(victim.getBody());
         entitySet.remove(victim);

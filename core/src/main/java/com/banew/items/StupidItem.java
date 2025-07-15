@@ -1,6 +1,7 @@
 package com.banew.items;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.banew.entities.AliveEntity;
 import com.banew.other.records.GameContext;
 
 public class StupidItem extends AbstractItem {
@@ -9,7 +10,7 @@ public class StupidItem extends AbstractItem {
     }
 
     @Override
-    public void use(GameContext gameContext) {
+    public void use(GameContext gameContext, AliveEntity user) {
         gameContext.soundContainer().play("hru");
     }
 }

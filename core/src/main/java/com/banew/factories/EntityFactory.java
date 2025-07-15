@@ -21,6 +21,7 @@ import com.banew.containers.GameLevel;
 import com.banew.entities.*;
 import com.banew.external.GeneralSettings;
 import com.banew.items.StupidItem;
+import com.banew.items.Sword;
 import com.banew.other.dto.AliveEntityInfo;
 import com.banew.other.records.CursorPair;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
@@ -133,6 +134,9 @@ public class EntityFactory {
         );
         mainHeroEntity.getInventory().put(
             3, new StupidItem(textureAtlas.findRegion("hryak1/tile002"), "Хрюкающий подсвинок")
+        );
+        mainHeroEntity.getInventory().put(
+            4, new Sword(textureAtlas.findRegion("hryak1/tile004"), "клинок Аллаха")
         );
 
         return mainHeroEntity;

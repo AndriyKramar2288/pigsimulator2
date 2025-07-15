@@ -96,7 +96,7 @@ public abstract class SpriteEntity {
         sprite.draw(spriteBatch);
     }
 
-    protected boolean cursorTouchDown(GameContext context) {
+    public boolean cursorTouchDown(GameContext context) {
         int screenX = Gdx.input.getX();
         int screenY = Gdx.input.getY();
         Camera camera = context.camera();

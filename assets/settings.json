@@ -74,11 +74,15 @@
     },
     "babah": {
       "src": "explosion-fx-343683.mp3",
-      "volume": 100
+      "volume": 0.1
     },
     "metal_punch": {
       "src": "metal-punch-142334.mp3",
       "volume": 0.1
+    },
+    "classic_punch": {
+      "src": "classic-punch-impact-352711.mp3",
+      "volume": 0.2
     }
   },
   "effectAnimations": [

@@ -30,7 +30,6 @@ public class GameContainer implements Disposable {
 
     private boolean isMoving = false;
     private float staminaReloadTimer = 0f;
-    private float hpReloadTimer = 0f;
     public static boolean isDebug = false;
 
     private final GameContext context;
@@ -165,20 +164,10 @@ public class GameContainer implements Disposable {
             staminaReloadTimer = 0f;
         }
 
-        hpReloadTimer += Gdx.graphics.getDeltaTime();
         staminaReloadTimer += Gdx.graphics.getDeltaTime();
 
         if (staminaReloadTimer > 3 && context.playerInfo().getStamina() < context.playerInfo().getMaxStamina()) {
             context.playerInfo().changeStamina(.7f);
-        }
-
-        if (context.playerInfo().getHealth() < context.playerInfo().getMaxHp()) {
-            if ((hpReloadTimer > 5)) {
-                context.playerInfo().changeHealth(.1f);
-            }
-        }
-        else {
-            hpReloadTimer = 0;
         }
     }
 

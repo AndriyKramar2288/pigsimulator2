@@ -161,13 +161,13 @@ public class SelfItemsDisplayer extends AbstractItemsDisplayer {
         activeSlots.forEach((key, value) -> {
             if (Gdx.input.isKeyJustPressed(key)) {
                 AbstractItem item = getSlotItem(value);
-                if (item != null) item.use(context);
+                if (item != null) item.use(context, context.mainHeroEntity());
             }
         });
         mouseSlots.forEach((key, value) -> {
             if (Gdx.input.isButtonJustPressed(key)) {
                 AbstractItem item = getSlotItem(value);
-                if (item != null) item.use(context);
+                if (item != null) item.use(context, context.mainHeroEntity());
             }
         });
 

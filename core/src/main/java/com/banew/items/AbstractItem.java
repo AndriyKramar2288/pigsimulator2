@@ -1,6 +1,7 @@
 package com.banew.items;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.banew.entities.AliveEntity;
 import com.banew.other.records.GameContext;
 import lombok.Getter;
 
@@ -15,5 +16,5 @@ public abstract class AbstractItem {
         this.name = name;
     }
 
-    public abstract void use(GameContext gameContext);
+    public abstract void use(GameContext gameContext, AliveEntity user);
 }

@@ -1,8 +1,6 @@
 package com.banew.factories;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -16,14 +14,16 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.banew.containers.CursorsContainer;
-import com.banew.containers.GameLevel;
+import com.banew.containers.game.CursorsContainer;
+import com.banew.containers.game.GameLevel;
 import com.banew.entities.*;
+import com.banew.entities.alive.MainHeroEntity;
+import com.banew.entities.alive.Zombie;
+import com.banew.entities.containers.Chest;
 import com.banew.external.GeneralSettings;
 import com.banew.items.StupidItem;
-import com.banew.items.Sword;
+import com.banew.items.weapon.Sword;
 import com.banew.other.dto.AliveEntityInfo;
-import com.banew.other.records.CursorPair;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
 import com.banew.utilites.TextureExtractorDeep;
 import lombok.Setter;
@@ -97,11 +97,17 @@ public class EntityFactory {
 
     private Chest createChest(MapObject object) {
         Rectangle rectangle = GameLevel.fromMapObject(object);
+
+        List<TextureRegion> chests = TextureExtractorDeep.fromOneSubtexture(
+            "Objects/Chest", 5, 2, textureAtlas, 1, 3
+        );
+
         return new Chest(
-            generateBasicSprite(rectangle, textureAtlas.findRegion("gui/infoBack")),
-            generateBasicBody(rectangle, 1f, 1f),
-            new Vector2(1f, 1f),
-            cursorsContainer.get("chest"), cursorsContainer.get("bad_chest")
+            generateBasicSprite(rectangle, chests.get(0)),
+            generateBasicBody(rectangle, .7f, .5f),
+            new Vector2(.7f, .5f),
+            cursorsContainer.getCursorPair("chest", "bad_chest"),
+            chests
         );
     }
 
@@ -135,8 +141,14 @@ public class EntityFactory {
         mainHeroEntity.getInventory().put(
             3, new StupidItem(textureAtlas.findRegion("hryak1/tile002"), "Хрюкающий подсвинок")
         );
+
         mainHeroEntity.getInventory().put(
-            4, new Sword(textureAtlas.findRegion("hryak1/tile004"), "клинок Аллаха")
+            4, new Sword(
+                TextureExtractorDeep.fromOneSubtexture(
+                    "Objects/swords", 5, 1, textureAtlas, 1
+                ).get(0),
+                "клинок Аллаха"
+            )
         );
 
         return mainHeroEntity;
@@ -240,7 +252,7 @@ public class EntityFactory {
         // позиція — ЦЕНТР фікстури!
         bodyDef.position.set(x + size_x / 2f, y + size_y / 2f);
 
-        Body body = currentGameLevel.getWorld().createBody(bodyDef);
+        Body body = currentGameLevel.createBody(bodyDef);
         body.createFixture(generateBasicFicture(size_x * scaleX, size_y * scaleY));
         return body;
     }
@@ -265,7 +277,7 @@ public class EntityFactory {
         bodyDef.position.set(x + size_x / 2f, y + size_y / 2f);
         bodyDef.bullet = true;
 
-        Body body = currentGameLevel.getWorld().createBody(bodyDef);
+        Body body = currentGameLevel.createBody(bodyDef);
         body.createFixture(generateBasicFicture(size_x * scaleX, size_y * scaleY));
         return body;
     }

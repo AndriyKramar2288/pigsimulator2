@@ -8,13 +8,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.banew.containers.GameContainer;
+import com.banew.containers.GlobalGameContext;
+import com.banew.containers.SoundContainer;
+import com.banew.containers.menu.MenuContainer;
 import com.banew.external.GeneralSettings;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main implements ApplicationListener {
-    private GameContainer gameContainer;
+
     private Cursor cursor;
+
+    private GlobalGameContext globalGameContext;
 
     private void toggleFullscreen() {
         if (Gdx.graphics.isFullscreen()) {
@@ -27,18 +31,18 @@ public class Main implements ApplicationListener {
 
     @Override
     public void create() {
-        GeneralSettings generalSettings = GeneralSettings.importSettings();
-
         Pixmap pixmap = new Pixmap(Gdx.files.internal("textures/cursors/cursor.png"));
         cursor = Gdx.graphics.newCursor(pixmap, 9, 5);
 
-        gameContainer = new GameContainer(generalSettings);
+        GeneralSettings generalSettings = GeneralSettings.importSettings();
+
+        globalGameContext = new GlobalGameContext(generalSettings);
     }
 
     @Override
     public void resize(int width, int height) {
         if(width <= 0 || height <= 0) return;
-        gameContainer.resize(width, height);
+        globalGameContext.resizeCurrent(width, height);
     }
 
     @Override
@@ -50,8 +54,7 @@ public class Main implements ApplicationListener {
 
         ScreenUtils.clear(Color.BLACK);
         Gdx.graphics.setCursor(cursor);
-
-        gameContainer.render();
+        globalGameContext.renderCurrent();
     }
 
     @Override
@@ -66,6 +69,6 @@ public class Main implements ApplicationListener {
 
     @Override
     public void dispose() {
-        gameContainer.dispose();
+        globalGameContext.dispose();
     }
 }

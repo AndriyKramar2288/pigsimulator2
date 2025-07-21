@@ -1,6 +1,7 @@
 {
   "main_atlas_src": "textures-generated/game.atlas",
   "collision_level_name": "Колізіонєри",
+  "main_skin_src": "skin/freezing/freezing-ui.json",
   "gameLevels": [
     {
       "levelName": "main",
@@ -91,6 +92,16 @@
       "height": 1,
       "region": "effect_animations/blood",
       "speed": 0.1
+    },
+    {
+      "width": 6,
+      "height": 1,
+      "region": "Objects/swords",
+      "speed": 0.1
     }
+  ],
+  "menuPhotos": [
+    "menuBack/img",
+    "menuBack/aboba"
   ]
 }

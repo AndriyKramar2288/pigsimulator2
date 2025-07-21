@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="42">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="49">
  <tileset firstgid="1" name="Hills" tilewidth="16" tileheight="16" tilecount="77" columns="11">
   <image source="../Sprout Lands - Sprites - Basic pack/Tilesets/Hills.png" trans="ff00ff" width="176" height="112"/>
  </tileset>
  <tileset firstgid="78" source="Wooden_House_Walls_Tilset.tsx"/>
  <tileset firstgid="93" source="Hills.tsx"/>
  <tileset firstgid="170" source="двері до сексу.tsx"/>
+ <tileset firstgid="171" source="Basic_Furniture.tsx"/>
  <layer id="1" name="Прошарок плиток 1" width="30" height="20">
   <data encoding="csv">
 1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,
@@ -54,6 +55,30 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <layer id="10" name="Прошарок плиток 3" width="30" height="20">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,200,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,193,201,194,209,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
  <objectgroup id="3" name="Колізіонєри">
   <object id="1" type="colision" x="117.792" y="259.162" width="4.13084" height="10.5844"/>
   <object id="2" x="203" y="112" width="74" height="5"/>
@@ -86,6 +111,12 @@
   <object id="16" type="colision" x="373.81" y="275.145" width="4.13084" height="10.5844"/>
   <object id="17" type="colision" x="406.418" y="67.9635" width="4.13084" height="10.5844"/>
   <object id="18" name="Кущ всемогущий" type="colision" x="341.81" y="146.333" width="4.13084" height="10.5844"/>
+  <object id="43" x="225.059" y="160.974" width="13.8103" height="13.8814"/>
+  <object id="44" x="243.095" y="170.929" width="9.84698" height="2.92488"/>
+  <object id="45" x="211.021" y="170.874" width="9.94073" height="3.13547"/>
+  <object id="46" x="211.073" y="160.954" width="3.89725" height="9.91808"/>
+  <object id="47" x="248.856" y="161.016" width="4.10581" height="9.83792"/>
+  <object id="48" x="258.028" y="154.922" width="11.8538" height="20.005"/>
  </objectgroup>
  <objectgroup id="7" name="Objects">
   <object id="33" x="360.006" y="32.0117" width="15.9896" height="31.9764">
@@ -107,19 +138,19 @@
     <property name="Class" value="main_hero"/>
    </properties>
   </object>
-  <object id="38" x="226.728" y="148.181" width="23.8182" height="10.9091">
+  <object id="38" x="220.105" y="113.483" width="23.8182" height="20.8636">
    <properties>
     <property name="Class" value="chest"/>
    </properties>
   </object>
-  <object id="39" x="209.909" y="160.545" width="23.8182" height="10.9091">
+  <object id="42" name="вася" type="Torch" x="224.64" y="156.189" width="14.5341" height="13.2727">
    <properties>
-    <property name="Class" value="chest"/>
+    <property name="Class" value="torch"/>
    </properties>
   </object>
  </objectgroup>
  <objectgroup id="9" name="walkAreas">
-  <object id="40" x="208.074" y="117.06" width="63.9009" height="58.902">
+  <object id="40" x="208.074" y="117.06" width="63.9009" height="58.902" visible="0">
    <properties>
     <property name="Class" value="walk_stone"/>
    </properties>

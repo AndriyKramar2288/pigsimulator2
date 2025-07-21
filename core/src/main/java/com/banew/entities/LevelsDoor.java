@@ -3,7 +3,8 @@ package com.banew.entities;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.banew.containers.GameLevel;
+import com.banew.containers.game.GameLevel;
+import com.banew.entities.alive.MainHeroEntity;
 import com.banew.other.records.GameContext;
 import lombok.Getter;
 

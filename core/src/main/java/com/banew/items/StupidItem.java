@@ -1,7 +1,7 @@
 package com.banew.items;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.banew.entities.AliveEntity;
+import com.banew.entities.alive.AliveEntity;
 import com.banew.other.records.GameContext;
 
 public class StupidItem extends AbstractItem {

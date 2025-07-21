@@ -10,8 +10,11 @@ import java.util.Map;
 public class SoundContainer {
     private final Map<String, Sound> soundMap = new HashMap<>();
     private final Map<String, Float> volumeMap = new HashMap<>();
+    private final GeneralSettings generalSettings;
 
     public SoundContainer(GeneralSettings generalSettings) {
+        this.generalSettings = generalSettings;
+
         AssetManager manager = new AssetManager();
         generalSettings.getSounds().forEach((key, value) -> {
             manager.load("sounds/" + value.getSrc(), Sound.class);
@@ -31,7 +34,7 @@ public class SoundContainer {
     public void play(String name) {
         Sound sound = soundMap.get(name);
         if (sound != null) {
-            sound.play(volumeMap.get(name));
+            sound.play(volumeMap.get(name) * generalSettings.getGeneralVolume());
         }
         else {
             System.out.println("Звук '" + name + "' слід змінити на латиницю, так воно не хоче!");
@@ -39,7 +42,7 @@ public class SoundContainer {
     }
 
     public float getVolume(String name) {
-        return volumeMap.get(name);
+        return volumeMap.get(name) * generalSettings.getGeneralVolume();
     }
 
     public Sound getSound(String name) {

@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.banew.containers.GameLevel;
+import com.banew.containers.game.GameLevel;
 import com.banew.other.records.GameContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;

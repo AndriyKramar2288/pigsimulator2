@@ -2,10 +2,10 @@ package com.banew.other.records;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.banew.containers.EffectAnimationsContainer;
-import com.banew.containers.GameLevel;
+import com.banew.containers.game.EffectAnimationsContainer;
+import com.banew.containers.game.GameLevel;
 import com.banew.containers.SoundContainer;
-import com.banew.entities.MainHeroEntity;
+import com.banew.entities.alive.MainHeroEntity;
 import com.banew.other.dto.PlayerInfo;
 import com.banew.utilites.Reference;
 

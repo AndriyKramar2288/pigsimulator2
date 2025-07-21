@@ -3,7 +3,7 @@ package com.banew.utilites;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.banew.containers.GameLevel;
+import com.banew.containers.game.GameLevel;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,21 +1,39 @@
 
 freezing-ui.png
-size: 1024, 1024
+size: 2048, 2048
 format: RGBA8888
-filter: Linear, Linear
+filter: Nearest, Nearest
 repeat: none
 button
   rotate: false
-  xy: 1, 52
-  size: 156, 59
+  xy: 1325, 1983
+  size: 57, 22
   split: 0, 0, 0, 0
-  pad: 10, 12, 9, 15
-  orig: 156, 59
+  pad: 4, 4, 4, 6
+  orig: 57, 22
+  offset: 0, 0
+  index: -1
+button_down
+  rotate: false
+  xy: 768, 1390
+  size: 57, 20
+  split: 0, 0, 0, 0
+  pad: 4, 4, 4, 4
+  orig: 57, 20
+  offset: 0, 0
+  index: -1
+button_over
+  rotate: false
+  xy: 1257, 1660
+  size: 57, 22
+  split: 0, 0, 0, 0
+  pad: 4, 4, 4, 6
+  orig: 57, 22
   offset: 0, 0
   index: -1
 button-down
   rotate: false
-  xy: 707, 900
+  xy: 338, 446
   size: 156, 59
   split: 0, 0, 0, 0
   pad: 10, 12, 12, 12
@@ -24,65 +42,86 @@ button-down
   index: -1
 checkbox
   rotate: false
-  xy: 297, 831
+  xy: 682, 1132
   size: 36, 25
   orig: 36, 25
   offset: 0, 0
   index: -1
 checkbox copy
   rotate: false
-  xy: 254, 508
+  xy: 1538, 2022
   size: 36, 25
   orig: 36, 25
   offset: 0, 0
   index: -1
 font-button-export
   rotate: false
-  xy: 1, 113
+  xy: 515, 990
   size: 165, 167
   orig: 165, 167
   offset: 0, 0
   index: -1
 font-export
   rotate: false
-  xy: 168, 176
+  xy: 1, 32
   size: 104, 104
   orig: 104, 104
   offset: 0, 0
   index: -1
 font-title-export
   rotate: false
-  xy: 1, 282
+  xy: 515, 1159
   size: 251, 251
   orig: 251, 251
   offset: 0, 0
   index: -1
 list
   rotate: false
-  xy: 510, 868
+  xy: 515, 916
   size: 95, 72
   split: 10, 74, 15, 51
   pad: 12, 16, 15, 14
   orig: 95, 72
   offset: 0, 0
   index: -1
+my-font4
+  rotate: false
+  xy: 1, 507
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
 progress-bar
   rotate: false
-  xy: 370, 942
+  xy: 1, 426
   size: 335, 79
   orig: 335, 79
   offset: 0, 0
   index: -1
 progress-bar-knob
   rotate: false
-  xy: 1, 858
+  xy: 515, 1412
   size: 335, 79
   orig: 335, 79
   offset: 0, 0
   index: -1
+progress_bar
+  rotate: false
+  xy: 515, 1493
+  size: 367, 40
+  orig: 367, 40
+  offset: 0, 0
+  index: -1
+progress_bar_knob
+  rotate: false
+  xy: 1029, 2007
+  size: 367, 40
+  orig: 367, 40
+  offset: 0, 0
+  index: -1
 scrollbar-horizontal
   rotate: false
-  xy: 168, 131
+  xy: 1029, 1577
   size: 97, 43
   split: 49, 42, 0, 0
   pad: 0, 0, 0, 0
@@ -91,7 +130,7 @@ scrollbar-horizontal
   index: -1
 scrollbar-vertical
   rotate: false
-  xy: 338, 891
+  xy: 852, 1445
   size: 22, 46
   split: 0, 0, 20, 21
   pad: 0, 0, 0, 0
@@ -100,7 +139,7 @@ scrollbar-vertical
   index: -1
 select-box
   rotate: false
-  xy: 1, 12
+  xy: 884, 1495
   size: 138, 38
   split: 54, 49, 0, 0
   pad: 14, 31, 10, 5
@@ -109,7 +148,7 @@ select-box
   index: -1
 select-box-pressed
   rotate: false
-  xy: 370, 902
+  xy: 1398, 2009
   size: 138, 38
   split: 54, 49, 0, 0
   pad: 14, 31, 10, 5
@@ -118,7 +157,7 @@ select-box-pressed
   index: -1
 slider-horizontal
   rotate: false
-  xy: 168, 116
+  xy: 338, 431
   size: 14, 13
   split: 1, 1, 0, 0
   pad: 0, 0, 0, 0
@@ -127,14 +166,14 @@ slider-horizontal
   index: -1
 slider-knob
   rotate: false
-  xy: 865, 932
+  xy: 1128, 1607
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
 slider-vertical
   rotate: false
-  xy: 297, 815
+  xy: 515, 900
   size: 13, 14
   split: 0, 0, 1, 1
   pad: 0, 0, 0, 0
@@ -143,7 +182,7 @@ slider-vertical
   index: -1
 splitpane-horizontal
   rotate: false
-  xy: 254, 462
+  xy: 612, 944
   size: 12, 44
   split: 0, 0, 7, 8
   pad: 0, 0, 0, 0
@@ -152,7 +191,7 @@ splitpane-horizontal
   index: -1
 splitpane-vertical
   rotate: false
-  xy: 865, 947
+  xy: 289, 412
   size: 44, 12
   split: 11, 7, 0, 0
   pad: 0, 0, 0, 0
@@ -161,7 +200,7 @@ splitpane-vertical
   index: -1
 textfield
   rotate: false
-  xy: 935, 992
+  xy: 1, 1
   size: 51, 29
   split: 6, 27, 5, 16
   pad: 4, 4, 3, 3
@@ -170,59 +209,96 @@ textfield
   index: -1
 touchpad
   rotate: false
-  xy: 1, 535
+  xy: 1029, 1684
   size: 294, 321
   orig: 294, 321
   offset: 0, 0
   index: -1
 touchpad-knob
   rotate: false
-  xy: 988, 980
+  xy: 107, 95
   size: 35, 41
   orig: 35, 41
   offset: 0, 0
   index: -1
 tree-minus
   rotate: false
-  xy: 141, 27
+  xy: 496, 482
   size: 16, 23
   orig: 16, 23
   offset: 0, 0
   index: -1
 tree-plus
   rotate: false
-  xy: 607, 917
+  xy: 1029, 1552
   size: 16, 23
   orig: 16, 23
   offset: 0, 0
   index: -1
 white
   rotate: false
-  xy: 159, 110
+  xy: 1024, 1532
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 window
   rotate: false
-  xy: 707, 961
+  xy: 1029, 1622
   size: 226, 60
   split: 109, 111, 28, 10
   pad: 12, 12, 28, 10
   orig: 226, 60
   offset: 0, 0
   index: -1
-progress_bar
+my-font1
   rotate: false
-  xy: 1, 981
-  size: 367, 40
-  orig: 367, 40
+  xy: 1, 1535
+  size: 512, 512
+  orig: 512, 512
   offset: 0, 0
   index: -1
-progress_bar_knob
+my-font1
   rotate: false
-  xy: 1, 939
-  size: 367, 40
-  orig: 367, 40
+  xy: 1, 1535
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+my-font2
+  rotate: false
+  xy: 1, 1021
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+my-font2
+  rotate: false
+  xy: 1, 1021
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+my-font3
+  rotate: false
+  xy: 515, 1535
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+my-font3
+  rotate: false
+  xy: 515, 1535
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+transparent-inventory-for-pvp_5
+  rotate: false
+  xy: 1, 138
+  size: 286, 286
+  split: 0, 0, 0, 0
+  pad: 13, 13, 12, 13
+  orig: 286, 286
   offset: 0, 0
   index: -1

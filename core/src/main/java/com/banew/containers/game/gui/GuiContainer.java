@@ -7,11 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.banew.containers.GlobalGameContext;
 import com.banew.containers.game.Component;
+import com.banew.containers.game.GameContainer;
 import com.banew.containers.game.gui.components.ContainerItemsData;
 import com.banew.containers.game.gui.components.ContainerLeftInfo;
 import com.banew.containers.game.gui.components.ContainerPlayerInfo;
-import com.banew.external.GeneralSettings;
 import com.banew.other.records.GameContext;
 
 import java.util.ArrayList;
@@ -25,19 +26,19 @@ public class GuiContainer implements Disposable {
 
     private final List<Component> componentList = new ArrayList<>();
 
-    public GuiContainer (GeneralSettings generalSettings) {
+    public GuiContainer (GlobalGameContext globalGameContext) {
         guiViewport = new ScreenViewport();
         stage = new Stage(guiViewport);
 
-        Skin freezing_skin = new Skin(Gdx.files.internal(generalSettings.getMain_skin_src()));
+        Skin freezing_skin = globalGameContext.getMainSkin();
+        TextureAtlas atlas = globalGameContext.getTextureAtlas();
 
-        TextureAtlas atlas = new TextureAtlas(Gdx.files.internal(generalSettings.getMain_atlas_src()));
         inventoryUI = new InventoryUI(
-            stage, freezing_skin, atlas
+            stage, globalGameContext
         );
 
         componentList.add(new ContainerLeftInfo(
-            stage, freezing_skin, atlas, inventoryUI
+            stage, freezing_skin, atlas, globalGameContext.getDynamicLabelsContainer()
         ));
         componentList.add(new ContainerItemsData(
             stage, atlas, inventoryUI
@@ -53,6 +54,7 @@ public class GuiContainer implements Disposable {
 
     public void resize(int width, int height) {
         guiViewport.update(width, height, true);
+        inventoryUI.resize(width, height);
     }
 
     public void render(GameContext context) {

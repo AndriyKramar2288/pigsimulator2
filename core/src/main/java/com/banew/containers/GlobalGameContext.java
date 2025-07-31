@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Disposable;
+import com.banew.containers.game.gui.DynamicLabelsContainer;
 import com.banew.containers.menu.MenuContainer;
 import com.banew.external.GeneralSettings;
 import com.banew.utilites.Reference;
@@ -24,6 +25,8 @@ public final class GlobalGameContext implements Disposable {
     private final Skin mainSkin;
     @Getter
     private final GeneralSettings generalSettings;
+    @Getter
+    private final DynamicLabelsContainer dynamicLabelsContainer;
 
     private Vector2 lastSize;
 
@@ -35,6 +38,7 @@ public final class GlobalGameContext implements Disposable {
         textureAtlas = new TextureAtlas(Gdx.files.internal(generalSettings.getMain_atlas_src()));
         mainSkin = new Skin(Gdx.files.internal(generalSettings.getMain_skin_src()));
         soundContainer = new SoundContainer(generalSettings);
+        dynamicLabelsContainer = new DynamicLabelsContainer();
 
         setContainer(new MenuContainer(this));
     }
@@ -57,6 +61,7 @@ public final class GlobalGameContext implements Disposable {
     }
 
     public void renderCurrent() {
+        dynamicLabelsContainer.updateLabelSizes(currentContainer().viewport());
         currentContainer().render();
     }
 

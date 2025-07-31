@@ -27,14 +27,15 @@ public class GeneralSettings {
 
     private float generalVolume = 1.0f;
 
+    @JsonIgnore
+    private final Map<String, MusicPattern> musicPatternMap = new HashMap<>();
+
     /**
      * Завантажує ігрові рівні
      * @param factory фабрика для створення сутностей в рівнях
      * @return сет з рівнями
      */
     public Set<GameLevel> getLevels(EntityFactory factory) {
-
-        Map<String, MusicPattern> musicPatternMap = new HashMap<>();
 
         musicPatterns.forEach((key, value) -> {
             musicPatternMap.put(key, new MusicPattern(value, key, this));
@@ -56,5 +57,10 @@ public class GeneralSettings {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void setGeneralVolume(float generalVolume) {
+        this.generalVolume = generalVolume;
+        musicPatternMap.forEach((k, v) -> v.stopPlay());
     }
 }

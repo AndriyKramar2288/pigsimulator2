@@ -76,7 +76,8 @@
 "com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
 	"default": {
 		"up": "button",
-		"down": "button_down"
+		"down": "button_down",
+		"over": "button_over"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle": {
@@ -154,8 +155,8 @@
 },
 "com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle": {
 	"default-horizontal": {
-		"background": "slider-horizontal",
-		"knob": "slider-knob"
+		"background": "slider_back",
+		"knob": "slider_knob"
 	},
 	"default-vertical": {
 		"background": "slider-vertical",
@@ -176,10 +177,7 @@
 		"fontColor": "button",
 		"up": "button",
 		"down": "button_down",
-		"over": "button_over",
-		"pressedOffsetY": 10,
-		"unpressedOffsetY": 10,
-		"checkedOffsetY": 10
+		"over": "button_over"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {

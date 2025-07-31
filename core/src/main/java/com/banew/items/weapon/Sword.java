@@ -14,12 +14,12 @@ public class Sword extends AbstractReloadWeapon {
 
     @Override
     protected float getMaxStaminaDebuff() {
-        return 10;
+        return 20;
     }
 
     @Override
     protected float getReloadTime() {
-        return 1f;
+        return .3f;
     }
 
     @Override

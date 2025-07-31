@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.banew.containers.game.Component;
+import com.banew.containers.game.gui.DynamicLabelsContainer;
 import com.banew.containers.game.gui.InventoryUI;
 import com.banew.other.records.GameContext;
 

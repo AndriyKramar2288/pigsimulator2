@@ -10,10 +10,15 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.banew.containers.GlobalGameContext;
+import com.banew.containers.game.gui.storage_displayers.AbstractItemsDisplayer;
 import com.banew.containers.game.gui.storage_displayers.OtherContainerDisplayer;
 import com.banew.containers.game.gui.storage_displayers.SelfItemsDisplayer;
+import com.banew.containers.menu.MenuButtonsListener;
+import com.banew.containers.menu.SettingsWindow;
 import com.banew.other.records.GameContext;
 import lombok.Getter;
 
@@ -25,13 +30,12 @@ public class InventoryUI {
     private final List<Actor> actors = new ArrayList<>();
     private final SelfItemsDisplayer selfItemsDisplayer;
     private final OtherContainerDisplayer otherContainerDisplayer;
+    private final DynamicLabelsContainer dynamicLabelsContainer;
     @Getter
     private boolean visible = false;
     private GameContext context;
 
-    // для динамічних Label
-    @Getter
-    private final DynamicLabelsContainer dynamicLabelsContainer;
+    private SettingsWindow settingsWindow;
 
     public static Texture makePixel(int width, int height, Color color) {
         Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
@@ -42,10 +46,14 @@ public class InventoryUI {
         return texture;
     }
 
-    public InventoryUI(Stage stage, Skin skin, TextureAtlas atlas) {
-        this.dynamicLabelsContainer = new DynamicLabelsContainer(stage);
+    public InventoryUI(Stage stage, GlobalGameContext globalGameContext) {
         // блюр
         initBlur(stage);
+
+        Skin skin = globalGameContext.getMainSkin();
+        TextureAtlas atlas = globalGameContext.getTextureAtlas();
+
+        dynamicLabelsContainer = globalGameContext.getDynamicLabelsContainer();
 
         TooltipContainer tooltipContainer = new TooltipContainer(
             dynamicLabelsContainer, skin
@@ -54,6 +62,7 @@ public class InventoryUI {
         // табличка
         Table inventoryTable = new Table();
         inventoryTable.setFillParent(true);
+
         inventoryTable.right().padRight(Value.percentWidth(.03f)).top();
         inventoryTable.setVisible(false);
         stage.addActor(inventoryTable);
@@ -67,6 +76,37 @@ public class InventoryUI {
         selfItemsDisplayer = new SelfItemsDisplayer(
             inventoryTable, skin, atlas, dynamicLabelsContainer, dragAndDrop, tooltipContainer
         );
+
+        initLeftMenu(stage, skin, globalGameContext);
+    }
+
+    private void initLeftMenu(Stage stage, Skin skin, GlobalGameContext globalGameContext) {
+        // зліва список кнопок
+        Table leftButtons = new Table();
+        stage.addActor(leftButtons);
+        leftButtons.setVisible(false);
+        actors.add(leftButtons);
+
+        leftButtons.setFillParent(true);
+        leftButtons.top().left().pad(Value.percentWidth(.03f));
+        AbstractItemsDisplayer.addInventoryLabel(
+            "Меню", skin, leftButtons, leftButtons, dynamicLabelsContainer, 1
+        );
+        TextButton pauseButton = new TextButton("Налаштування", skin);
+        leftButtons.add(pauseButton).size(240, 60);
+
+        settingsWindow = new SettingsWindow(
+            stage, globalGameContext
+        );
+
+        pauseButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                settingsWindow.setVisible(true);
+                settingsWindow.toFront();
+            }
+        });
+        pauseButton.addListener(new MenuButtonsListener(globalGameContext.getSoundContainer()));
     }
 
     private void initBlur(Stage stage) {
@@ -90,7 +130,10 @@ public class InventoryUI {
     public void toggle(boolean state) {
         visible = state;
         actors.forEach(e -> e.setVisible(state));
-        if (!state) context.mainHeroEntity().setOpenedContainer(null); // забрати, якщо закрили інвентар
+        if (!state) {
+            context.mainHeroEntity().setOpenedContainer(null); // забрати, якщо закрили інвентар
+            settingsWindow.setVisible(false);
+        }
     }
 
     public void update(GameContext context) {
@@ -105,7 +148,7 @@ public class InventoryUI {
         selfItemsDisplayer.displayContainer(context);
         otherContainerDisplayer.displayContainer(context);
         // оновити кляті Label
-        dynamicLabelsContainer.updateLabelSizes(context);
+        dynamicLabelsContainer.updateLabelSizes(context.viewport());
     }
 
     public List<ImageButton> extractHandButtons() {
@@ -114,5 +157,9 @@ public class InventoryUI {
 
     public List<ImageButton> extractHotKeyButtons() {
         return selfItemsDisplayer.extractHotKeyButtons();
+    }
+
+    public void resize(int width, int height) {
+        settingsWindow.resize(width, height);
     }
 }

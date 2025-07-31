@@ -59,16 +59,27 @@ public abstract class AbstractItemsDisplayer {
     }
 
     public Label addLabel(String text, Skin skin) {
+        return addInventoryLabel(
+            text, skin, inventoryTable, table, labels, getCols()
+        );
+    }
+
+    public static Label addInventoryLabel(String text,
+                                         Skin skin,
+                                         Table basicTable,
+                                         Table ownTable,
+                                         DynamicLabelsContainer labels,
+                                          int cols) {
         Label topLabel = new Label(text, skin);
         topLabel.setColor(.8f, .8f, .8f, .4f);
         labels.put(topLabel, 0.5f);
-        table.add(topLabel)
-            .colspan(getCols())
-            .padBottom(Value.percentHeight(.01f, inventoryTable))
+        ownTable.add(topLabel)
+            .colspan(cols)
+            .padBottom(Value.percentHeight(.01f, basicTable))
             .left()
-            .padLeft(Value.percentWidth(.01f, inventoryTable))
-            .width(Value.percentWidth(0.03f * getCols(), inventoryTable));
-        table.row();
+            .padLeft(Value.percentWidth(.01f, basicTable))
+            .width(Value.percentWidth(0.03f * cols, basicTable));
+        ownTable.row();
         return topLabel;
     }
 

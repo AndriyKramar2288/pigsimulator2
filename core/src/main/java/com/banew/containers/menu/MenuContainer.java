@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.banew.containers.Container;
 import com.banew.containers.GlobalGameContext;
+import com.banew.containers.SoundContainer;
 import com.banew.containers.game.GameContainer;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class MenuContainer implements Container {
 
         setUpBackgroundPhotos(context.getGeneralSettings().getMenuPhotos(), context.getTextureAtlas());
         setUpButtons(context.getMainSkin(), context.getTextureAtlas());
-        settingsWindow = new SettingsWindow(context.getMainSkin(), stage, viewport, context.getGeneralSettings());
+        settingsWindow = new SettingsWindow(stage, context);
     }
 
     private void setUpButtons(Skin skin, TextureAtlas atlas) {
@@ -89,7 +90,7 @@ public class MenuContainer implements Container {
     }
 
     private void addButton(TextButton button, Table table) {
-        button.addListener(new MenuButtonsListener());
+        button.addListener(new MenuButtonsListener(context.getSoundContainer()));
 
         // Верстка
         float pad = 20f;
@@ -152,15 +153,12 @@ public class MenuContainer implements Container {
     }
 
     @Override
-    public void dispose() {
-        stage.dispose();
+    public Viewport viewport() {
+        return viewport;
     }
 
-    private class MenuButtonsListener extends InputListener {
-        @Override
-        public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-            super.enter(event, x, y, pointer, fromActor);
-                context.getSoundContainer().play("inv_drop");
-        }
+    @Override
+    public void dispose() {
+        stage.dispose();
     }
 }

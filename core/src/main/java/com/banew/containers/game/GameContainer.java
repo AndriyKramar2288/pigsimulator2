@@ -50,7 +50,7 @@ public class GameContainer implements Container {
 
         GeneralSettings generalSettings = globalGameContext.getGeneralSettings();
 
-        guiContainer = new GuiContainer(generalSettings);
+        guiContainer = new GuiContainer(globalGameContext);
 
         EntityFactory entityFactory = new EntityFactory(generalSettings, globalGameContext.getTextureAtlas());
         var levels = generalSettings.getLevels(entityFactory);
@@ -101,6 +101,11 @@ public class GameContainer implements Container {
     public void resize(int width, int height) {
         viewport.update(width, height, false);
         guiContainer.resize(width, height);
+    }
+
+    @Override
+    public Viewport viewport() {
+        return viewport;
     }
 
     private void movingRender() {

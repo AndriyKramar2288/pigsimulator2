@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.banew.containers.game.Component;
-import com.banew.containers.game.gui.InventoryUI;
+import com.banew.containers.game.gui.DynamicLabelsContainer;
 import com.banew.other.records.GameContext;
 
 import static com.banew.containers.game.gui.GuiContainer.gui_scale;
@@ -16,14 +16,14 @@ import static com.banew.containers.game.gui.GuiContainer.gui_scale;
 public class ContainerLeftInfo implements Component {
     private final Label infoLabel;
 
-    public ContainerLeftInfo(Stage stage, Skin freezingSkin, TextureAtlas atlas, InventoryUI inventoryUI) {
+    public ContainerLeftInfo(Stage stage, Skin freezingSkin, TextureAtlas atlas, DynamicLabelsContainer labels) {
         Table leftTable = new Table();
         leftTable.setFillParent(true);
         leftTable.left().bottom().pad(Value.percentWidth(.005f));
         stage.addActor(leftTable);
 
         infoLabel = new Label("", freezingSkin);
-        inventoryUI.getDynamicLabelsContainer().put(infoLabel,.75f * gui_scale);
+        labels.put(infoLabel,.75f * gui_scale);
         Table container = new Table();
         container.setBackground(new TextureRegionDrawable(atlas.findRegion("gui/infoBack")));
         container.center().pad(

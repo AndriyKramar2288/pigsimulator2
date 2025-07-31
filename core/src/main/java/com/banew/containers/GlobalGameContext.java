@@ -61,7 +61,6 @@ public final class GlobalGameContext implements Disposable {
     }
 
     public void renderCurrent() {
-        dynamicLabelsContainer.updateLabelSizes(currentContainer().viewport());
         currentContainer().render();
     }
 

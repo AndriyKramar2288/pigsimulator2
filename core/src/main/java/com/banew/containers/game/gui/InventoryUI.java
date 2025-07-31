@@ -92,8 +92,13 @@ public class InventoryUI {
         AbstractItemsDisplayer.addInventoryLabel(
             "Меню", skin, leftButtons, leftButtons, dynamicLabelsContainer, 1
         );
+
         TextButton pauseButton = new TextButton("Налаштування", skin);
-        leftButtons.add(pauseButton).size(240, 60);
+        globalGameContext.getDynamicLabelsContainer().put(pauseButton.getLabel(), .35f);
+        leftButtons.add(pauseButton).size(
+            Value.percentWidth(.1f, leftButtons),
+            Value.percentWidth(.03f, leftButtons)
+        );
 
         settingsWindow = new SettingsWindow(
             stage, globalGameContext
@@ -148,7 +153,7 @@ public class InventoryUI {
         selfItemsDisplayer.displayContainer(context);
         otherContainerDisplayer.displayContainer(context);
         // оновити кляті Label
-        dynamicLabelsContainer.updateLabelSizes(context.viewport());
+        dynamicLabelsContainer.updateLabelSizes(context.viewport(), 1 - context.currentLevel().getBrightness());
     }
 
     public List<ImageButton> extractHandButtons() {

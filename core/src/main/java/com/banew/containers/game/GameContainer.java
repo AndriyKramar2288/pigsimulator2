@@ -66,11 +66,11 @@ public class GameContainer implements Container {
             .orElseThrow(() -> new RuntimeException("Головного бандіта не найшли на поточному рівні!"));
 
         context = new GameContext(
+            globalGameContext,
             mainHeroEntity,
             viewport,
             new Reference<>(currentLevel),
             levels,
-            globalGameContext.getSoundContainer(),
             new EffectAnimationsContainer(globalGameContext.getTextureAtlas(), generalSettings.getEffectAnimations())
         );
 

@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.banew.containers.Container;
 import com.banew.containers.GlobalGameContext;
 import com.banew.containers.game.GameContainer;
+import com.banew.containers.game.gui.DynamicLabelsContainer;
 
 import java.util.List;
 
@@ -37,11 +38,11 @@ public class MenuContainer implements Container {
         stage = new Stage(viewport);
 
         setUpBackgroundPhotos(context.getGeneralSettings().getMenuPhotos(), context.getTextureAtlas());
-        setUpButtons(context.getMainSkin(), context.getTextureAtlas());
+        setUpButtons(context.getMainSkin(), context.getDynamicLabelsContainer());
         settingsWindow = new SettingsWindow(stage, context);
     }
 
-    private void setUpButtons(Skin skin, TextureAtlas atlas) {
+    private void setUpButtons(Skin skin, DynamicLabelsContainer labels) {
         Table table = new Table(skin);
         table.setFillParent(true);
         table.left().pad(Value.percentWidth(.1f, table)); // центруємо все
@@ -76,9 +77,9 @@ public class MenuContainer implements Container {
             }
         });
 
-        addButton(playButton, table);
-        addButton(settingsButton, table);
-        addButton(exitButton, table);
+        addButton(playButton, table, labels);
+        addButton(settingsButton, table, labels);
+        addButton(exitButton, table, labels);
 
         // Додати до сцени
         stage.addActor(table);
@@ -86,16 +87,15 @@ public class MenuContainer implements Container {
         Gdx.input.setInputProcessor(stage);
     }
 
-    private void addButton(TextButton button, Table table) {
+    private void addButton(TextButton button, Table table, DynamicLabelsContainer labels) {
         button.addListener(new MenuButtonsListener(context.getSoundContainer()));
 
-        // Верстка
-        float pad = 20f;
-        float buttonWidth = 300f;
-        float buttonHeight = 60f;
-
-        table.add(button).width(buttonWidth).height(buttonHeight).pad(pad);
+        table.add(button)
+            .width(Value.percentWidth(.15f, table))
+            .height(Value.percentHeight(.05f, table))
+            .pad(10);
         table.row();
+        labels.put(button.getLabel(), .4f);
     }
 
     private void setUpBackgroundPhotos(List<String> photos, TextureAtlas atlas) {
@@ -137,7 +137,7 @@ public class MenuContainer implements Container {
     }
 
     public void render() {
-        context.getDynamicLabelsContainer().updateLabelSizes(viewport);
+        context.getDynamicLabelsContainer().updateLabelSizes(viewport, 1);
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

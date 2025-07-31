@@ -16,12 +16,15 @@ public class SettingsWindow extends Window {
         this.stage = stage;
         this.globalGameContext = globalGameContext;
 
+        Table table = new Table();
+        table.setFillParent(true);
+
         Skin skin = globalGameContext.getMainSkin();
 
         setModal(true);
         setMovable(false);
         setVisible(false);
-        pad(60);
+        pad(Value.percentWidth(.02f, table));
 
         // Повзунок гучності
         Label volumeLabel = new Label("Гучність", skin);
@@ -43,29 +46,35 @@ public class SettingsWindow extends Window {
                 setVisible(false);
             }
         });
+        backButton.addListener(new MenuButtonsListener(globalGameContext.getSoundContainer()));
 
         // Layout
-        row().pad(30);
-        add(volumeLabel).left();
-        row().pad(5);
-        add(volumeSlider).width(400);
-        row().pad(30);
-        add(backButton).width(150).height(40);
+        row().padTop(Value.percentWidth(.02f, table));
+        add(volumeLabel).center();
+        row();
+        add(volumeSlider).width(Value.percentWidth(.13f, table));
+
+        row().padTop(Value.percentWidth(.02f, table));
+        add(backButton)
+            .width(Value.percentWidth(.1f, table))
+            .height(Value.percentWidth(.03f, table));
 
         // Центруємо і додаємо до сцени
         pack();
-        setPosition(
-            (stage.getWidth() - getWidth()) / 2f,
-            (stage.getHeight() - getHeight()) / 2f
-        );
+        resize((int) stage.getWidth(), (int) stage.getHeight());
 
-        stage.addActor(this);
+        table.add(this).size(Value.percentWidth(.2f, table));
+        stage.addActor(table);
+
+        globalGameContext.getDynamicLabelsContainer().put(volumeLabel, .5f);
+        globalGameContext.getDynamicLabelsContainer().put(getTitleLabel(), .5f);
+        globalGameContext.getDynamicLabelsContainer().put(backButton.getLabel(), .5f);
     }
 
     public void resize(int width, int height) {
         setPosition(
-            (stage.getWidth() - getWidth()) / 2f,
-            (stage.getHeight() - getHeight()) / 2f
+            (width - getWidth()) / 2f,
+            (height - getHeight()) / 2f
         );
     }
 }

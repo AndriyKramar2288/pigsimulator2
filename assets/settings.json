@@ -45,6 +45,14 @@
     }
   },
   "sounds" : {
+    "click_button": {
+      "src": "button-press-382713.mp3",
+      "volume": 0.01
+    },
+    "focus_button": {
+      "src": "focus.mp3",
+      "volume": 0.02
+    },
     "stons": {
       "src": "ctohbi-1950.mp3",
       "volume": 0.05
@@ -55,7 +63,7 @@
     },
     "inv_drop": {
       "src": "inv_drop.mp3",
-      "volume": 0.05
+      "volume": 0.02
     },
     "chest": {
       "src": "chest-opening.mp3",

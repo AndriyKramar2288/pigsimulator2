@@ -8,13 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.banew.containers.GlobalGameContext;
 
 public class SettingsWindow extends Window {
-    private final Stage stage;
-    private final GlobalGameContext globalGameContext;
-
     public SettingsWindow(Stage stage, GlobalGameContext globalGameContext) {
         super("Налаштування", globalGameContext.getMainSkin());
-        this.stage = stage;
-        this.globalGameContext = globalGameContext;
 
         Table table = new Table();
         table.setFillParent(true);
@@ -46,7 +41,6 @@ public class SettingsWindow extends Window {
                 setVisible(false);
             }
         });
-        backButton.addListener(new MenuButtonsListener(globalGameContext.getSoundContainer()));
 
         // Layout
         row().padTop(Value.percentWidth(.02f, table));
@@ -56,19 +50,19 @@ public class SettingsWindow extends Window {
 
         row().padTop(Value.percentWidth(.02f, table));
         add(backButton)
-            .width(Value.percentWidth(.1f, table))
-            .height(Value.percentWidth(.03f, table));
+            .width(Value.percentWidth(.08f, table))
+            .height(Value.percentWidth(.02f, table));
 
         // Центруємо і додаємо до сцени
         pack();
         resize((int) stage.getWidth(), (int) stage.getHeight());
 
-        table.add(this).size(Value.percentWidth(.2f, table));
+        table.add(this).width(Value.percentWidth(.2f, table));
         stage.addActor(table);
 
         globalGameContext.getDynamicLabelsContainer().put(volumeLabel, .5f);
         globalGameContext.getDynamicLabelsContainer().put(getTitleLabel(), .5f);
-        globalGameContext.getDynamicLabelsContainer().put(backButton.getLabel(), .5f);
+        globalGameContext.initButton(backButton, .4f);
     }
 
     public void resize(int width, int height) {

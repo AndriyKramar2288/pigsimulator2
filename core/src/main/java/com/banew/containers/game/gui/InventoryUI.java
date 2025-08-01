@@ -17,7 +17,6 @@ import com.banew.containers.GlobalGameContext;
 import com.banew.containers.game.gui.storage_displayers.AbstractItemsDisplayer;
 import com.banew.containers.game.gui.storage_displayers.OtherContainerDisplayer;
 import com.banew.containers.game.gui.storage_displayers.SelfItemsDisplayer;
-import com.banew.containers.menu.MenuButtonsListener;
 import com.banew.containers.menu.SettingsWindow;
 import com.banew.other.records.GameContext;
 import lombok.Getter;
@@ -89,12 +88,13 @@ public class InventoryUI {
 
         leftButtons.setFillParent(true);
         leftButtons.top().left().pad(Value.percentWidth(.03f));
+
         AbstractItemsDisplayer.addInventoryLabel(
             "Меню", skin, leftButtons, leftButtons, dynamicLabelsContainer, 1
         );
 
         TextButton pauseButton = new TextButton("Налаштування", skin);
-        globalGameContext.getDynamicLabelsContainer().put(pauseButton.getLabel(), .35f);
+        globalGameContext.initButton(pauseButton, .35f);
         leftButtons.add(pauseButton).size(
             Value.percentWidth(.1f, leftButtons),
             Value.percentWidth(.03f, leftButtons)
@@ -111,7 +111,6 @@ public class InventoryUI {
                 settingsWindow.toFront();
             }
         });
-        pauseButton.addListener(new MenuButtonsListener(globalGameContext.getSoundContainer()));
     }
 
     private void initBlur(Stage stage) {
@@ -135,7 +134,7 @@ public class InventoryUI {
     public void toggle(boolean state) {
         visible = state;
         actors.forEach(e -> e.setVisible(state));
-        if (!state) {
+        if (!state && context != null) {
             context.mainHeroEntity().setOpenedContainer(null); // забрати, якщо закрили інвентар
             settingsWindow.setVisible(false);
         }

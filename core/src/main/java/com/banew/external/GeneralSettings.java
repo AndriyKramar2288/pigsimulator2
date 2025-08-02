@@ -24,6 +24,7 @@ public class GeneralSettings {
     private Map<String, InitialMusicSong> sounds = new HashMap<>();
     private List<InitialEffectAnimation> effectAnimations = new ArrayList<>();
     private List<String> menuPhotos = new ArrayList<>();
+    private Map<String, InitialRace> races;
 
     private float generalVolume = 1.0f;
 

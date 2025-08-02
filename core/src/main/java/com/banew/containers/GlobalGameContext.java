@@ -9,11 +9,16 @@ import com.badlogic.gdx.utils.Disposable;
 import com.banew.containers.game.gui.DynamicLabelsContainer;
 import com.banew.containers.menu.MenuButtonsListener;
 import com.banew.containers.menu.MenuContainer;
+import com.banew.containers.menu.RaceViewContainer;
 import com.banew.external.GeneralSettings;
+import com.banew.external.InitialRace;
+import com.banew.items.StupidItem;
+import com.banew.other.enums.Race;
 import com.banew.utilites.Reference;
 import lombok.Getter;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 public final class GlobalGameContext implements Disposable {
@@ -36,11 +41,19 @@ public final class GlobalGameContext implements Disposable {
         GeneralSettings generalSettings
     ) {
         this.generalSettings = generalSettings;
+        for (Race value : Race.values()) {
+            InitialRace race = generalSettings.getRaces().get(value.name());
+            if (race != null) {
+                value.setDesc(race.getDesc());
+            }
+        }
 
         textureAtlas = new TextureAtlas(Gdx.files.internal(generalSettings.getMain_atlas_src()));
         mainSkin = new Skin(Gdx.files.internal(generalSettings.getMain_skin_src()));
         soundContainer = new SoundContainer(generalSettings);
         dynamicLabelsContainer = new DynamicLabelsContainer();
+
+        Race.JEW.setInitialItem(new StupidItem(textureAtlas.findRegion("hryak1/tile000"), "Хряу"));
 
         setContainer(new MenuContainer(this));
     }

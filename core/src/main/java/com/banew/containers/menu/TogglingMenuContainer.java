@@ -2,8 +2,13 @@ package com.banew.containers.menu;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Value;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.banew.containers.GlobalGameContext;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
@@ -46,5 +51,29 @@ public class TogglingMenuContainer extends Table {
                 setPosition(currentPosition.x, currentPosition.y);
             })
         ));
+    }
+
+    public TextButton addButton(Table targetTable, float scale_x, float scale_y, float scale_text, String text, GlobalGameContext context, Runnable runnable) {
+        TextButton textButton = new TextButton(text, context.getMainSkin());
+        context.initButton(textButton, scale_text);
+        row();
+
+        targetTable.add(textButton)
+            .width(Value.percentWidth(scale_x, this))
+            .height(Value.percentHeight(scale_y, this))
+            .pad(10);
+
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                runnable.run();
+            }
+        });
+
+        return textButton;
+    }
+
+    public TextButton addButton(float scale_x, float scale_y, float scale_text, String text, GlobalGameContext context, Runnable runnable) {
+        return addButton(this, scale_x, scale_y, scale_text, text, context, runnable);
     }
 }

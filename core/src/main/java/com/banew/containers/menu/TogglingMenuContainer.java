@@ -12,7 +12,12 @@ import com.banew.containers.GlobalGameContext;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
-public class TogglingMenuContainer extends Table {
+public abstract class TogglingMenuContainer extends Table {
+    public TogglingMenuContainer(GlobalGameContext context, MenuContainer menuContainer) {
+        setVisible(false);
+        menuContainer.getStage().addActor(this);
+    }
+
     public void centerInViewport(Viewport viewport) {
         float width = viewport.getScreenWidth() * 0.9f;
         float height = viewport.getScreenHeight() * 0.9f;
@@ -24,6 +29,8 @@ public class TogglingMenuContainer extends Table {
     }
 
     public void toggleOn(Viewport viewport) {
+        centerInViewport(viewport);
+
         setVisible(true);
         Vector2 currentPosition = new Vector2(
             getX(), getY()

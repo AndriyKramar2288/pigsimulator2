@@ -8,6 +8,8 @@ import com.banew.containers.GlobalGameContext;
 
 public class FrontMainMenuContainer extends TogglingMenuContainer {
     public FrontMainMenuContainer(GlobalGameContext context, MenuContainer menuContainer) {
+        super(context, menuContainer);
+
         var labels = context.getDynamicLabelsContainer();
         var skin = context.getMainSkin();
 
@@ -19,7 +21,7 @@ public class FrontMainMenuContainer extends TogglingMenuContainer {
 
         addButton("Почати гру", context, () -> {
             toggleOff(menuContainer.viewport());
-            menuContainer.getNewGameContainer().toggleOn(menuContainer.viewport());
+            menuContainer.toggleRace();
         });
 
         addButton("Налаштування", context, () -> {
@@ -32,10 +34,6 @@ public class FrontMainMenuContainer extends TogglingMenuContainer {
         addButton("Вийти", context, () -> {
             Gdx.app.exit();
         });
-
-        // Додати до сцени
-        centerInViewport(menuContainer.viewport());
-        menuContainer.getStage().addActor(this);
     }
 
     private TextButton addButton(String text, GlobalGameContext context, Runnable action) {

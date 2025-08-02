@@ -18,10 +18,10 @@ public class MenuContainer implements Container {
     private final Stage stage;
     @Getter
     private final SettingsWindow settingsWindow;
-    @Getter
-    private final NewGameContainer newGameContainer;
-    @Getter
+
+    private final RaceSelectContainer raceSelectContainer;
     private final FrontMainMenuContainer frontMainMenuContainer;
+    private final SkillSelectContainer skillSelectContainer;
 
     public MenuContainer(GlobalGameContext context) {
         this.context = context;
@@ -33,11 +33,12 @@ public class MenuContainer implements Container {
             context.getGeneralSettings().getMenuPhotos(), context.getTextureAtlas(), stage
         );
 
-        newGameContainer = new NewGameContainer(this, context);
+        raceSelectContainer = new RaceSelectContainer(context, this);
+        frontMainMenuContainer = new FrontMainMenuContainer(context, this);
+        skillSelectContainer = new SkillSelectContainer(this, context);
+        frontMainMenuContainer.toggleOn(viewport);
+
         settingsWindow = new SettingsWindow(stage, context);
-        frontMainMenuContainer = new FrontMainMenuContainer(
-            context, this
-        );
 
         Gdx.input.setInputProcessor(stage);
     }
@@ -56,9 +57,21 @@ public class MenuContainer implements Container {
         viewport.update(width, height, true);
         settingsWindow.resize(width, height);
 
-        if (newGameContainer != null) {
-            newGameContainer.centerInViewport(viewport);
+        if (raceSelectContainer != null) {
+            raceSelectContainer.centerInViewport(viewport);
         }
+    }
+
+    public void toggleMain() {
+        frontMainMenuContainer.toggleOn(viewport);
+    }
+
+    public void toggleRace() {
+        raceSelectContainer.toggleOn(viewport);
+    }
+
+    public void toggleSkills() {
+        skillSelectContainer.toggleOn(viewport);
     }
 
     @Override

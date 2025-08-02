@@ -24,8 +24,8 @@ public class SettingsWindow extends Window {
         // Повзунок гучності
         Label volumeLabel = new Label("Гучність", skin);
         volumeLabel.setColor(Color.WHITE);
-        final Slider volumeSlider = new Slider(0f, 1f, 0.01f, false, skin);
-        volumeSlider.setValue(1);
+        final Slider volumeSlider = new Slider(0f, 10f, 0.1f, false, skin);
+        volumeSlider.setValue(10);
         volumeSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

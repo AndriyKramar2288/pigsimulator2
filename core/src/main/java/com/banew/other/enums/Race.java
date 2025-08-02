@@ -1,12 +1,12 @@
 package com.banew.other.enums;
 
+import com.banew.containers.GlobalGameContext;
 import com.banew.items.AbstractItem;
-import com.banew.items.StupidItem;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public enum Race {
+public enum Race implements SetupEnum {
     ZAPADENEC("Западенець"),
     VOLYNYAKA("Волиняка"),
     POROHOBOT("Порохобот"),
@@ -21,10 +21,14 @@ public enum Race {
     private final String ukrName;
     @Setter
     private AbstractItem initialItem;
-    @Setter
     private String desc = "";
 
     Race(String ukrName) {
         this.ukrName = ukrName;
+    }
+
+    @Override
+    public void setup(GlobalGameContext context) {
+        desc = context.getCurrentLocalization().getRaceDescriptions().get(name());
     }
 }

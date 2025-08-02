@@ -24,9 +24,9 @@ public class GeneralSettings {
     private Map<String, InitialMusicSong> sounds = new HashMap<>();
     private List<InitialEffectAnimation> effectAnimations = new ArrayList<>();
     private List<String> menuPhotos = new ArrayList<>();
-    private Map<String, InitialRace> races;
+    private Map<String, LocalizationSettings> localization;
 
-    private float generalVolume = 1.0f;
+    private float generalVolume = 10.0f;
 
     @JsonIgnore
     private final Map<String, MusicPattern> musicPatternMap = new HashMap<>();

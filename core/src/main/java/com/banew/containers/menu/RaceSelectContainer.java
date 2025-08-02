@@ -4,17 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Value;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.banew.containers.GlobalGameContext;
 import com.banew.other.enums.Race;
 
-public class NewGameContainer extends TogglingMenuContainer {
-    public NewGameContainer(MenuContainer menuContainer, GlobalGameContext context) {
+public class RaceSelectContainer extends TogglingMenuContainer {
+    public RaceSelectContainer(GlobalGameContext context, MenuContainer menuContainer) {
+        super(context, menuContainer);
+
         setBackground(
             new TextureRegionDrawable(context.getTextureAtlas().findRegion("gui/create_character_back"))
         );
@@ -34,6 +33,23 @@ public class NewGameContainer extends TogglingMenuContainer {
         ));
         innerTable.add(image).width(Value.percentWidth(.5f, this));
         Pixmap maskPixmap = new Pixmap(Gdx.files.internal("textures/gui/g22_mask.png"));
+
+        //
+        innerTable.add(raceViewer).top();
+
+        //
+        pad(Value.percentWidth(.03f, this));
+        addButton(.15f, .075f, .4f, "Повернутись", context, () -> {
+            toggleOff(menuContainer.viewport());
+            menuContainer.toggleMain();
+        });
+        TextButton nextButton = addButton(.15f, .075f, .4f, "Продовжити", context, () -> {
+            toggleOff(menuContainer.viewport());
+            menuContainer.toggleSkills();
+        });
+        nextButton.setVisible(false);
+
+        // -----------
         image.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -58,21 +74,9 @@ public class NewGameContainer extends TogglingMenuContainer {
                 if (race != null) {
                     context.getSoundContainer().play("click_button");
                     raceViewer.showRace(race, context);
+                    nextButton.setVisible(true);
                 }
             }
         });
-
-        //
-        innerTable.add(raceViewer).top();
-
-        //
-        pad(Value.percentWidth(.03f, this));
-        addButton(.15f, .075f, .4f, "Повернутись", context, () -> {
-            toggleOff(menuContainer.viewport());
-            menuContainer.getFrontMainMenuContainer().toggleOn(menuContainer.viewport());
-        });
-        setVisible(false);
-        centerInViewport(menuContainer.viewport());
-        menuContainer.getStage().addActor(this);
     }
 }

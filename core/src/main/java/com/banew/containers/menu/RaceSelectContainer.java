@@ -24,7 +24,9 @@ public class RaceSelectContainer extends TogglingMenuContainer {
 
         Table innerTable = new Table().left().top();
         row();
-        add(innerTable).width(Value.percentWidth(.9f, this));
+        add(innerTable)
+            .width(Value.percentWidth(.9f, this))
+            .row();
         RaceViewContainer raceViewer = new RaceViewContainer(this, context);
 
         //
@@ -39,14 +41,17 @@ public class RaceSelectContainer extends TogglingMenuContainer {
 
         //
         pad(Value.percentWidth(.03f, this));
-        addButton(.15f, .075f, .4f, "Повернутись", context, () -> {
+        Table bufferTable = new Table();
+        addButton(bufferTable, .15f, .075f, .4f, "Повернутись", context, () -> {
             toggleOff(menuContainer.viewport());
             menuContainer.toggleMain();
         });
-        TextButton nextButton = addButton(.15f, .075f, .4f, "Продовжити", context, () -> {
+        TextButton nextButton = addButton(bufferTable,.15f, .075f, .4f, "Продовжити", context, () -> {
             toggleOff(menuContainer.viewport());
             menuContainer.toggleSkills();
-        });
+        }).getActor();
+        innerTable.row();
+        innerTable.add(bufferTable);
         nextButton.setVisible(false);
 
         // -----------

@@ -3,6 +3,7 @@ package com.banew.containers.menu;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Value;
@@ -30,6 +31,7 @@ public abstract class TogglingMenuContainer extends Table {
 
     public void toggleOn(Viewport viewport) {
         centerInViewport(viewport);
+        MenuButtonsListener.ban(.7f);
 
         setVisible(true);
         Vector2 currentPosition = new Vector2(
@@ -60,15 +62,9 @@ public abstract class TogglingMenuContainer extends Table {
         ));
     }
 
-    public TextButton addButton(Table targetTable, float scale_x, float scale_y, float scale_text, String text, GlobalGameContext context, Runnable runnable) {
+    public Cell<TextButton> addButton(Table targetTable, float scale_x, float scale_y, float scale_text, String text, GlobalGameContext context, Runnable runnable) {
         TextButton textButton = new TextButton(text, context.getMainSkin());
         context.initButton(textButton, scale_text);
-        row();
-
-        targetTable.add(textButton)
-            .width(Value.percentWidth(scale_x, this))
-            .height(Value.percentHeight(scale_y, this))
-            .pad(10);
 
         textButton.addListener(new ChangeListener() {
             @Override
@@ -77,10 +73,13 @@ public abstract class TogglingMenuContainer extends Table {
             }
         });
 
-        return textButton;
+        return targetTable.add(textButton)
+            .width(Value.percentWidth(scale_x, this))
+            .height(Value.percentHeight(scale_y, this))
+            .pad(10);
     }
 
-    public TextButton addButton(float scale_x, float scale_y, float scale_text, String text, GlobalGameContext context, Runnable runnable) {
+    public Cell<TextButton> addButton(float scale_x, float scale_y, float scale_text, String text, GlobalGameContext context, Runnable runnable) {
         return addButton(this, scale_x, scale_y, scale_text, text, context, runnable);
     }
 }

@@ -5,14 +5,14 @@ import lombok.Getter;
 
 @Getter
 public enum Skill implements SetupEnum {
-    RUNNING("Біг"),
-    ENDURANCE("Витривалість"),
-    SPIRT_RESISTANCE("Толерантність до спирту"),
+    RUNNING("Біг", "Icon1"),
+    ENDURANCE("Витривалість", "Icon2"),
+    SPIRT_RESISTANCE("Толерантність до спирту", "Icon3"),
     NAZAREUS("nazareus (зобов'язаність)", "Icon43"),
-    STATIC_MAGIC("Магія компіляції"),
-    DYNAMIC_MAGIC("Магія інтерпретації"),
-    FORBITTEN_MAGIC("Заборонені чаклунства"),
-    ELECTRIC_MAGIC("Магія електрика");
+    STATIC_MAGIC("Магія компіляції", "Icon4"),
+    DYNAMIC_MAGIC("Магія інтерпретації", "Icon5"),
+    FORBITTEN_MAGIC("Заборонені чаклунства", "Icon6"),
+    ELECTRIC_MAGIC("Магія електрика", "Icon7");
 
     private final String ukrName;
     private final String iconRegion;
@@ -24,11 +24,11 @@ public enum Skill implements SetupEnum {
 
     Skill(String ukrName, String iconRegion) {
         this.ukrName = ukrName;
-        this.iconRegion = "skills/" + iconRegion;
+        this.iconRegion = iconRegion;
     }
 
     @Override
     public void setup(GlobalGameContext context) {
-        desc = context.getCurrentLocalization().getRaceDescriptions().get(name());
+        desc = context.getCurrentLocalization().getSkillDescriptions().get(name());
     }
 }

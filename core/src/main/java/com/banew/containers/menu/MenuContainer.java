@@ -57,9 +57,9 @@ public class MenuContainer implements Container {
         viewport.update(width, height, true);
         settingsWindow.resize(width, height);
 
-        if (raceSelectContainer != null) {
-            raceSelectContainer.centerInViewport(viewport);
-        }
+        frontMainMenuContainer.centerInViewport(viewport);
+        raceSelectContainer.centerInViewport(viewport);
+        skillSelectContainer.centerInViewport(viewport);
     }
 
     public void toggleMain() {

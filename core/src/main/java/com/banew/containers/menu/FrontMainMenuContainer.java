@@ -2,7 +2,6 @@ package com.banew.containers.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.banew.containers.GlobalGameContext;
 
@@ -36,7 +35,8 @@ public class FrontMainMenuContainer extends TogglingMenuContainer {
         });
     }
 
-    private TextButton addButton(String text, GlobalGameContext context, Runnable action) {
-        return addButton(.15f, .075f, .4f, text, context, action);
+    private void addButton(String text, GlobalGameContext context, Runnable action) {
+        row();
+        addButton(.15f, .075f, .4f, text, context, action);
     }
 }

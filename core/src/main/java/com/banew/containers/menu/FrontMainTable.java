@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.banew.containers.GlobalGameContext;
-import com.banew.containers.game.GameContainer;
 
 public class FrontMainTable extends AbstractTogglingTable {
     public FrontMainTable(GlobalGameContext context, MenuContainer menuContainer) {
@@ -22,10 +21,6 @@ public class FrontMainTable extends AbstractTogglingTable {
         addButton("Почати гру", context, () -> {
             toggleOff(menuContainer.viewport());
             menuContainer.toggleRace();
-        });
-
-        addButton("Почати гру зразу", context, () -> {
-            context.setContainer(new GameContainer(context));
         });
 
         addButton("Налаштування", context, () -> {

@@ -11,16 +11,16 @@ import java.util.Map;
 
 @Getter
 public enum Race implements SetupEnum {
-    ZAPADENEC("Западенець"),
-    VOLYNYAKA("Волиняка"),
-    POROHOBOT("Порохобот"),
-    JEW("Жид"),
-    KAVUN("Кавун"),
-    OFFICE_MAN("Робітник офісу"),
-    NIGER("Негр"),
-    LEFT_BANK_VILLAGER("Представник лівого берега Києва"),
-    COAL_MINER("Шахтар Доннбасса"),
-    HARKOVSKII("Харківець");
+    LV("Западенець"),
+    VL("Волиняка"),
+    PD("Порохобот"),
+    OD("Жид"),
+    KR("Кавун"),
+    DN("Робітник офісу"),
+    CH("Негр"),
+    KY("Представник лівого берега Києва"),
+    DC("Шахтар Доннбасса"),
+    HK("Харківець");
 
     private final String ukrName;
     @Setter
@@ -35,9 +35,11 @@ public enum Race implements SetupEnum {
     @Override
     public void setup(GlobalGameContext context) {
         InitialRace initialRace = context.getGeneralSettings().getRaces().get(name());
-        if (initialRace == null) return;
+        if (initialRace == null) throw new RuntimeException("Раса " + name() + " чогось не має налаштувань!");
+        if (initialRace.getSpritesheet() == null)
+            throw new RuntimeException("Раса " + name() + " чогось не має текстури!");
+
         desc = initialRace.getDesc();
-        if (initialRace.getSpritesheet() != null)
-            textures = initialRace.getSpritesheet().extractTextures(context.getTextureAtlas());
+        textures = initialRace.getSpritesheet().extractTextures(context.getTextureAtlas());
     }
 }

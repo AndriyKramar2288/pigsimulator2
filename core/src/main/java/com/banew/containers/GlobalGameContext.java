@@ -49,7 +49,7 @@ public final class GlobalGameContext implements Disposable {
         setupEnum(Race.values());
         setupEnum(Skill.values());
 
-        Race.JEW.setInitialItem(
+        Race.OD.setInitialItem(
             new StupidItem(getTextureAtlas().findRegion("hryak1/tile000"), "Хряк")
         );
 

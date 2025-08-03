@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.banew.containers.Container;
 import com.banew.containers.GlobalGameContext;
 import com.banew.containers.game.gui.GuiContainer;
+import com.banew.containers.menu.character.creation.NewCharacterProperties;
 import com.banew.entities.alive.MainHeroEntity;
 import com.banew.external.GeneralSettings;
 import com.banew.factories.EntityFactory;
@@ -44,7 +45,7 @@ public class GameContainer implements Container {
         pixmap.dispose();
     }
 
-    public GameContainer(GlobalGameContext globalGameContext) {
+    public GameContainer(GlobalGameContext globalGameContext, NewCharacterProperties properties) {
         spriteBatch = new SpriteBatch();
         viewport = new FillViewport(8, 5);
 

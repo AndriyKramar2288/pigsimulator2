@@ -66,16 +66,16 @@ public class RaceSelectTable extends AbstractTogglingTable {
                 float apr_y = (1 - (y / image.getHeight())) * maskPixmap.getHeight();
                 Color.rgba8888ToColor(color, maskPixmap.getPixel((int) apr_x, (int) apr_y));
                 Race race = switch (color.toString().toUpperCase()) {
-                    case "0026FFFF" -> Race.VOLYNYAKA;
-                    case "FF0000FF" -> Race.ZAPADENEC;
-                    case "FF006EFF" -> Race.POROHOBOT;
-                    case "4CFF00FF" -> Race.LEFT_BANK_VILLAGER;
-                    case "FFD800FF" -> Race.NIGER;
-                    case "B200FFFF" -> Race.HARKOVSKII;
-                    case "0094FFFF" -> Race.OFFICE_MAN;
-                    case "FF00DCFF" -> Race.COAL_MINER;
-                    case "00FFFFFF" -> Race.KAVUN;
-                    case "7F0037FF" -> Race.JEW;
+                    case "0026FFFF" -> Race.VL;
+                    case "FF0000FF" -> Race.LV;
+                    case "FF006EFF" -> Race.PD;
+                    case "4CFF00FF" -> Race.KY;
+                    case "FFD800FF" -> Race.CH;
+                    case "B200FFFF" -> Race.HK;
+                    case "0094FFFF" -> Race.DN;
+                    case "FF00DCFF" -> Race.DC;
+                    case "00FFFFFF" -> Race.KR;
+                    case "7F0037FF" -> Race.OD;
                     default -> null;
                 };
                 if (race != null) {

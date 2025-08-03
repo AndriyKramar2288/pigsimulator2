@@ -113,7 +113,7 @@
     "menuBack/aboba"
   ],
   "races": {
-    "JEW": {
+    "OD": {
       "desc": "- Рабинович, одолжите сто рублей?\n- У кого?\n---\nЗдібності:\n",
       "spritesheet": {
         "region": "Characters/Basic Charakter Spritesheet",
@@ -122,11 +122,90 @@
         "sides": "2:.32f:.35f/3:.25f:.35f/1:.32f:.35f/4:.25f:.35f"
       }
     },
-    "ZAPADENEC": {
-      "desc": "Корінні жителі безкрайньої Галичини.\nЗдібності:\n- може піймати та засмажити російське немовля"
+    "LV": {
+      "desc": "Корінні жителі безкрайньої Галичини.\nЗдібності:\n- може піймати та засмажити російське немовля",
+      "spritesheet": {
+        "region": "Characters/Basic Charakter Spritesheet",
+        "width": 4,
+        "height": 4,
+        "sides": "2:.32f:.35f/3:.25f:.35f/1:.32f:.35f/4:.25f:.35f"
+      }
     },
-    "NIGER": {
-      "desc": "Чорняві жителі Чернігова. "
+    "CH": {
+      "desc": "Чорняві жителі Чернігова. ",
+      "spritesheet": {
+        "region": "Characters/Basic Charakter Spritesheet",
+        "width": 4,
+        "height": 4,
+        "sides": "2:.32f:.35f/3:.25f:.35f/1:.32f:.35f/4:.25f:.35f"
+      }
+    },
+    "VL": {
+      "desc": "Чорняві жителі Чернігова. ",
+      "spritesheet": {
+        "region": "Characters/Basic Charakter Spritesheet",
+        "width": 4,
+        "height": 4,
+        "sides": "2:.32f:.35f/3:.25f:.35f/1:.32f:.35f/4:.25f:.35f"
+      }
+    },
+    "PD": {
+      "desc": "Чорняві жителі Чернігова. ",
+      "spritesheet": {
+        "region": "Characters/Basic Charakter Spritesheet",
+        "width": 4,
+        "height": 4,
+        "sides": "2:.32f:.35f/3:.25f:.35f/1:.32f:.35f/4:.25f:.35f"
+      }
+    },
+    "KR": {
+      "desc": "Чорняві жителі Чернігова. ",
+      "spritesheet": {
+        "region": "Characters/Basic Charakter Spritesheet",
+        "width": 4,
+        "height": 4,
+        "sides": "2:.32f:.35f/3:.25f:.35f/1:.32f:.35f/4:.25f:.35f"
+      }
+    },
+    "DN": {
+      "desc": "Чорняві жителі Чернігова. ",
+      "spritesheet": {
+        "region": "Characters/Basic Charakter Spritesheet",
+        "width": 4,
+        "height": 4,
+        "sides": "2:.32f:.35f/3:.25f:.35f/1:.32f:.35f/4:.25f:.35f"
+
+      }
+    },
+    "KY": {
+      "desc": "Чорняві жителі Чернігова. ",
+      "spritesheet": {
+        "region": "Characters/Basic Charakter Spritesheet",
+        "width": 4,
+        "height": 4,
+        "sides": "2:.32f:.35f/3:.25f:.35f/1:.32f:.35f/4:.25f:.35f"
+
+      }
+    },
+    "DC": {
+      "desc": "Прості й пересічні жителі Донбасу. На фоні інших рас, їм доступні воєнторги, де вони можуть купити танк",
+      "spritesheet": {
+        "region": "Characters/Basic Charakter Spritesheet",
+        "width": 4,
+        "height": 4,
+        "sides": "2:.32f:.35f/3:.25f:.35f/1:.32f:.35f/4:.25f:.35f"
+
+      }
+    },
+    "HK": {
+      "desc": "Харків",
+      "spritesheet": {
+        "region": "Characters/Basic Charakter Spritesheet",
+        "width": 4,
+        "height": 4,
+        "sides": "2:.32f:.35f/3:.25f:.35f/1:.32f:.35f/4:.25f:.35f"
+
+      }
     }
   },
   "skillDescriptions": {

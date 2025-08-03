@@ -76,7 +76,6 @@ public class SkillSelectTable extends AbstractTogglingTable {
             map.put(i, Skill.values()[i]);
             setUpDragAndDrop(button, i, context);
         }
-        reloadButtons(context.getTextureAtlas());
         // ------------------------------
 
         skillViewTable = new SkillViewTable(context);
@@ -100,6 +99,8 @@ public class SkillSelectTable extends AbstractTogglingTable {
         }).getActor();
         nextButton.setVisible(false);
         add(buttonsWrap).colspan(2);
+
+        reloadButtons(context.getTextureAtlas());
     }
 
     private void reloadButtons(TextureAtlas atlas) {
@@ -122,6 +123,9 @@ public class SkillSelectTable extends AbstractTogglingTable {
             p.setMajorSkills(majorSkills.getList());
             p.setMinorSkills(minorSkills.getList());
             p.setMainSkills(mainSkills.getList());
+        }
+        else {
+            nextButton.setVisible(false);
         }
     }
 

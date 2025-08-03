@@ -12,4 +12,6 @@ public class NewCharacterProperties {
     private List<Skill> mainSkills;
     private List<Skill> majorSkills;
     private List<Skill> minorSkills;
+    private String name = "";
+    private String bio = "";
 }

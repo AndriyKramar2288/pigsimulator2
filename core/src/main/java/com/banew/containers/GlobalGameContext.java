@@ -10,7 +10,6 @@ import com.banew.containers.game.gui.DynamicLabelsContainer;
 import com.banew.containers.menu.MenuButtonsListener;
 import com.banew.containers.menu.MenuContainer;
 import com.banew.external.GeneralSettings;
-import com.banew.external.LocalizationSettings;
 import com.banew.items.StupidItem;
 import com.banew.other.enums.Race;
 import com.banew.other.enums.SetupEnum;
@@ -34,8 +33,6 @@ public final class GlobalGameContext implements Disposable {
     private final GeneralSettings generalSettings;
     @Getter
     private final DynamicLabelsContainer dynamicLabelsContainer;
-    @Getter
-    private LocalizationSettings currentLocalization;
 
     private Vector2 lastSize;
 
@@ -48,7 +45,6 @@ public final class GlobalGameContext implements Disposable {
         mainSkin = new Skin(Gdx.files.internal(generalSettings.getMain_skin_src()));
         soundContainer = new SoundContainer(generalSettings);
         dynamicLabelsContainer = new DynamicLabelsContainer();
-        currentLocalization = generalSettings.getLocalization().get("ua");
 
         setupEnum(Race.values());
         setupEnum(Skill.values());

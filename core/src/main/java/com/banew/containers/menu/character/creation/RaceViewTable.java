@@ -1,4 +1,4 @@
-package com.banew.containers.menu;
+package com.banew.containers.menu.character.creation;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -8,10 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.banew.containers.GlobalGameContext;
 import com.banew.other.enums.Race;
 
-public class RaceViewContainer extends Table {
+public class RaceViewTable extends Table {
     private Table currentRaceViewTable;
 
-    public RaceViewContainer(Table outerTable, GlobalGameContext context) {
+    public RaceViewTable(Table outerTable, GlobalGameContext context) {
         //
         String desc =
             "Обравши походження свого персонажа, ви визначите його майбутній талант,"

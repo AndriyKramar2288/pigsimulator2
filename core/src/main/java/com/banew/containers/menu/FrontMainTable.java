@@ -4,9 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.banew.containers.GlobalGameContext;
+import com.banew.containers.game.GameContainer;
 
-public class FrontMainMenuContainer extends TogglingMenuContainer {
-    public FrontMainMenuContainer(GlobalGameContext context, MenuContainer menuContainer) {
+public class FrontMainTable extends AbstractTogglingTable {
+    public FrontMainTable(GlobalGameContext context, MenuContainer menuContainer) {
         super(context, menuContainer);
 
         var labels = context.getDynamicLabelsContainer();
@@ -21,6 +22,10 @@ public class FrontMainMenuContainer extends TogglingMenuContainer {
         addButton("Почати гру", context, () -> {
             toggleOff(menuContainer.viewport());
             menuContainer.toggleRace();
+        });
+
+        addButton("Почати гру зразу", context, () -> {
+            context.setContainer(new GameContainer(context));
         });
 
         addButton("Налаштування", context, () -> {

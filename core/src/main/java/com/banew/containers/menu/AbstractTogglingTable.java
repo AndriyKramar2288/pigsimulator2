@@ -13,8 +13,8 @@ import com.banew.containers.GlobalGameContext;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
-public abstract class TogglingMenuContainer extends Table {
-    public TogglingMenuContainer(GlobalGameContext context, MenuContainer menuContainer) {
+public abstract class AbstractTogglingTable extends Table {
+    public AbstractTogglingTable(GlobalGameContext context, MenuContainer menuContainer) {
         setVisible(false);
         menuContainer.getStage().addActor(this);
     }

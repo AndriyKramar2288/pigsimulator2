@@ -51,7 +51,7 @@
     },
     "focus_button": {
       "src": "focus.mp3",
-      "volume": 0.02
+      "volume": 0.0075
     },
     "stons": {
       "src": "ctohbi-1950.mp3",
@@ -112,16 +112,24 @@
     "menuBack/img",
     "menuBack/aboba"
   ],
-  "localization": {
-    "ua": {
-      "raceDescriptions": {
-        "JEW": "- Рабинович, одолжите сто рублей?\n- У кого?\n---\nЗдібності:\n",
-        "ZAPADENEC": "Корінні жителі безкрайньої Галичини.\nЗдібності:\n- може піймати та засмажити російське немовля",
-        "NIGER": "Чорняві жителі Чернігова. "
-      },
-      "skillDescriptions": {
-        "RUNNING": "Біг є біг, переважно вказує на вашу швидкість."
+  "races": {
+    "JEW": {
+      "desc": "- Рабинович, одолжите сто рублей?\n- У кого?\n---\nЗдібності:\n",
+      "spritesheet": {
+        "region": "Characters/Basic Charakter Spritesheet",
+        "width": 4,
+        "height": 4,
+        "sides": "2:.32f:.35f/3:.25f:.35f/1:.32f:.35f/4:.25f:.35f"
       }
+    },
+    "ZAPADENEC": {
+      "desc": "Корінні жителі безкрайньої Галичини.\nЗдібності:\n- може піймати та засмажити російське немовля"
+    },
+    "NIGER": {
+      "desc": "Чорняві жителі Чернігова. "
     }
+  },
+  "skillDescriptions": {
+    "RUNNING": "Біг є біг, переважно вказує на вашу швидкість."
   }
 }

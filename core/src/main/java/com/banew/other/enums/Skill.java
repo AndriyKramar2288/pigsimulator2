@@ -29,6 +29,6 @@ public enum Skill implements SetupEnum {
 
     @Override
     public void setup(GlobalGameContext context) {
-        desc = context.getCurrentLocalization().getSkillDescriptions().get(name());
+        desc = context.getGeneralSettings().getSkillDescriptions().get(name());
     }
 }

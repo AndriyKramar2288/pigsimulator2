@@ -39,9 +39,18 @@ public class TextureExtractorDeep {
     }
 
     public static List<TextureRegion> fromOneSubtexture(
-        String region, int width, int height, TextureAtlas atlas, Integer ... indexes
+        String region, int width, int height, TextureAtlas atlas, int ... indexes
     ) {
-        return Arrays.stream(indexes)
+        return fromOneSubtexture(
+            region, width, height, atlas,
+            Arrays.stream(indexes).boxed().toList()
+        );
+    }
+
+    public static List<TextureRegion> fromOneSubtexture(
+        String region, int width, int height, TextureAtlas atlas, List<Integer> indexes
+    ) {
+        return indexes.stream()
             .map(index -> new TextureExtractorDeep(
                 region, width, height, getTilePosition(index, width, height
             )))

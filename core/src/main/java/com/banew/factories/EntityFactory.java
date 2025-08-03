@@ -16,7 +16,9 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.banew.containers.game.CursorsContainer;
 import com.banew.containers.game.GameLevel;
-import com.banew.entities.*;
+import com.banew.entities.LevelsDoor;
+import com.banew.entities.SpriteEntity;
+import com.banew.entities.Torch;
 import com.banew.entities.alive.MainHeroEntity;
 import com.banew.entities.alive.Zombie;
 import com.banew.entities.containers.Chest;
@@ -24,6 +26,7 @@ import com.banew.external.GeneralSettings;
 import com.banew.items.StupidItem;
 import com.banew.items.weapon.Sword;
 import com.banew.other.dto.AliveEntityInfo;
+import com.banew.other.enums.Race;
 import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
 import com.banew.utilites.TextureExtractorDeep;
 import lombok.Setter;
@@ -114,24 +117,7 @@ public class EntityFactory {
     public MainHeroEntity createMainHeroEntity(MapObject object) {
         Rectangle rectangle = GameLevel.fromMapObject(object);
 
-        Map<String, MovingEntityTexturesPerDirectionPack> textures = Map.of(
-            "right", fromOneSubtexture(
-                "Characters/Basic Charakter Spritesheet", 4, 4, textureAtlas,
-                14, new Vector2(.25f, .35f), 13, 15, 16
-            ),
-            "up", fromOneSubtexture(
-                "Characters/Basic Charakter Spritesheet", 4, 4, textureAtlas,
-                6, new Vector2(.32f, .35f), 5, 7, 8
-            ),
-            "left", fromOneSubtexture(
-                "Characters/Basic Charakter Spritesheet", 4, 4, textureAtlas,
-                10, new Vector2(.25f, .35f), 9, 11, 12
-            ),
-            "down", fromOneSubtexture(
-                "Characters/Basic Charakter Spritesheet", 4, 4, textureAtlas,
-                2, new Vector2(.32f, .35f), 1, 3, 4
-            )
-        );
+        Map<String, MovingEntityTexturesPerDirectionPack> textures = Race.JEW.getTextures();
 
         MainHeroEntity mainHeroEntity = new MainHeroEntity(
             generateBasicSprite(rectangle, textures.get("down").waitingTexture()),

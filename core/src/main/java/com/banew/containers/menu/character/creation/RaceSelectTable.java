@@ -1,4 +1,4 @@
-package com.banew.containers.menu;
+package com.banew.containers.menu.character.creation;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -8,10 +8,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.banew.containers.GlobalGameContext;
+import com.banew.containers.menu.MenuContainer;
+import com.banew.containers.menu.AbstractTogglingTable;
 import com.banew.other.enums.Race;
 
-public class RaceSelectContainer extends TogglingMenuContainer {
-    public RaceSelectContainer(GlobalGameContext context, MenuContainer menuContainer) {
+public class RaceSelectTable extends AbstractTogglingTable {
+    public RaceSelectTable(GlobalGameContext context, MenuContainer menuContainer) {
         super(context, menuContainer);
 
         setBackground(
@@ -27,7 +29,7 @@ public class RaceSelectContainer extends TogglingMenuContainer {
         add(innerTable)
             .width(Value.percentWidth(.9f, this))
             .row();
-        RaceViewContainer raceViewer = new RaceViewContainer(this, context);
+        RaceViewTable raceViewer = new RaceViewTable(this, context);
 
         //
         Image image = new Image(new TextureRegionDrawable(
@@ -79,6 +81,7 @@ public class RaceSelectContainer extends TogglingMenuContainer {
                 if (race != null) {
                     context.getSoundContainer().play("click_button");
                     raceViewer.showRace(race, context);
+                    menuContainer.getNewCharacterProperties().setRace(race);
                     nextButton.setVisible(true);
                 }
             }

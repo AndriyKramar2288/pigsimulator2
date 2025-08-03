@@ -50,8 +50,9 @@ public class SettingsWindow extends Window {
 
         row().padTop(Value.percentWidth(.02f, table));
         add(backButton)
-            .width(Value.percentWidth(.08f, table))
-            .height(Value.percentWidth(.02f, table));
+            .center()
+            .width(Value.percentWidth(.1f, table))
+            .height(Value.percentWidth(.03f, table));
 
         // Центруємо і додаємо до сцени
         pack();

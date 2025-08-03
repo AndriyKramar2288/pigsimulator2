@@ -1,9 +1,13 @@
 package com.banew.other.enums;
 
 import com.banew.containers.GlobalGameContext;
+import com.banew.external.InitialRace;
 import com.banew.items.AbstractItem;
+import com.banew.other.records.MovingEntityTexturesPerDirectionPack;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Map;
 
 @Getter
 public enum Race implements SetupEnum {
@@ -22,6 +26,7 @@ public enum Race implements SetupEnum {
     @Setter
     private AbstractItem initialItem;
     private String desc = "";
+    private Map<String, MovingEntityTexturesPerDirectionPack> textures;
 
     Race(String ukrName) {
         this.ukrName = ukrName;
@@ -29,6 +34,10 @@ public enum Race implements SetupEnum {
 
     @Override
     public void setup(GlobalGameContext context) {
-        desc = context.getCurrentLocalization().getRaceDescriptions().get(name());
+        InitialRace initialRace = context.getGeneralSettings().getRaces().get(name());
+        if (initialRace == null) return;
+        desc = initialRace.getDesc();
+        if (initialRace.getSpritesheet() != null)
+            textures = initialRace.getSpritesheet().extractTextures(context.getTextureAtlas());
     }
 }

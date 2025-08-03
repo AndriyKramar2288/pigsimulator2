@@ -1,34 +1,45 @@
-package com.banew.containers.menu;
+package com.banew.containers.menu.character.creation;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Value;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.banew.containers.GlobalGameContext;
+import com.banew.containers.menu.MenuContainer;
+import com.banew.containers.menu.AbstractTogglingTable;
 import com.banew.other.enums.Skill;
 import lombok.Data;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class SkillSelectContainer extends TogglingMenuContainer {
+public class SkillSelectTable extends AbstractTogglingTable {
     private final DragAndDrop dragAndDrop;
     private final Map<Integer, Skill> map = new HashMap<>();
     private final Map<Integer, Image> buttonMap = new HashMap<>();
-    private final SkillViewContainer skillViewContainer;
+    private final SkillViewTable skillViewTable;
+
+    private final SkillCategory mainSkills;
+    private final SkillCategory majorSkills;
+    private final SkillCategory minorSkills;
+    private final TextButton nextButton;
+
+    private final MenuContainer menuContainer;
+
     private int dragged_slot = -1;
 
-    public SkillSelectContainer(MenuContainer menuContainer, GlobalGameContext context) {
+    public SkillSelectTable(MenuContainer menuContainer, GlobalGameContext context) {
         super(context, menuContainer);
         dragAndDrop = new DragAndDrop();
+
+        this.menuContainer = menuContainer;
 
         setBackground(
             new TextureRegionDrawable(context.getTextureAtlas().findRegion("gui/create_character_back"))
@@ -45,9 +56,9 @@ public class SkillSelectContainer extends TogglingMenuContainer {
         row();
         add(innerTable).width(Value.percentWidth(.6f, this));
 
-        SkillCategory mainSkills = new SkillCategory("Головні", 101, 102);
-        SkillCategory majorSkills = new SkillCategory("Важливі", 103, 104);
-        SkillCategory minorSkills = new SkillCategory("Побічні", 105, 106);
+        mainSkills = new SkillCategory("Головні", 101, 102);
+        majorSkills = new SkillCategory("Важливі", 103, 104);
+        minorSkills = new SkillCategory("Побічні", 105, 106);
         innerTable.add(mainSkills.categoryWrap(context)).colspan(2);
         innerTable.add(majorSkills.categoryWrap(context)).colspan(2);
         innerTable.add(minorSkills.categoryWrap(context)).colspan(2);
@@ -68,8 +79,8 @@ public class SkillSelectContainer extends TogglingMenuContainer {
         reloadButtons(context.getTextureAtlas());
         // ------------------------------
 
-        skillViewContainer = new SkillViewContainer(context);
-        add(skillViewContainer)
+        skillViewTable = new SkillViewTable(context);
+        add(skillViewTable)
             .padLeft(Value.percentWidth(.075f, this))
             .size(
                 Value.percentWidth(.25f, this),
@@ -77,11 +88,18 @@ public class SkillSelectContainer extends TogglingMenuContainer {
             );
 
         row();
-        addButton(.15f, .075f, .4f, "Повернутись", context, () -> {
+        Table buttonsWrap = new Table();
+        addButton(buttonsWrap, .15f, .075f, .4f, "Повернутись", context, () -> {
             toggleOff(menuContainer.viewport());
             menuContainer.toggleRace();
-            skillViewContainer.doNotView();
-        }).colspan(2);
+            skillViewTable.doNotView();
+        });
+        nextButton = addButton(buttonsWrap, .15f, .075f, .4f, "Перейти далі", context, () -> {
+            toggleOff(menuContainer.viewport());
+            menuContainer.toggleConfirmation();
+        }).getActor();
+        nextButton.setVisible(false);
+        add(buttonsWrap).colspan(2);
     }
 
     private void reloadButtons(TextureAtlas atlas) {
@@ -96,6 +114,15 @@ public class SkillSelectContainer extends TogglingMenuContainer {
                 v.setDrawable(new BaseDrawable());
             }
         });
+
+        if (mainSkills.isAllSelected() && majorSkills.isAllSelected() && minorSkills.isAllSelected()) {
+            nextButton.setVisible(true);
+            var p = menuContainer.getNewCharacterProperties();
+
+            p.setMajorSkills(majorSkills.getList());
+            p.setMinorSkills(minorSkills.getList());
+            p.setMainSkills(mainSkills.getList());
+        }
     }
 
     private Table wrap(Actor actor, TextureAtlas atlas) {
@@ -159,7 +186,7 @@ public class SkillSelectContainer extends TogglingMenuContainer {
 
                 context.getSoundContainer().play("inv_drop");
                 reloadButtons(context.getTextureAtlas());
-                skillViewContainer.view(fromRegion);
+                skillViewTable.view(fromRegion);
             }
         });
     }
@@ -174,17 +201,29 @@ public class SkillSelectContainer extends TogglingMenuContainer {
             this.indexes = indexes;
         }
 
+        public boolean isAllSelected() {
+            return Arrays.stream(indexes)
+                .allMatch(i -> map.get(i) != null);
+        }
+
+        public List<Skill> getList() {
+            return Arrays.stream(indexes)
+                .boxed()
+                .map(map::get)
+                .toList();
+        }
+
         public Table categoryWrap(GlobalGameContext context) {
             Table table = new Table();
             table.setBackground(new TextureRegionDrawable(
                 context.getTextureAtlas().findRegion("gui/skills_back")
             ));
-            table.top().pad(Value.percentWidth(.01f, SkillSelectContainer.this)).padTop(0);
+            table.top().pad(Value.percentWidth(.01f, SkillSelectTable.this)).padTop(0);
 
             Label label = new Label(name, context.getMainSkin());
             context.getDynamicLabelsContainer().put(label, .4f);
             table.add(label)
-                .padBottom(Value.percentHeight(.0025f, SkillSelectContainer.this))
+                .padBottom(Value.percentHeight(.0025f, SkillSelectTable.this))
                 .colspan(indexes.length);
             table.row();
 
@@ -192,7 +231,7 @@ public class SkillSelectContainer extends TogglingMenuContainer {
                 Image button = new Image();
                 button.addListener(new InfoButtonListener(index));
                 table.add(wrap(button, context.getTextureAtlas()))
-                    .size(Value.percentWidth(.1f, SkillSelectContainer.this));
+                    .size(Value.percentWidth(.1f, SkillSelectTable.this));
                 buttonMap.put(index, button);
                 setUpDragAndDrop(button, index, context);
             }
@@ -213,7 +252,7 @@ public class SkillSelectContainer extends TogglingMenuContainer {
             super.enter(event, x, y, pointer, fromActor);
             Skill skill = map.get(index);
             if (skill != null && dragged_slot == -1) {
-                skillViewContainer.view(skill);
+                skillViewTable.view(skill);
             }
         }
     }

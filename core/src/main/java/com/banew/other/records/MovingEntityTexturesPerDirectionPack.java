@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.banew.utilites.TextureExtractorDeep;
 
+import java.util.Arrays;
 import java.util.List;
 
 public record MovingEntityTexturesPerDirectionPack(
@@ -14,7 +15,7 @@ public record MovingEntityTexturesPerDirectionPack(
 ) {
     public static MovingEntityTexturesPerDirectionPack fromOneSubtexture(
         String region, int width, int height, TextureAtlas atlas,
-        Integer waitingIndex, Vector2 scaleTexture, Integer ... indexes
+        Integer waitingIndex, Vector2 scaleTexture, List<Integer> indexes
     ) {
         return new MovingEntityTexturesPerDirectionPack(
             new TextureExtractorDeep(
@@ -23,6 +24,16 @@ public record MovingEntityTexturesPerDirectionPack(
             ).extractRegions(atlas),
             TextureExtractorDeep.fromOneSubtexture(region, width, height, atlas, indexes),
             scaleTexture
+        );
+    }
+
+    public static MovingEntityTexturesPerDirectionPack fromOneSubtexture(
+        String region, int width, int height, TextureAtlas atlas,
+        Integer waitingIndex, Vector2 scaleTexture, int ... indexes
+    ) {
+        return fromOneSubtexture(
+            region, width, height, atlas, waitingIndex, scaleTexture,
+            Arrays.stream(indexes).boxed().toList()
         );
     }
 }

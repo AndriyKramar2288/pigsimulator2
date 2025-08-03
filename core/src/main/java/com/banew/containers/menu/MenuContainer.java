@@ -7,6 +7,10 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.banew.containers.Container;
 import com.banew.containers.GlobalGameContext;
+import com.banew.containers.menu.character.creation.ConfirmationTable;
+import com.banew.containers.menu.character.creation.NewCharacterProperties;
+import com.banew.containers.menu.character.creation.RaceSelectTable;
+import com.banew.containers.menu.character.creation.SkillSelectTable;
 import lombok.Getter;
 
 public class MenuContainer implements Container {
@@ -15,13 +19,16 @@ public class MenuContainer implements Container {
     private final GlobalGameContext context;
 
     @Getter
+    private final NewCharacterProperties newCharacterProperties = new NewCharacterProperties();
+    @Getter
     private final Stage stage;
     @Getter
     private final SettingsWindow settingsWindow;
 
-    private final RaceSelectContainer raceSelectContainer;
-    private final FrontMainMenuContainer frontMainMenuContainer;
-    private final SkillSelectContainer skillSelectContainer;
+    private final RaceSelectTable raceSelectContainer;
+    private final FrontMainTable frontMainMenuContainer;
+    private final SkillSelectTable skillSelectContainer;
+    private final ConfirmationTable confirmationContainer;
 
     public MenuContainer(GlobalGameContext context) {
         this.context = context;
@@ -33,9 +40,10 @@ public class MenuContainer implements Container {
             context.getGeneralSettings().getMenuPhotos(), context.getTextureAtlas(), stage
         );
 
-        raceSelectContainer = new RaceSelectContainer(context, this);
-        frontMainMenuContainer = new FrontMainMenuContainer(context, this);
-        skillSelectContainer = new SkillSelectContainer(this, context);
+        raceSelectContainer = new RaceSelectTable(context, this);
+        frontMainMenuContainer = new FrontMainTable(context, this);
+        skillSelectContainer = new SkillSelectTable(this, context);
+        confirmationContainer = new ConfirmationTable(context, this);
         frontMainMenuContainer.toggleOn(viewport);
 
         settingsWindow = new SettingsWindow(stage, context);
@@ -64,6 +72,10 @@ public class MenuContainer implements Container {
 
     public void toggleMain() {
         frontMainMenuContainer.toggleOn(viewport);
+    }
+
+    public void toggleConfirmation() {
+        confirmationContainer.toggleOn(viewport);
     }
 
     public void toggleRace() {

@@ -117,7 +117,7 @@ public class EntityFactory {
     public MainHeroEntity createMainHeroEntity(MapObject object) {
         Rectangle rectangle = GameLevel.fromMapObject(object);
 
-        Map<String, MovingEntityTexturesPerDirectionPack> textures = Race.OD.getTextures();
+        Map<String, MovingEntityTexturesPerDirectionPack> textures = Race.DN.getTextures();
 
         MainHeroEntity mainHeroEntity = new MainHeroEntity(
             generateBasicSprite(rectangle, textures.get("down").waitingTexture()),

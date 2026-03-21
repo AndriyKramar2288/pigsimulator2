@@ -14,15 +14,10 @@ import com.banew.items.StupidItem;
 import com.banew.other.enums.Race;
 import com.banew.other.enums.SetupEnum;
 import com.banew.other.enums.Skill;
-import com.banew.utilites.Reference;
 import lombok.Getter;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public final class GlobalGameContext implements Disposable {
-    private final Reference<Container> currentContainerRef = new Reference<>(null);
-    private final Set<Container> containerSet = new HashSet<>();
+    private Container currentContainer;
     @Getter
     private final SoundContainer soundContainer;
     @Getter
@@ -65,20 +60,23 @@ public final class GlobalGameContext implements Disposable {
     }
 
     public void setContainer(Container container) {
-        containerSet.add(container);
-        currentContainerRef.setElement(container);
+        if (currentContainer != null)
+            currentContainer.dispose();
+
+        currentContainer = container;
+
         if (lastSize != null) {
             container.resize((int) lastSize.x, (int) lastSize.y);
         }
     }
 
     public Container currentContainer() {
-        return currentContainerRef.getElement();
+        return currentContainer;
     }
 
     @Override
     public void dispose() {
-        containerSet.forEach(Disposable::dispose);
+        currentContainer.dispose();
     }
 
     public void renderCurrent() {

@@ -125,29 +125,7 @@ public class SelfItemsDisplayer extends AbstractItemsDisplayer {
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
                 ImageButton button = generateSlotButton();
-
-                if (x == cols - 2) {
-                    Table buttonContainer = new Table();
-                    buttonContainer.setBackground(new TextureRegionDrawable(
-                        atlas.findRegion(switch (y) {
-                            case 0 -> "gui/inv_back_helmet";
-                            case 1 -> "gui/inv_back_armor";
-                            default -> "gui/inv_back_pants";
-                        })
-                    ));
-                    buttonContainer.add(button)
-                        .size(widthPercent(.03f));
-
-                    table.add(buttonContainer)
-                        .size(
-                            widthPercent(.06f),
-                            widthPercent(.03f)
-                        );
-                    x += 1;
-                }
-                else {
-                    insertToTable(button);
-                }
+                insertToTable(button);
             }
             table.row();
         }

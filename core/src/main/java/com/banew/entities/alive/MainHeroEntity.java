@@ -77,7 +77,7 @@ public class MainHeroEntity extends AliveEntity {
 
     @Override
     public void move(float stepX, float stepY) {
-        animationList.get(movingSide).setFrameDuration(isRunning ? .15f : .25f);
+        animationList.get(movingSide).setFrameDuration(isRunning ? .1f : .15f);
         super.move(stepX, stepY);
     }
 

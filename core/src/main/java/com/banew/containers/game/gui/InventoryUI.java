@@ -17,6 +17,7 @@ import com.banew.containers.GlobalGameContext;
 import com.banew.containers.game.gui.storage_displayers.AbstractItemsDisplayer;
 import com.banew.containers.game.gui.storage_displayers.OtherContainerDisplayer;
 import com.banew.containers.game.gui.storage_displayers.SelfItemsDisplayer;
+import com.banew.containers.menu.MenuContainer;
 import com.banew.containers.menu.SettingsWindow;
 import com.banew.other.records.GameContext;
 import lombok.Getter;
@@ -100,9 +101,26 @@ public class InventoryUI {
             Value.percentWidth(.03f, leftButtons)
         );
 
+        TextButton menuButton = new TextButton("Вийти", skin);
+        globalGameContext.initButton(menuButton, .35f);
+        leftButtons.row();
+        leftButtons.add(menuButton)
+            .padTop(Value.percentHeight(.01f, leftButtons))
+            .size(
+            Value.percentWidth(.1f, leftButtons),
+            Value.percentWidth(.03f, leftButtons)
+        );
+
         settingsWindow = new SettingsWindow(
             stage, globalGameContext
         );
+
+        menuButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                globalGameContext.setContainer(new MenuContainer(globalGameContext));
+            }
+        });
 
         pauseButton.addListener(new ChangeListener() {
             @Override

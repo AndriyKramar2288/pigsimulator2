@@ -1,9 +1,6 @@
 package com.banew.containers.menu.character.creation;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -88,8 +85,6 @@ public class ConfirmationTable extends AbstractTogglingTable {
     }
 
     private void check() {
-        if (properties.getName().length() >= 5 && properties.getBio().length() >= 10) {
-            nextButton.setVisible(true);
-        }
+        nextButton.setVisible(properties.getName().length() >= 5 && properties.getBio().length() >= 10);
     }
 }

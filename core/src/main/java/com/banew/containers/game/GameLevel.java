@@ -189,6 +189,7 @@ public class GameLevel implements Disposable {
 
     @Override
     public void dispose() {
+        musicSet.forEach(MusicPattern::stopPlay);
         world.dispose();
         lightMode.dispose();
         renderer.dispose();

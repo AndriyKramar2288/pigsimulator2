@@ -40,7 +40,7 @@ public class Zombie extends AliveEntity {
                 .playAnimation("effect_animations/blood_1", target.getCenterCoordinates(), .2f);
 
             context.playerInfo().changeHealth(-new Random().nextFloat(40, 70));
-            context.soundContainer().play("stons");
+            //context.soundContainer().play("stons");
 
             target.injured();
             target.getBody().applyLinearImpulse(

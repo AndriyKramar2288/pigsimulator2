@@ -143,43 +143,43 @@ public class EntityFactory {
     public Zombie createZombie(MapObject mapObject) {
         Rectangle rectangle = GameLevel.fromMapObject(mapObject);
 
-//        Map<String, MovingEntityTexturesPerDirectionPack> textures = Map.of(
-//            "left", fromOneSubtexture(
-//                "Characters/zombie_n_skeleton2", 9, 4, textureAtlas,
-//                11, new Vector2(.7f, .7f), 10, 11, 12
-//            ),
-//            "up", fromOneSubtexture(
-//                "Characters/zombie_n_skeleton2", 9, 4, textureAtlas,
-//                29, new Vector2(.7f, .7f), 28, 29, 30
-//            ),
-//            "right", fromOneSubtexture(
-//                "Characters/zombie_n_skeleton2", 9, 4, textureAtlas,
-//                20, new Vector2(.7f, .7f), 19, 20, 21
-//            ),
-//            "down", fromOneSubtexture(
-//                "Characters/zombie_n_skeleton2", 9, 4, textureAtlas,
-//                2, new Vector2(.7f, .7f), 1, 2, 3
-//            )
-//        );
-
         Map<String, MovingEntityTexturesPerDirectionPack> textures = Map.of(
-            "down", fromOneSubtexture(
-                "Characters/64X128_Walking_Free", 10, 4, textureAtlas,
-                1, new Vector2(.7f, .7f), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-            ),
             "left", fromOneSubtexture(
-                "Characters/64X128_Walking_Free", 10, 4, textureAtlas,
-                11, new Vector2(.7f, .7f), 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
-            ),
-            "right", fromOneSubtexture(
-                "Characters/64X128_Walking_Free", 10, 4, textureAtlas,
-                21, new Vector2(.7f, .7f), 21, 22, 23, 24, 25, 26, 27, 28, 29, 30
+                "Characters/zombie_n_skeleton2", 9, 4, textureAtlas,
+                11, new Vector2(.7f, .7f), 10, 11, 12
             ),
             "up", fromOneSubtexture(
-                "Characters/64X128_Walking_Free", 10, 4, textureAtlas,
-                31, new Vector2(.7f, .7f), 31, 32, 33, 34, 35, 36, 37, 38, 39, 40
+                "Characters/zombie_n_skeleton2", 9, 4, textureAtlas,
+                29, new Vector2(.7f, .7f), 28, 29, 30
+            ),
+            "right", fromOneSubtexture(
+                "Characters/zombie_n_skeleton2", 9, 4, textureAtlas,
+                20, new Vector2(.7f, .7f), 19, 20, 21
+            ),
+            "down", fromOneSubtexture(
+                "Characters/zombie_n_skeleton2", 9, 4, textureAtlas,
+                2, new Vector2(.7f, .7f), 1, 2, 3
             )
         );
+
+//        Map<String, MovingEntityTexturesPerDirectionPack> textures = Map.of(
+//            "down", fromOneSubtexture(
+//                "Characters/64X128_Walking_Free", 10, 4, textureAtlas,
+//                1, new Vector2(.7f, .7f), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+//            ),
+//            "left", fromOneSubtexture(
+//                "Characters/64X128_Walking_Free", 10, 4, textureAtlas,
+//                11, new Vector2(.7f, .7f), 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+//            ),
+//            "right", fromOneSubtexture(
+//                "Characters/64X128_Walking_Free", 10, 4, textureAtlas,
+//                21, new Vector2(.7f, .7f), 21, 22, 23, 24, 25, 26, 27, 28, 29, 30
+//            ),
+//            "up", fromOneSubtexture(
+//                "Characters/64X128_Walking_Free", 10, 4, textureAtlas,
+//                31, new Vector2(.7f, .7f), 31, 32, 33, 34, 35, 36, 37, 38, 39, 40
+//            )
+//        );
 
         AliveEntityInfo aliveEntityInfo = AliveEntityInfo.builder()
             .attackDistance(.2f)

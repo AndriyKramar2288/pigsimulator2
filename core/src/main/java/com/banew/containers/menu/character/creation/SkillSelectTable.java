@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 
 public class SkillSelectTable extends AbstractTogglingTable {
+
+    private static final int SKILLS_OFFSET = 1000;
+
     private final DragAndDrop dragAndDrop;
     private final Map<Integer, Skill> map = new HashMap<>();
     private final Map<Integer, Image> buttonMap = new HashMap<>();
@@ -56,9 +59,9 @@ public class SkillSelectTable extends AbstractTogglingTable {
         row();
         add(innerTable).width(Value.percentWidth(.6f, this));
 
-        mainSkills = new SkillCategory("Головні", 101, 102);
-        majorSkills = new SkillCategory("Важливі", 103, 104);
-        minorSkills = new SkillCategory("Побічні", 105, 106);
+        mainSkills = new SkillCategory("Головні", SKILLS_OFFSET + 1, SKILLS_OFFSET + 2);
+        majorSkills = new SkillCategory("Важливі", SKILLS_OFFSET + 3, SKILLS_OFFSET + 4);
+        minorSkills = new SkillCategory("Побічні", SKILLS_OFFSET + 5, SKILLS_OFFSET + 6);
         innerTable.add(mainSkills.categoryWrap(context)).colspan(2);
         innerTable.add(majorSkills.categoryWrap(context)).colspan(2);
         innerTable.add(minorSkills.categoryWrap(context)).colspan(2);

@@ -38,11 +38,11 @@ public class RaceViewTable extends Table {
     public void showRace(Race race, GlobalGameContext context) {
         Table table = new Table();
 
-        table.add(createLabel(race.getUkrName(), .8f, context))
+        table.add(createLabel(race.getUkrName(), .5f, context))
             .pad(Value.percentWidth(.02f, this))
             .width(Value.percentWidth(.9f, this));
         table.row();
-        table.add(createLabel(race.getDesc(), .4f, context))
+        table.add(createLabel(race.getDesc(), .3f, context))
             .width(Value.percentWidth(.9f, this))
             .padBottom(Value.percentHeight(.05f, this));
         if (race.getInitialItem() != null) {

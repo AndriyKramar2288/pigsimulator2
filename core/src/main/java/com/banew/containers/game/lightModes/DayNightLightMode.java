@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.World;
 import com.banew.containers.game.GameLevel;
-import com.banew.entities.Torch;
 import com.banew.other.records.GameContext;
 
 import java.util.HashSet;
@@ -41,17 +40,17 @@ public class DayNightLightMode extends LightMode {
         jesusLight.setSoft(true);
         jesusLight.setSoftnessLength(3);
 
-        gameLevel.getEntitySet().forEach(e -> {
-            if (e instanceof Torch) {
-                Light torchLight = new PointLight(
-                    rayHandler, 4096,
-                    new Color(1f, .5f, 0f, .8f), 3f, 0f, 0f
-                );
-
-                torchLight.attachToBody(e.getBody());
-                torchLights.add(torchLight);
-            }
-        });
+//        gameLevel.getEntitySet().forEach(e -> { TODO
+//            if (e instanceof Torch) {
+//                Light torchLight = new PointLight(
+//                    rayHandler, 4096,
+//                    new Color(1f, .5f, 0f, .8f), 3f, 0f, 0f
+//                );
+//
+//                torchLight.attachToBody(e.getBody());
+//                torchLights.add(torchLight);
+//            }
+//        });
     }
 
     /**
@@ -132,7 +131,7 @@ public class DayNightLightMode extends LightMode {
 
     @Override
     public void switchTo(GameContext gameContext) {
-        playerLight.attachToBody(gameContext.mainHeroEntity().getBody());
+        //playerLight.attachToBody(gameContext.mainHeroEntity().getBody()); TODO
     }
 
     @Override

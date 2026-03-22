@@ -1,7 +1,7 @@
 package com.banew.ecs;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,14 +18,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.banew.containers.game.CursorsContainer;
 import com.banew.containers.game.GameLevel;
-import com.banew.ecs.components.AnimatedComponent;
-import com.banew.ecs.components.SpriteComponent;
-import com.banew.entities.LevelsDoor;
-import com.banew.entities.SpriteEntity;
-import com.banew.entities.Torch;
-import com.banew.entities.alive.MainHeroEntity;
-import com.banew.entities.alive.Zombie;
-import com.banew.entities.containers.Chest;
+import com.banew.ecs.components.*;
 import com.banew.external.GeneralSettings;
 import com.banew.items.StupidItem;
 import com.banew.items.weapon.Sword;
@@ -43,20 +36,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import static com.banew.other.records.MovingEntityTexturesPerDirectionPack.fromOneSubtexture;
-
 public class EntityFactory {
-    private final PooledEngine pooledEngine;
+    @Setter
+    private Engine engine;
     private final TextureAtlas textureAtlas;
     private final Map<String, TextureRegion[][]> cashedRegions;
     private final CursorsContainer cursorsContainer;
     @Setter
     private GameLevel currentGameLevel;
 
-    public EntityFactory(PooledEngine pooledEngine,
+    public EntityFactory(Engine engine,
                          GeneralSettings generalSettings,
                          TextureAtlas textureAtlas) {
-        this.pooledEngine = pooledEngine;
+        this.engine = engine;
         this.textureAtlas = textureAtlas;
         cashedRegions = new HashMap<>();
         cursorsContainer = new CursorsContainer();
@@ -86,7 +78,6 @@ public class EntityFactory {
     }
 
     public Entity createTorch(MapObject object) {
-
         Rectangle rectangle = GameLevel.fromMapObject(object);
 
         TextureRegion waiting = new TextureExtractorDeep(
@@ -99,103 +90,122 @@ public class EntityFactory {
             4, 2, textureAtlas, 1, 2, 3, 4, 5, 6, 7, 8
         );
 
-        var e = pooledEngine.createEntity();
+        var e = new Entity();
 
-        var sc = pooledEngine.createComponent(SpriteComponent.class);
+        var sc = new SpriteComponent();
         sc.sprite = generateBasicSprite(rectangle, waiting);
         sc.body = generateBasicBody(rectangle, .15f, .35f);
         sc.currentScales = new Vector2(.15f, .35f);
         e.add(sc);
 
-        var ac = pooledEngine.createComponent(AnimatedComponent.class);
+        var ac = new AnimatedComponent();
         ac.init(waiting, 0f, List.of(animation));
         e.add(ac);
 
         return e;
     }
 
-    private Chest createChest(MapObject object) {
+    private Entity createChest(MapObject object) {
         Rectangle rectangle = GameLevel.fromMapObject(object);
 
         List<TextureRegion> chests = TextureExtractorDeep.fromOneSubtexture(
             "Objects/Chest", 5, 2, textureAtlas, 1, 3
         );
 
-        return new Chest(
-            generateBasicSprite(rectangle, chests.get(0)),
-            generateBasicBody(rectangle, .7f, .5f),
-            new Vector2(.7f, .5f),
-            cursorsContainer.getCursorPair("chest", "bad_chest"),
-            chests
-        );
+        Entity e = new Entity();
+
+        var sc = new SpriteComponent();
+        sc.sprite = generateBasicSprite(rectangle, chests.get(0));
+        sc.body = generateBasicBody(rectangle, .7f, .5f);
+        sc.currentScales = new Vector2(.7f, .5f);
+        e.add(sc);
+
+        var ic = new InteractableComponent();
+        ic.init("Скриня", cursorsContainer.getCursorPair("chest", "bad_chest"));
+        e.add(ic);
+
+        var invC = new InventoryComponent();
+        invC.init(12);
+        e.add(invC);
+
+        var cc = new ChestComponent();
+        cc.init(chests);
+        e.add(cc);
+
+        return e;
     }
 
-    public MainHeroEntity createMainHeroEntity(MapObject object) {
+    public Entity createMainHeroEntity(MapObject object) {
         Rectangle rectangle = GameLevel.fromMapObject(object);
 
         Map<String, MovingEntityTexturesPerDirectionPack> textures = Race.DN.getTextures();
 
-        MainHeroEntity mainHeroEntity = new MainHeroEntity(
-            generateBasicSprite(rectangle, textures.get("down").waitingTexture()),
-            generateDynamicBody(rectangle, textures.get("down").scaleTexture().x, textures.get("down").scaleTexture().y),
-            textures
-        );
-        mainHeroEntity.getInventory().put(
-            3, new StupidItem(textureAtlas.findRegion("hryak1/tile002"), "Хрюкающий подсвинок")
-        );
+        Entity e = new Entity();
 
-        mainHeroEntity.getInventory().put(
-            4, new Sword(
-                TextureExtractorDeep.fromOneSubtexture(
-                    "Objects/swords", 5, 1, textureAtlas, 1
-                ).get(0),
-                "клинок Аллаха"
-            )
-        );
+        var sc = new SpriteComponent();
+        sc.sprite = generateBasicSprite(rectangle, textures.get("down").waitingTexture());
+        sc.body = generateDynamicBody(rectangle, textures.get("down").scaleTexture().x, textures.get("down").scaleTexture().y);
+        sc.currentScales = textures.get("down").scaleTexture();
+        e.add(sc);
 
-        return mainHeroEntity;
+        var mc = new MovingComponent();
+        List<String> directions = List.of("up", "left", "down", "right");
+        directions.forEach(direction -> {
+            MovingEntityTexturesPerDirectionPack pack = textures.get(direction);
+            mc.waitingRegions.add(pack.waitingTexture());
+            mc.animationList.add(new com.badlogic.gdx.graphics.g2d.Animation<>(
+                1f / pack.animation().size(), pack.animation().toArray(new TextureRegion[0])
+            ));
+            mc.animationsScales.add(pack.scaleTexture());
+        });
+        e.add(mc);
+
+        var alive = new AliveParamsComponent();
+        AliveEntityInfo info = new com.banew.other.dto.PlayerInfo();
+        alive.info = info;
+        alive.getReloadHpTime = 3.33f;
+        alive.getReloadHpSpeed = 20f;
+        alive.reloadStaminaTime = 3f;
+        alive.getReloadStaminaSpeed = 10f;
+        e.add(alive);
+
+        var invC = new InventoryComponent();
+        invC.init(0);
+        invC.container.put(3, new StupidItem(textureAtlas.findRegion("hryak1/tile002"), "Хрюкающий подсвинок"));
+        invC.container.put(4, new Sword(
+            TextureExtractorDeep.fromOneSubtexture("Objects/swords", 5, 1, textureAtlas, 1).get(0),
+            "клинок Аллаха"
+        ));
+        e.add(invC);
+
+        var heroComp = new MainHeroComponent();
+        heroComp.playerInfo = (com.banew.other.dto.PlayerInfo) info;
+        e.add(heroComp);
+
+        return e;
     }
 
-    public Zombie createZombie(MapObject mapObject) {
+    public Entity createZombie(MapObject mapObject) {
         Rectangle rectangle = GameLevel.fromMapObject(mapObject);
 
         Map<String, MovingEntityTexturesPerDirectionPack> textures = Map.of(
-            "left", fromOneSubtexture(
+            "left", MovingEntityTexturesPerDirectionPack.fromOneSubtexture(
                 "Characters/zombie_n_skeleton2", 9, 4, textureAtlas,
                 11, new Vector2(.7f, .7f), 10, 11, 12
             ),
-            "up", fromOneSubtexture(
+            "up", MovingEntityTexturesPerDirectionPack.fromOneSubtexture(
                 "Characters/zombie_n_skeleton2", 9, 4, textureAtlas,
                 29, new Vector2(.7f, .7f), 28, 29, 30
             ),
-            "right", fromOneSubtexture(
+            "right", MovingEntityTexturesPerDirectionPack.fromOneSubtexture(
                 "Characters/zombie_n_skeleton2", 9, 4, textureAtlas,
                 20, new Vector2(.7f, .7f), 19, 20, 21
             ),
-            "down", fromOneSubtexture(
+            "down", MovingEntityTexturesPerDirectionPack.fromOneSubtexture(
                 "Characters/zombie_n_skeleton2", 9, 4, textureAtlas,
                 2, new Vector2(.7f, .7f), 1, 2, 3
             )
         );
-
-//        Map<String, MovingEntityTexturesPerDirectionPack> textures = Map.of(
-//            "down", fromOneSubtexture(
-//                "Characters/64X128_Walking_Free", 10, 4, textureAtlas,
-//                1, new Vector2(.7f, .7f), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-//            ),
-//            "left", fromOneSubtexture(
-//                "Characters/64X128_Walking_Free", 10, 4, textureAtlas,
-//                11, new Vector2(.7f, .7f), 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
-//            ),
-//            "right", fromOneSubtexture(
-//                "Characters/64X128_Walking_Free", 10, 4, textureAtlas,
-//                21, new Vector2(.7f, .7f), 21, 22, 23, 24, 25, 26, 27, 28, 29, 30
-//            ),
-//            "up", fromOneSubtexture(
-//                "Characters/64X128_Walking_Free", 10, 4, textureAtlas,
-//                31, new Vector2(.7f, .7f), 31, 32, 33, 34, 35, 36, 37, 38, 39, 40
-//            )
-//        );
 
         AliveEntityInfo aliveEntityInfo = AliveEntityInfo.builder()
             .attackDistance(.2f)
@@ -205,14 +215,42 @@ public class EntityFactory {
             .maxStamina(100)
             .build();
 
-        return new Zombie(
-            generateBasicSprite(rectangle, textures.get("down").waitingTexture()),
-            generateDynamicBody(rectangle, textures.get("down").scaleTexture().x, textures.get("down").scaleTexture().y),
-            textures, cursorsContainer.getCursorPair("sword", "bad_sword"), aliveEntityInfo
-        );
+        Entity e = new Entity();
+
+        var sc = new SpriteComponent();
+        sc.sprite = generateBasicSprite(rectangle, textures.get("down").waitingTexture());
+        sc.body = generateDynamicBody(rectangle, textures.get("down").scaleTexture().x, textures.get("down").scaleTexture().y);
+        sc.currentScales = textures.get("down").scaleTexture();
+        e.add(sc);
+
+        var mc = new MovingComponent();
+        List<String> directions = List.of("up", "left", "down", "right");
+        directions.forEach(direction -> {
+            MovingEntityTexturesPerDirectionPack pack = textures.get(direction);
+            mc.waitingRegions.add(pack.waitingTexture());
+            mc.animationList.add(new com.badlogic.gdx.graphics.g2d.Animation<>(
+                1f / pack.animation().size(), pack.animation().toArray(new TextureRegion[0])
+            ));
+            mc.animationsScales.add(pack.scaleTexture());
+        });
+        e.add(mc);
+
+        var alive = new AliveParamsComponent();
+        alive.info = aliveEntityInfo;
+        alive.getReloadHpTime = 5f;
+        alive.getReloadHpSpeed = 30f;
+        alive.reloadStaminaTime = 3f;
+        alive.getReloadStaminaSpeed = 10f;
+        alive.attackCursor = cursorsContainer.getCursorPair("sword", "bad_sword");
+        e.add(alive);
+
+        var zc = new ZombieComponent();
+        e.add(zc);
+
+        return e;
     }
 
-    public LevelsDoor createLevelsDoor(MapObject mapObject) {
+    public Entity createLevelsDoor(MapObject mapObject) {
         String from = mapObject.getProperties().get("from", String.class);
         String to = mapObject.getProperties().get("to", String.class);
         String name = mapObject.getProperties().get("singleName", String.class);
@@ -228,13 +266,22 @@ public class EntityFactory {
         invisibleSprite.setSize(rectangle.getWidth(), rectangle.getHeight());
         invisibleSprite.setTexture(generateInvisibleTexture());
 
-        return new LevelsDoor(
-            invisibleSprite,
-            from, to, name
-        );
-    }
+        Entity e = new Entity();
 
-    // -------------------- GENERATE BASIC SMTH ------------------------
+        var sc = new SpriteComponent();
+        sc.sprite = invisibleSprite;
+        sc.body = null;
+        sc.currentScales = new Vector2(1, 1);
+        e.add(sc);
+
+        var ldc = new LevelsDoorComponent();
+        ldc.levelFrom = from;
+        ldc.levelTo = to;
+        ldc.singleName = name;
+        e.add(ldc);
+
+        return e;
+    }
 
     private Body generateBasicBody(Float x, Float y, Float size_x, Float size_y) {
         return generateBasicBody(x, y, size_x, size_y, 1f, 1f);
@@ -251,7 +298,6 @@ public class EntityFactory {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.fixedRotation = true;
-        // позиція — ЦЕНТР фікстури!
         bodyDef.position.set(x + size_x / 2f, y + size_y / 2f);
 
         Body body = currentGameLevel.createBody(bodyDef);
@@ -275,7 +321,6 @@ public class EntityFactory {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.fixedRotation = true;
-        // позиція — ЦЕНТР фікстури!
         bodyDef.position.set(x + size_x / 2f, y + size_y / 2f);
         bodyDef.bullet = true;
 
@@ -286,7 +331,6 @@ public class EntityFactory {
 
     private FixtureDef generateBasicFicture(float width, float height) {
         FixtureDef fixtureDef = new FixtureDef();
-
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(width / 2, height / 2);
 

@@ -1,8 +1,8 @@
 package com.banew.items.weapon;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.banew.entities.alive.AliveEntity;
-import com.banew.other.dto.PlayerInfo;
+import com.banew.ecs.components.AliveParamsComponent;
 import com.banew.other.records.GameContext;
 
 import java.util.Random;
@@ -12,17 +12,15 @@ public abstract class AbstractStaminaWeapon extends AbstractWeapon {
         super(textureRegion, name);
     }
 
-    /**
-     * @return скільки {@link AliveEntity} attacker ({@link #attack(AliveEntity, AliveEntity, GameContext)})
-     * втратить {@link PlayerInfo#getStamina()} після вдалої атаки (рахується від x * 0.5 до x)
-     */
     protected abstract float getMaxStaminaDebuff();
 
     @Override
-    public void attack(AliveEntity attacker, AliveEntity victim, GameContext context) {
-        if (attacker.getInfo().getStamina() < getMaxStaminaDebuff() * .25f) return;
+    public void attack(Entity attacker, Entity victim, GameContext context) {
+        var attackerAlive = attacker.getComponent(AliveParamsComponent.class);
 
-        attacker.getInfo().changeStamina(
+        if (attackerAlive.info.getStamina() < getMaxStaminaDebuff() * .25f) return;
+
+        attackerAlive.info.changeStamina(
             -new Random().nextFloat(getMaxStaminaDebuff() * 0.5f, getMaxStaminaDebuff())
         );
         super.attack(attacker, victim, context);

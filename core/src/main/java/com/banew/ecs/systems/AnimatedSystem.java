@@ -1,5 +1,6 @@
 package com.banew.ecs.systems;
 
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
@@ -10,6 +11,10 @@ import com.banew.ecs.components.SpriteComponent;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AnimatedSystem extends IteratingSystem {
+
+    private final ComponentMapper<SpriteComponent> scMapper = ComponentMapper.getFor(SpriteComponent.class);
+    private final ComponentMapper<AnimatedComponent> amMapper = ComponentMapper.getFor(AnimatedComponent.class);
+
     public AnimatedSystem() {
         super(Family.all(AnimatedComponent.class, SpriteComponent.class).get());
     }
@@ -17,8 +22,8 @@ public class AnimatedSystem extends IteratingSystem {
     @Override
     protected void processEntity(Entity entity, float v) {
 
-        var c = entity.getComponent(AnimatedComponent.class);
-        var spriteComponent = entity.getComponent(SpriteComponent.class);
+        var c = amMapper.get(entity);
+        var spriteComponent = scMapper.get(entity);
 
         c.timer += v;
 

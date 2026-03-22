@@ -1,11 +1,9 @@
 package com.banew.external;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.utils.Disposable;
 import com.banew.containers.game.GameLevel;
 import com.banew.containers.game.MusicPattern;
-import com.banew.factories.EntityFactory;
+import com.banew.ecs.EntityFactory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;

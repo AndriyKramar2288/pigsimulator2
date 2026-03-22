@@ -1,6 +1,8 @@
 package com.banew.containers.game;
 
 import com.badlogic.gdx.audio.Sound;
+import com.banew.ecs.components.MainHeroComponent;
+import com.banew.ecs.components.MovingComponent;
 import com.banew.other.records.GameContext;
 
 public class WalkingSoundResolver {
@@ -17,7 +19,7 @@ public class WalkingSoundResolver {
             previousWalkAreaName = walkSound;
             currentWalkSoundId = sound.loop(context.soundContainer().getVolume(walkSound));
         }
-        boolean isRunning = context.mainHeroEntity().isRunning();
+        boolean isRunning = context.mainHeroEntity().getComponent(MainHeroComponent.class).isRunning;
         sound.setPitch(currentWalkSoundId, isRunning ? 2.0f : 1.6f);
     }
 

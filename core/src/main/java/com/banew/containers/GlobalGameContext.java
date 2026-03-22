@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Disposable;
+import com.banew.containers.game.CursorsContainer;
 import com.banew.containers.game.gui.DynamicLabelsContainer;
 import com.banew.containers.menu.MenuButtonsListener;
 import com.banew.containers.menu.MenuContainer;
@@ -28,6 +29,8 @@ public final class GlobalGameContext implements Disposable {
     private final GeneralSettings generalSettings;
     @Getter
     private final DynamicLabelsContainer dynamicLabelsContainer;
+    @Getter
+    private final CursorsContainer cursorsContainer;
 
     private Vector2 lastSize;
 
@@ -40,6 +43,7 @@ public final class GlobalGameContext implements Disposable {
         mainSkin = new Skin(Gdx.files.internal(generalSettings.getMain_skin_src()));
         soundContainer = new SoundContainer(generalSettings);
         dynamicLabelsContainer = new DynamicLabelsContainer();
+        cursorsContainer = new CursorsContainer();
 
         setupEnum(Race.values());
         setupEnum(Skill.values());

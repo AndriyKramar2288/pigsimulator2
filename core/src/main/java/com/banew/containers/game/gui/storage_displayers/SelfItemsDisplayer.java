@@ -12,6 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.banew.containers.game.ItemContainer;
 import com.banew.containers.game.gui.DynamicLabelsContainer;
 import com.banew.containers.game.gui.TooltipContainer;
+import com.banew.ecs.components.InventoryComponent;
+import com.banew.ecs.components.MainHeroComponent;
 import com.banew.items.AbstractItem;
 import com.banew.other.records.GameContext;
 
@@ -36,7 +38,7 @@ public class SelfItemsDisplayer extends AbstractItemsDisplayer {
     @Override
     public ItemContainer getContainer() {
         if (context != null) {
-            return context.mainHeroEntity().getInventory();
+            return context.mainHeroEntity().getComponent(InventoryComponent.class).container;
         }
         throw new RuntimeException("Контекст ще не засунули");
     }

@@ -19,6 +19,7 @@ import com.banew.containers.game.gui.storage_displayers.OtherContainerDisplayer;
 import com.banew.containers.game.gui.storage_displayers.SelfItemsDisplayer;
 import com.banew.containers.menu.MenuContainer;
 import com.banew.containers.menu.SettingsWindow;
+import com.banew.ecs.components.MainHeroComponent;
 import com.banew.other.records.GameContext;
 import lombok.Getter;
 
@@ -153,7 +154,7 @@ public class InventoryUI {
         visible = state;
         actors.forEach(e -> e.setVisible(state));
         if (!state && context != null) {
-            context.mainHeroEntity().setOpenedContainer(null); // забрати, якщо закрили інвентар
+            context.mainHeroEntity().getComponent(MainHeroComponent.class).openedContainer = null; // забрати, якщо закрили інвентар
             settingsWindow.setVisible(false);
         }
     }
@@ -164,7 +165,7 @@ public class InventoryUI {
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
             toggle();
         }
-        if (context.mainHeroEntity().getOpenedContainer() != null) {
+        if (context.mainHeroEntity().getComponent(MainHeroComponent.class).openedContainer != null) {
             toggle(true);
         }
         selfItemsDisplayer.displayContainer(context);

@@ -1,5 +1,6 @@
 package com.banew.containers.game.gui.storage_displayers;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -7,7 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.banew.containers.game.ItemContainer;
 import com.banew.containers.game.gui.DynamicLabelsContainer;
-import com.banew.entities.containers.ContainerEntity;
+import com.banew.ecs.components.InventoryComponent;
+import com.banew.ecs.components.MainHeroComponent;
+import com.banew.ecs.components.SpriteComponent;
 import com.banew.other.records.GameContext;
 
 public class OtherContainerDisplayer extends AbstractItemsDisplayer {
@@ -38,18 +41,24 @@ public class OtherContainerDisplayer extends AbstractItemsDisplayer {
     public void displayContainer(GameContext context) {
         super.displayContainer(context);
 
-        ContainerEntity containerEntity = context.mainHeroEntity().getOpenedContainer();
+        var mainHeroComponent = context.mainHeroEntity().getComponent(MainHeroComponent.class);
+        Entity containerEntity = mainHeroComponent.openedContainer;
+
         if (containerEntity != null) { // якщо в контексті тепер є відкритий контейнер
-            if (context.mainHeroEntity().getCenterCoordinates().sub(containerEntity.getCenterCoordinates()).len2()
-                > ContainerEntity.CRITICAL_DISTANCE) { // якщо відстань до цього контейнера завелика - закрити
+
+            var containerComponent = containerEntity.getComponent(InventoryComponent.class);
+
+            if (context.mainHeroEntity().getComponent(SpriteComponent.class).getCenterCoordinates()
+                .sub(containerEntity.getComponent(SpriteComponent.class).getCenterCoordinates()).len2()
+                > 2) { // якщо відстань до цього контейнера завелика - закрити
                 setVisible(false);
-                context.mainHeroEntity().setOpenedContainer(null);
+                mainHeroComponent.openedContainer = null;
             }
-            else if (!visible || !containerEntity.getContainer().equals(itemContainer)) { // оновити, якщо було закрито,
+            else if (!visible || !containerComponent.container.equals(itemContainer)) { // оновити, якщо було закрито,
                 setVisible(true);                                                         // або відкрили інший контейнер
                 clearData();
-                itemContainer = containerEntity.getContainer();
-                addContainerActors(containerEntity.getContainer().size(), containerEntity.getName());
+                itemContainer = containerComponent.container;
+                addContainerActors(containerComponent.container.size(), "ПЕНІС"); // TODO
             }
         }
         else {

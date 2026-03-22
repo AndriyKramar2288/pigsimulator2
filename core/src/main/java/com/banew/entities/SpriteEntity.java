@@ -41,16 +41,12 @@ public abstract class SpriteEntity {
     public abstract void render(GameContext context);
 
     public void step(GameContext context, GameLevel entityLevel) {
-        if (body != null) {
-            sprite.setPosition(
-                body.getPosition().x - sprite.getWidth() / 2f,
-                body.getPosition().y - sprite.getHeight() / 2f
-            );
-        }
-    }
-
-    public void update(float delta) {
-
+//        if (body != null) {
+//            sprite.setPosition(
+//                body.getPosition().x - sprite.getWidth() / 2f,
+//                body.getPosition().y - sprite.getHeight() / 2f
+//            );
+//        }
     }
 
     public float getX() {
@@ -61,42 +57,16 @@ public abstract class SpriteEntity {
         return sprite.getY();
     }
 
-    public Vector2 getCenterCoordinates() {
-        return new Vector2(
-            sprite.getX() + (sprite.getWidth() / 2),
-            sprite.getY() + (sprite.getHeight() / 2)
-        );
-    }
-
-    public Sprite getCollisionSprite(Texture texture) {
-        Sprite sprite = new Sprite(texture);
-        sprite.setSize(
-            getSprite().getWidth() * currentScales.x,
-            getSprite().getHeight() * currentScales.y
-        );
-        sprite.setPosition(
-            getCenterCoordinates().x - sprite.getWidth() / 2,
-            getCenterCoordinates().y - sprite.getHeight() / 2
-        );
-        return sprite;
-    }
-
     public void setTextureScale(float scale) {
         sprite.setOriginCenter();
         getSprite().setScale(scale);
-    }
-
-    public void setSize(float width, float height) {
-        getSprite().setSize(width, height);
-        sprite.setOriginCenter(); // уявний центр для scale і обертання (тупоголовий, після зміни розміру оновлюєм)
-        sprite.setPosition(sprite.getX() - sprite.getWidth() / 2f, sprite.getY() - sprite.getHeight() / 2f);
     }
 
     public void draw(SpriteBatch spriteBatch) {
         sprite.draw(spriteBatch);
     }
 
-    public boolean cursorTouchDown(GameContext context) {
+    /*public boolean cursorTouchDown(GameContext context) { // TODO gemini сказав, що тут пізда продуктивності, треба систему
         int screenX = Gdx.input.getX();
         int screenY = Gdx.input.getY();
         Camera camera = context.camera();
@@ -116,5 +86,5 @@ public abstract class SpriteEntity {
         }
 
         return false;
-    }
+    }*/
 }
